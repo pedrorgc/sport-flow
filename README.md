@@ -59,7 +59,7 @@ Siga os passos abaixo para clonar e executar o SportFlow no seu ambiente de dese
 
 **1. Clone o repositório:**
 ```bash
-git clone https://github.com/pedrorgc/sport-flow.git
+git clone https://github.com/SEU_USUARIO/sport-flow.git
 cd sportflow
 ```
 
@@ -84,7 +84,7 @@ cp .env.example .env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=sportflow_db
+DB_DATABASE=sportflow
 DB_USERNAME=root
 DB_PASSWORD=
 ```
