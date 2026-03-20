@@ -59,7 +59,7 @@ Siga os passos abaixo para clonar e executar o SportFlow no seu ambiente de dese
 
 **1. Clone o repositório:**
 ```bash
-git clone [https://github.com/SEU_USUARIO/sportflow.git](https://github.com/SEU_USUARIO/sportflow.git)
+git clone https://github.com/pedrorgc/sport-flow.git
 cd sportflow
 ```
 
