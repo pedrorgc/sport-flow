@@ -1,10 +1,9 @@
 @props([
-    'title'
+    'title' => null
 ])
 
-<div class="card border-0 shadow-sm rounded-4 h-100">
-    <div class="card-body">
-        <h5 class="fw-semibold mb-4">{{ $title }}</h5>
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body p-4">
         {{ $slot }}
     </div>
 </div>
