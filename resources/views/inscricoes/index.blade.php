@@ -11,7 +11,7 @@
             </div>
 
             <button class="btn btn-primary d-flex align-items-center gap-2">
-                <i class="bi bi-plus"></i>
+                <i class="bi bi-journal-check"></i>
                 Nova Inscrição
             </button>
         </div>
