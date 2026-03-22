@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Administrador',
             'username' => 'ADM', // As iniciais que vão no login
-            'password' => Hash::make('ADM12345678'), // O Laravel já salva a senha criptografada!
+            'password' => 'ADM12345678'
         ]);
     }
 }
