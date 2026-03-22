@@ -26,3 +26,7 @@ Route::get('/dashboard', function () {
 Route::get('/atletas', function () {
     return view('atletas.index');
 });
+
+Route::get('/resultados', function () {
+    return view('resultados.index');
+});
