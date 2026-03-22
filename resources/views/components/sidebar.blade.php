@@ -21,7 +21,7 @@
             <x-sidebar-item icon="bi bi-trophy"         label="Eventos"    href="#"          :active="false" />
             <x-sidebar-item icon="bi bi-journal-check"  label="Inscrições" href="#"          :active="false" />
             <x-sidebar-item icon="bi bi-award"          label="Resultados" href="#"          :active="false" />
-            <x-sidebar-item icon="bi bi-geo-alt"        label="Espaços"    href="#"          :active="false" />
+            <x-sidebar-item icon="bi bi-geo-alt"        label="Espaços"     href="/espacos"     :active="request()->is('espacos')" />
         </div>
     </aside>
 
@@ -56,7 +56,7 @@
             <x-sidebar-item icon="bi bi-trophy"         label="Eventos"     href="#"            :active="false" />
             <x-sidebar-item icon="bi bi-journal-check"  label="Inscrições"  href="#"            :active="false" />
             <x-sidebar-item icon="bi bi-award"          label="Resultados"  href="#"            :active="false" />
-            <x-sidebar-item icon="bi bi-geo-alt"        label="Espaços"     href="#"            :active="false" />
+            <x-sidebar-item icon="bi bi-geo-alt"        label="Espaços"     href="/espacos"     :active="request()->is('espacos')" />
         </div>
     </aside>
 </div>
