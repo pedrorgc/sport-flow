@@ -23,11 +23,11 @@
         <x-panel-card>
             <div class="d-flex flex-wrap gap-2 align-items-center">
 
-                <div class="flex-grow-1" style="min-width:250px;">
+                <div class="flex-grow-1" style="min-width:220px;">
                     <input type="text" class="form-control form-control-lg" placeholder="Buscar por nome...">
                 </div>
 
-                <select class="form-select form-select-lg" style="width:180px;">
+                <select class="form-select form-select-lg" style="width:230px;">
                     <option>Todas modalidade</option>
                     <option>Futebol</option>
                     <option>Vôlei</option>
@@ -36,7 +36,7 @@
                     <option>Handebol</option>
                 </select>
 
-                <select class="form-select form-select-lg" style="width:180px;">
+                <select class="form-select form-select-lg" style="width:215px;">
                     <option>Todas categorias</option>
                     <option>Sub-15</option>
                     <option>Sub-17</option>

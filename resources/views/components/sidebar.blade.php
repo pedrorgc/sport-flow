@@ -19,7 +19,7 @@
             <x-sidebar-item icon="bi bi-grid"           label="Dashboard"  href="/dashboard" :active="request()->is('dashboard')" />
             <x-sidebar-item icon="bi bi-people"         label="Atletas"    href="/atletas"   :active="request()->is('atletas')" />
             <x-sidebar-item icon="bi bi-trophy"         label="Eventos"    href="#"          :active="false" />
-            <x-sidebar-item icon="bi bi-journal-check"  label="Inscrições" href="#"          :active="false" />
+            <x-sidebar-item icon="bi bi-journal-check"  label="Inscrições" href="/inscricoes"          :active="request()->is('inscricoes')" />
             <x-sidebar-item icon="bi bi-award"          label="Resultados" href="#"          :active="false" />
             <x-sidebar-item icon="bi bi-geo-alt"        label="Espaços"    href="#"          :active="false" />
         </div>
@@ -54,7 +54,7 @@
             <x-sidebar-item icon="bi bi-grid"           label="Dashboard"   href="/dashboard"   :active="request()->is('dashboard')" />
             <x-sidebar-item icon="bi bi-people"         label="Atletas"     href="/atletas"     :active="request()->is('atletas')" />
             <x-sidebar-item icon="bi bi-trophy"         label="Eventos"     href="#"            :active="false" />
-            <x-sidebar-item icon="bi bi-journal-check"  label="Inscrições"  href="#"            :active="false" />
+            <x-sidebar-item icon="bi bi-journal-check"  label="Inscrições"  href="/inscricoes"            :active="request()->is('inscricoes')" />
             <x-sidebar-item icon="bi bi-award"          label="Resultados"  href="#"            :active="false" />
             <x-sidebar-item icon="bi bi-geo-alt"        label="Espaços"     href="#"            :active="false" />
         </div>
