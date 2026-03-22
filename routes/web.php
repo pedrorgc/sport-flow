@@ -13,4 +13,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return "Bem-vindo ao SportFlow!";
     })->name('dashboard');
+  
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard.index');
+});
+
+Route::get('/atletas', function () {
+    return view('atletas.index');
 });
