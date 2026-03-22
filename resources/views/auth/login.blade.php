@@ -11,15 +11,17 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=League+Spartan:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=League+Spartan:wght@700&display=swap"
+        rel="stylesheet">
 
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #ffffff;
-            font-size: 1.05rem; 
+            font-size: 1.05rem;
         }
-        
+
         .left-panel {
             background-color: #eef3ff;
             position: relative;
@@ -47,8 +49,15 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-fade-in-up {
@@ -56,13 +65,34 @@
             opacity: 0;
         }
 
-        .delay-1 { animation-delay: 0.4s; }
-        .delay-2 { animation-delay: 0.5s; }
-        .delay-3 { animation-delay: 0.6s; }
+        .delay-1 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.5s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); max-height: 0; padding: 0; margin-bottom: 0; }
-            to { opacity: 1; transform: translateY(0); max-height: 100px; padding: 1rem; margin-bottom: 1rem; }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+                max-height: 0;
+                padding: 0;
+                margin-bottom: 0;
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 100px;
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
         }
 
         .form-group-custom {
@@ -75,7 +105,7 @@
         }
 
         .input-custom {
-            height: 64px; 
+            height: 64px;
             padding-left: 3.5rem;
             border-radius: 0.85rem;
             border: 1px solid #e5e7eb;
@@ -113,7 +143,7 @@
         }
 
         .btn-gradient {
-            height: 64px; 
+            height: 64px;
             background: linear-gradient(to right, #2563eb, #4f46e5);
             color: white;
             border: none;
@@ -142,9 +172,11 @@
     <div class="container-fluid vh-100">
         <div class="row h-100">
 
-            <div class="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center text-center left-panel p-5">
+            <div
+                class="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center text-center left-panel p-5">
                 <div class="mb-4">
-                    <img src="{{ asset('images/sportflow_3d.png') }}" alt="SportFlow Icon" width="800" class="img-fluid">
+                    <img src="{{ asset('images/sportflow_3d.png') }}" alt="SportFlow Icon" width="800"
+                        class="img-fluid">
                 </div>
 
                 <h1 class="brand-title">SportFlow</h1>
@@ -174,36 +206,26 @@
                         @csrf
 
                         <div class="mb-4 animate-fade-in-up delay-1">
-                            <label for="username" class="form-label text-dark fw-medium mb-2" style="font-size: 0.95rem;">
+                            <label for="username" class="form-label text-dark fw-medium mb-2"
+                                style="font-size: 0.95rem;">
                                 Usuário
                             </label>
                             <div class="form-group-custom">
                                 <i class="bi bi-person icon-custom"></i>
-                                <input 
-                                    type="text" 
-                                    class="form-control input-custom" 
-                                    id="username" 
-                                    name="username" 
-                                    placeholder="Digite seu usuário" 
-                                    value="{{ old('username') }}"
-                                    required 
-                                    autofocus>
+                                <input type="text" class="form-control input-custom" id="username" name="username"
+                                    placeholder="Digite seu usuário" value="{{ old('username') }}" required autofocus>
                             </div>
                         </div>
 
                         <div class="mb-4 animate-fade-in-up delay-2">
-                            <label for="password" class="form-label text-dark fw-medium mb-2" style="font-size: 0.95rem;">
+                            <label for="password" class="form-label text-dark fw-medium mb-2"
+                                style="font-size: 0.95rem;">
                                 Senha
                             </label>
                             <div class="form-group-custom">
                                 <i class="bi bi-lock icon-custom"></i>
-                                <input 
-                                    type="password" 
-                                    class="form-control input-custom" 
-                                    id="password" 
-                                    name="password" 
-                                    placeholder="Digite sua senha" 
-                                    required>
+                                <input type="password" class="form-control input-custom" id="password" name="password"
+                                    placeholder="Digite sua senha" required>
                             </div>
                         </div>
 
@@ -229,4 +251,5 @@
     </div>
 
 </body>
+
 </html>

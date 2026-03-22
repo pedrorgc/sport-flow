@@ -7,7 +7,7 @@
             <h2 class="fw-bold mb-0">Dashboard</h2>
         </div>
 
-        {{-- pc --}}    
+        {{-- pc --}}
         <div class="d-none d-md-flex align-items-center mb-4">
             <h2 class="fw-bold mb-0">Dashboard</h2>
         </div>
@@ -22,11 +22,13 @@
             </div>
 
             <div class="col-12 col-md-6 col-xl-3">
-                <x-stat-card title="Inscrições" value="0" subtitle="realizadas" icon="bi bi-award" color="secondary" />
+                <x-stat-card title="Inscrições" value="0" subtitle="realizadas" icon="bi bi-award"
+                    color="secondary" />
             </div>
 
             <div class="col-12 col-md-6 col-xl-3">
-                <x-stat-card title="Em andamento" value="0" subtitle="eventos ativos" icon="bi bi-graph-up" color="success" />
+                <x-stat-card title="Em andamento" value="0" subtitle="eventos ativos" icon="bi bi-graph-up"
+                    color="success" />
             </div>
         </div>
 

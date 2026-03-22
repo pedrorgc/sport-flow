@@ -16,12 +16,7 @@
 
         <div class="row g-3 mb-4">
             <div class="col-md-4">
-                <x-stat-card 
-                    title="Atletas"
-                    value="1"
-                    subtitle="Cadastrados"
-                    icon="bi bi-people"
-                />
+                <x-stat-card title="Atletas" value="1" subtitle="Cadastrados" icon="bi bi-people" />
             </div>
         </div>
 
@@ -29,11 +24,7 @@
             <div class="d-flex flex-wrap gap-2 align-items-center">
 
                 <div class="flex-grow-1" style="min-width:250px;">
-                    <input 
-                        type="text" 
-                        class="form-control form-control-lg" 
-                        placeholder="Buscar por nome..."
-                    >
+                    <input type="text" class="form-control form-control-lg" placeholder="Buscar por nome...">
                 </div>
 
                 <select class="form-select form-select-lg" style="width:180px;">

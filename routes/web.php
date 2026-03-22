@@ -13,9 +13,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return "Bem-vindo ao SportFlow!";
     })->name('dashboard');
+});
   
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
