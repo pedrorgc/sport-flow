@@ -9,10 +9,10 @@
            style="width: 230px; min-height: 100vh;">
         
         <div class="p-4 border-bottom text-center">
-            <img src="{{ asset('images/logo.png') }}"
+            <img src="{{ asset('images/SportFlow_Logo_Preta.png') }}"
                  alt="Logo SportFlow"
                  class="img-fluid"
-                 style="max-height: 80px;">
+                 style="max-height: 100px;">
         </div>
 
         <div class="p-3">
