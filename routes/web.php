@@ -20,5 +20,12 @@ Route::middleware('auth')->group(function () {
         return view('atletas.index');
     })->name('atletas.index');
 
+Route::get('/atletas', function () {
+    return view('atletas.index');
+});
+
+Route::get('/espacos', function () {
+    return view('espacos.index');
+});
     Route::get('/eventos', [EventoController::class, 'index'])->name('eventos.index');
 });
