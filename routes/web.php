@@ -20,10 +20,18 @@ Route::middleware('auth')->group(function () {
         return view('atletas.index');
     })->name('atletas.index');
 
-Route::get('/atletas', function () {
-    return view('atletas.index');
-});
+    Route::get('/inscricoes', function () {
+        return view('inscricoes.index');
+    })->name('inscricoes.index');
 
-Route::get('/inscricoes', function () {
-    return view('inscricoes.index');
+    Route::get('/eventos', [EventoController::class, 'index'])->name('eventos.index');
+
+    Route::get('/resultados', function () {
+        return view('resultados.index');
+    })->name('resultados.index');
+
+    Route::get('/espacos', function () {
+        return view('espacos.index');
+    })->name('espacos.index');
+
 });
