@@ -9,10 +9,10 @@
            style="width: 230px; min-height: 100vh;">
         
         <div class="p-4 border-bottom text-center">
-            <img src="{{ asset('images/logo.png') }}"
+            <img src="{{ asset('images/SportFlow_Logo_Preta.png') }}"
                  alt="Logo SportFlow"
                  class="img-fluid"
-                 style="max-height: 80px;">
+                 style="max-height: 100px;">
         </div>
 
         <div class="p-3">
@@ -21,6 +21,9 @@
             <x-sidebar-item icon="bi bi-trophy"         label="Eventos"    href="#"          :active="false" />
             <x-sidebar-item icon="bi bi-journal-check"  label="Inscrições" href="/inscricoes"          :active="request()->is('inscricoes')" />
             <x-sidebar-item icon="bi bi-award"          label="Resultados" href="#"          :active="false" />
+            <x-sidebar-item icon="bi bi-trophy"         label="Eventos"    href="/eventos"   :active="request()->is('eventos')" />
+            <x-sidebar-item icon="bi bi-journal-check"  label="Inscrições" href="#"          :active="false" />
+            <x-sidebar-item icon="bi bi-award"          label="Resultados" href="/resultados"          :active="request()->is('resultados')" />
             <x-sidebar-item icon="bi bi-geo-alt"        label="Espaços"    href="#"          :active="false" />
         </div>
     </aside>
@@ -39,7 +42,7 @@
 
         <div class="p-4 border-bottom">
             <div class="d-flex align-items-center justify-content-between gap-3">
-                <img src="{{ asset('images/logo.png') }}"
+                <img src="{{ asset('images/SportFlow_Logo_Preta.png') }}"
                      alt="Logo SportFlow"
                      class="img-fluid"
                      style="max-height: 50px; max-width: 170px;">
