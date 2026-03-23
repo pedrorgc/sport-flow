@@ -193,10 +193,15 @@
                             <label for="password" class="form-label text-dark fw-medium mb-2" style="font-size: clamp(0.85rem, 1vw, 0.95rem);">
                                 Senha
                             </label>
-                            <div class="form-group-custom">
+                            <div class="form-group-custom" style="position: relative;">
                                 <i class="bi bi-lock icon-custom"></i>
-                                <input type="password" class="form-control input-custom" id="password" name="password"
-                                    placeholder="Digite sua senha" required>
+
+                                <input type="password" class="form-control input-custom pe-5" id="password"
+                                    name="password" placeholder="Digite sua senha" required>
+                                <i class="bi bi-eye-slash" id="togglePassword"
+                                    style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+                                    cursor: pointer; color: #9ca3af; font-size: 1.2rem;">
+                                </i>
                             </div>
                         </div>
 
@@ -220,6 +225,18 @@
 
         </div>
     </div>
+
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function() {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
+        });
+    </script>
 
 </body>
 </html>
