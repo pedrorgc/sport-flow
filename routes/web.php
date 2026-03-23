@@ -24,6 +24,9 @@ Route::get('/atletas', function () {
     return view('atletas.index');
 });
 
+Route::get('/resultados', function () {
+    return view('resultados.index');
+});
 Route::get('/espacos', function () {
     return view('espacos.index');
 });
