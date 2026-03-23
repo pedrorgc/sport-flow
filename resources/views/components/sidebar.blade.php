@@ -18,7 +18,7 @@
         <div class="p-3">
             <x-sidebar-item icon="bi bi-grid"           label="Dashboard"  href="/dashboard" :active="request()->is('dashboard')" />
             <x-sidebar-item icon="bi bi-people"         label="Atletas"    href="/atletas"   :active="request()->is('atletas')" />
-            <x-sidebar-item icon="bi bi-trophy"         label="Eventos"    href="#"          :active="false" />
+            <x-sidebar-item icon="bi bi-trophy"         label="Eventos"    href="/eventos"   :active="request()->is('eventos')" />
             <x-sidebar-item icon="bi bi-journal-check"  label="Inscrições" href="#"          :active="false" />
             <x-sidebar-item icon="bi bi-award"          label="Resultados" href="#"          :active="false" />
             <x-sidebar-item icon="bi bi-geo-alt"        label="Espaços"     href="/espacos"     :active="request()->is('espacos')" />
@@ -39,7 +39,7 @@
 
         <div class="p-4 border-bottom">
             <div class="d-flex align-items-center justify-content-between gap-3">
-                <img src="{{ asset('images/logo.png') }}"
+                <img src="{{ asset('images/SportFlow_Logo_Preta.png') }}"
                      alt="Logo SportFlow"
                      class="img-fluid"
                      style="max-height: 50px; max-width: 170px;">
@@ -53,7 +53,7 @@
         <div class="p-3">
             <x-sidebar-item icon="bi bi-grid"           label="Dashboard"   href="/dashboard"   :active="request()->is('dashboard')" />
             <x-sidebar-item icon="bi bi-people"         label="Atletas"     href="/atletas"     :active="request()->is('atletas')" />
-            <x-sidebar-item icon="bi bi-trophy"         label="Eventos"     href="#"            :active="false" />
+            <x-sidebar-item icon="bi bi-trophy"         label="Eventos"     href="/eventos"     :active="request()->is('eventos')" />
             <x-sidebar-item icon="bi bi-journal-check"  label="Inscrições"  href="#"            :active="false" />
             <x-sidebar-item icon="bi bi-award"          label="Resultados"  href="#"            :active="false" />
             <x-sidebar-item icon="bi bi-geo-alt"        label="Espaços"     href="/espacos"     :active="request()->is('espacos')" />

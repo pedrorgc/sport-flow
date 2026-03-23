@@ -4,9 +4,7 @@
     <main class="flex-grow-1 p-4 p-md-5" style="min-width: 0;">
 
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <div>
-                <h4 class="fw-bold mb-1">Atletas</h4>
-            </div>
+            <h2 class="fw-bold mb-1">Atletas</h2>
 
             <button class="btn btn-primary d-flex align-items-center gap-2">
                 <i class="bi bi-plus"></i>
