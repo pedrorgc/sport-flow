@@ -24,11 +24,6 @@ Route::get('/atletas', function () {
     return view('atletas.index');
 });
 
-Route::get('/resultados', function () {
-    return view('resultados.index');
-});
-Route::get('/espacos', function () {
-    return view('espacos.index');
-});
-    Route::get('/eventos', [EventoController::class, 'index'])->name('eventos.index');
+Route::get('/inscricoes', function () {
+    return view('inscricoes.index');
 });
