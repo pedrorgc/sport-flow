@@ -6,10 +6,11 @@
 ])
 
 <a href="{{ $href }}"
-   class="text-decoration-none d-flex align-items-center gap-3 px-3 py-3 rounded-4 mb-2
-   {{ $active ? 'bg-primary text-white shadow-sm' : 'text-dark' }}"
-   style="transition: 0.2s;">
+   class="text-decoration-none d-flex align-items-center gap-3 px-3 py-2 rounded-3 mb-2 item-hover
+   {{ $active ? 'active-item' : 'text-secondary' }}"
+   style="transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);">
 
-    <i class="{{ $icon }}" style="font-size: 1.2rem; width: 20px;"></i>
-    <span class="fw-semibold">{{ $label }}</span>
+    <i class="{{ $icon }}" style="font-size: 1.2rem; width: 22px; text-align: center; transition: color 0.2s;"></i>
+    
+    <span style="font-weight: {{ $active ? '600' : '500' }}; font-size: 0.95rem;">{{ $label }}</span>
 </a>
