@@ -1,12 +1,19 @@
 <x-layouts.app>
     <x-sidebar />
 
-    <main class="flex-grow-1 p-3 p-md-4" style="min-width: 0;">
+    <main 
+        class="flex-grow-1 p-3 p-md-4" 
+        style="min-width: 0;"
+        x-data="{ modal: null }"
+    >
 
         <div class="d-flex align-items-center justify-content-between mb-4">
             <h3 class="fw-bold mb-0">Espaços</h3>
 
-            <button class="btn btn-primary d-flex align-items-center gap-2">
+            <button 
+                class="btn btn-primary d-flex align-items-center gap-2"
+                @click="modal = 'espaco'"
+            >
                 <i class="bi bi-plus"></i>
                 Novo Espaço
             </button>
@@ -51,7 +58,10 @@
                 Reservas
             </div>
 
-            <button class="btn btn-primary d-flex align-items-center gap-2">
+            <button 
+                class="btn btn-primary d-flex align-items-center gap-2"
+                @click="modal = 'reserva'"
+            >
                 <i class="bi bi-plus"></i>
                 Nova Reserva
             </button>
@@ -66,7 +76,6 @@
         <x-panel-card>
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
-
                     <thead style="background:#f9fafb;">
                         <tr class="text-muted small">
                             <th>Espaço</th>
@@ -99,11 +108,130 @@
                                 </button>
                             </td>
                         </tr>
-
                     </tbody>
                 </table>
             </div>
         </x-panel-card>
+
+        <div 
+            x-show="modal === 'espaco'"
+            x-cloak
+            class="position-fixed top-0 start-0 w-100 h-100"
+            style="background: rgba(0,0,0,0.45); z-index: 2000;"
+            @click.self="modal = null"
+        >
+            <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
+                <div class="bg-white rounded-4 shadow w-100" style="max-width: 600px;">
+
+                    <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+                        <h5 class="fw-bold mb-0">Novo Espaço</h5>
+                        <button class="btn btn-sm" @click="modal = null">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+
+                    <form class="p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nome *</label>
+                            <input class="form-control form-control-lg rounded-3">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tipo *</label>
+                            <select class="form-select form-select-lg rounded-3">
+                                <option>Quadra</option>
+                                <option>Piscina</option>
+                                <option>Campo</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Capacidade *</label>
+                            <input type="number" class="form-control form-control-lg rounded-3">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Endereço *</label>
+                            <input class="form-control form-control-lg rounded-3">
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 pt-3 border-top">
+                            <button type="button" class="btn btn-link text-dark text-decoration-none" @click="modal = null">
+                                Cancelar
+                            </button>
+                            <button class="btn btn-primary px-4">Salvar</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <div 
+            x-show="modal === 'reserva'"
+            x-cloak
+            class="position-fixed top-0 start-0 w-100 h-100"
+            style="background: rgba(0,0,0,0.45); z-index: 2000;"
+            @click.self="modal = null"
+        >
+            <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
+                <div class="bg-white rounded-4 shadow w-100" style="max-width: 650px;">
+
+                    <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+                        <h5 class="fw-bold mb-0">Nova Reserva</h5>
+                        <button class="btn btn-sm" @click="modal = null">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+
+                    <form class="p-4">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Espaço *</label>
+                            <select class="form-select form-select-lg rounded-3">
+                                <option>Selecionar espaço</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Data *</label>
+                                <input type="date" class="form-control form-control-lg rounded-3">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-semibold">Início *</label>
+                                <input type="time" class="form-control form-control-lg rounded-3">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label fw-semibold">Fim *</label>
+                                <input type="time" class="form-control form-control-lg rounded-3">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Finalidade *</label>
+                            <input class="form-control form-control-lg rounded-3">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Solicitante *</label>
+                            <input class="form-control form-control-lg rounded-3">
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 pt-3 border-top">
+                            <button type="button" class="btn btn-link text-dark text-decoration-none" @click="modal = null">
+                                Cancelar
+                            </button>
+                            <button class="btn btn-primary px-4">Salvar</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
 
     </main>
 </x-layouts.app>
