@@ -2,12 +2,10 @@
     <x-sidebar />
 
     <main class="flex-grow-1 p-3 p-md-4" style="min-width: 0;">
-        {{-- celular --}}
         <div class="d-flex d-md-none align-items-center mb-4" style="padding-left: 47px; min-height: 47px;">
             <h2 class="fw-bold mb-0">Dashboard</h2>
         </div>
 
-        {{-- pc --}}
         <div class="d-none d-md-flex align-items-center mb-4">
             <h2 class="fw-bold mb-0">Dashboard</h2>
         </div>

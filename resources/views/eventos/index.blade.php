@@ -2,7 +2,6 @@
     <x-sidebar />
 
     <main class="flex-grow-1 p-3 p-md-4" style="min-width: 0;" x-data="{ openModal: false }">
-        {{-- celular --}}
         <div class="d-flex d-md-none justify-content-between align-items-center mb-4 ps-5">
             <h2 class="fw-bold mb-0">Eventos</h2>
 
@@ -12,7 +11,6 @@
             </button>
         </div>
 
-        {{-- pc --}}
         <div class="d-none d-md-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold mb-0">Eventos</h2>
 
@@ -81,7 +79,6 @@
             </div>
         @endif
 
-        {{-- Modal --}}
         <div
             x-show="openModal"
             x-cloak
