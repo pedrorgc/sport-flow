@@ -23,6 +23,18 @@
             <x-sidebar-item icon="bi bi-award"          label="Resultados" href="/resultados"          :active="request()->is('resultados')" />
             <x-sidebar-item icon="bi bi-geo-alt"        label="Espaços"    href="/espacos"          :active="request()->is('espacos')" />
         </div>
+
+        <div class="p-3 mt-auto border-top">
+            <x-sidebar-item icon="bi bi-person-circle" label="Meu Perfil" href="/perfil" :active="request()->is('perfil')" />
+            
+            <form method="POST" action="/logout" class="mt-1">
+                @csrf
+                <button type="submit" class="btn btn-light w-100 text-start text-danger hover-shadow d-flex align-items-center gap-3 px-3 py-2 rounded-3">
+                    <i class="bi bi-box-arrow-right" style="font-size: 1.15rem; width: 20px; text-align: center;"></i>
+                    <span style="font-weight: 500; font-size: 0.95rem;">Sair</span>
+                </button>
+            </form>
+        </div>
     </aside>
 
     <div
@@ -33,7 +45,7 @@
         @click="open = false">
     </div>
 
-    <aside class="bg-white position-fixed top-0 start-0 h-100 d-md-none sidebar-premium"
+    <aside class="bg-white position-fixed top-0 start-0 h-100 d-md-none sidebar-premium d-flex flex-column"
            :class="open ? 'translate-menu-open' : 'translate-menu-closed'"
            style="width: 280px; z-index: 1050; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
 
@@ -57,6 +69,18 @@
             <x-sidebar-item icon="bi bi-journal-check"  label="Inscrições"  href="/inscricoes"            :active="request()->is('inscricoes')" />
             <x-sidebar-item icon="bi bi-award"          label="Resultados"  href="#"            :active="false" />
             <x-sidebar-item icon="bi bi-geo-alt"        label="Espaços"     href="#"            :active="false" />
+        </div>
+
+        <div class="p-3 mt-auto border-top">
+            <x-sidebar-item icon="bi bi-person-circle" label="Meu Perfil" href="/perfil" :active="request()->is('perfil')" />
+            
+            <form method="POST" action="/logout" class="mt-1">
+                @csrf
+                <button type="submit" class="btn btn-light w-100 text-start text-danger hover-shadow d-flex align-items-center gap-3 px-3 py-2 rounded-3">
+                    <i class="bi bi-box-arrow-right" style="font-size: 1.15rem; width: 20px; text-align: center;"></i>
+                    <span style="font-weight: 500; font-size: 0.95rem;">Sair</span>
+                </button>
+            </form>
         </div>
     </aside>
 </div>
