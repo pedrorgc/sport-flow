@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
         // Cria o usuário de teste Administrativo
         User::create([
             'name' => 'Administrador',
-            'username' => 'ADM', // As iniciais que vão no login
+            'username' => 'ADM',
             'password' => 'ADM12345678'
         ]);
     }
