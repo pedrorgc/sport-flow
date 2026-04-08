@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" x-data="{ theme: localStorage.getItem('theme') || 'light' }" :data-theme="theme" x-effect="localStorage.setItem('theme', theme)">
 
 <head>
     <meta charset="UTF-8">
@@ -13,31 +13,75 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
     <style>
+        /* ==============================================
+           PALETA DE CORES: MODO CLARO (Padrão)
+           ============================================== */
         :root {
-            --bg-sistema: #f1f5f9; /* Cinza claro elegante que devolve o contraste */
-            --cor-primaria: #0d6efd; /* Azul padrão, sem gradientes exagerados */
+            --bg-sistema: #f1f5f9;
+            --bg-cards: #ffffff;
+            --cor-texto-titulo: #1e293b;
+            --cor-texto-corpo: #334155;
+            --cor-borda: #e2e8f0;
+            --cor-hover: #f8fafc;
+            --cor-primaria: #0d6efd;
+            --sombra-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
         }
 
+        /* ==============================================
+           PALETA DE CORES: MODO ESCURO
+           ============================================== */
+        [data-theme="dark"] {
+            --bg-sistema: #0f172a;
+            /* Slate 900 (Fundo bem escuro) */
+            --bg-cards: #1e293b;
+            /* Slate 800 (Fundo das caixas) */
+            --cor-texto-titulo: #f8fafc;
+            /* Quase branco */
+            --cor-texto-corpo: #94a3b8;
+            /* Cinza claro */
+            --cor-borda: #334155;
+            /* Borda escura */
+            --cor-hover: #334155;
+            /* Fundo do menu ao passar o mouse */
+            --cor-primaria: #3b82f6;
+            /* Azul um pouco mais vivo para dar contraste no escuro */
+            --sombra-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ==============================================
+           APLICAÇÃO DAS VARIÁVEIS NO SISTEMA
+           ============================================== */
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-sistema) !important;
-            color: #334155;
+            color: var(--cor-texto-corpo);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Títulos limpos, sem ser muito negritados */
-        h1, h2, h3, h4, h5, .titulo-marca {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        .titulo-marca {
             font-weight: 600;
-            color: #1e293b;
+            color: var(--cor-texto-titulo);
         }
 
-        /* Os cards brancos agora vão aparecer de verdade */
         .card-premium {
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0; /* Borda bem sutil */
+            background-color: var(--bg-cards);
+            border: 1px solid var(--cor-borda);
             border-radius: 0.75rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--sombra-card);
             padding: 1.5rem;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .btn-premium {
@@ -49,40 +93,36 @@
             padding: 0.5rem 1rem;
             transition: background-color 0.2s;
         }
-        
+
         .btn-premium:hover {
-            background-color: #0b5ed7;
+            background-color: #2563eb;
             color: white;
         }
 
-        /* ==============================================
-           ESTILOS EXCLUSIVOS DA SIDEBAR
-           ============================================== */
+        /* Sidebar Base */
         .sidebar-premium {
-            background-color: #ffffff;
-            border-right: 1px solid #e2e8f0 !important;
+            background-color: var(--bg-cards) !important;
+            border-right: 1px solid var(--cor-borda) !important;
+            transition: background-color 0.3s ease;
         }
 
-        /* O botão da página atual (Azul com sombra brilhante) */
         .active-item {
             background-color: var(--cor-primaria) !important;
             color: #ffffff !important;
-            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3); /* Sombra azulada moderna */
-            transform: translateY(-1px); /* Levanta um milímetro */
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+            transform: translateY(-1px);
         }
-        
+
         .active-item i {
             color: #ffffff !important;
         }
 
-        /* O botão inativo ao passar o mouse */
         .item-hover:not(.active-item):hover {
-            background-color: #f8fafc; /* Cinza super claro, quase branco */
-            color: var(--cor-primaria) !important; /* Texto fica azul */
-            transform: translateX(6px); /* Efeito de deslizar para a direita */
+            background-color: var(--cor-hover);
+            color: var(--cor-primaria) !important;
+            transform: translateX(6px);
         }
-        
-        /* Acende apenas o ícone de azul no hover */
+
         .item-hover:not(.active-item):hover i {
             color: var(--cor-primaria) !important;
         }
@@ -95,20 +135,84 @@
         }
 
         @media (max-width: 768px) {
-            .main-content { padding: 1rem; padding-top: 4.5rem; }
+            .main-content {
+                padding: 1rem;
+                padding-top: 4.5rem;
+            }
+        }
+
+        /* ==============================================
+           HACK: ADAPTANDO O BOOTSTRAP PARA O MODO ESCURO
+           Isso evita que você precise mudar o HTML das outras telas!
+           ============================================== */
+        [data-theme="dark"] .bg-white {
+            background-color: var(--bg-cards) !important;
+        }
+
+        [data-theme="dark"] .bg-light {
+            background-color: #0f172a !important;
+            color: var(--cor-texto-corpo);
+            border-color: var(--cor-borda) !important;
+        }
+
+        [data-theme="dark"] .text-dark {
+            color: var(--cor-texto-titulo) !important;
+        }
+
+        [data-theme="dark"] .text-secondary,
+        [data-theme="dark"] .text-muted {
+            color: var(--cor-texto-corpo) !important;
+        }
+
+        [data-theme="dark"] .border-bottom,
+        [data-theme="dark"] .border-top {
+            border-color: var(--cor-borda) !important;
+        }
+
+        [data-theme="dark"] .form-control,
+        [data-theme="dark"] .form-select {
+            background-color: #0f172a;
+            border-color: var(--cor-borda);
+            color: var(--cor-texto-titulo);
+        }
+
+        [data-theme="dark"] .form-control:focus,
+        [data-theme="dark"] .form-select:focus {
+            background-color: #0f172a;
+            color: var(--cor-texto-titulo);
+        }
+
+        [data-theme="dark"] .btn-light {
+            background-color: var(--cor-hover);
+            color: var(--cor-texto-titulo);
+            border-color: var(--cor-borda);
+        }
+
+        /* Inverte a cor da Logo Preta para Branca no modo escuro */
+        [data-theme="dark"] .logo-img {
+            filter: brightness(0) invert(1);
+        }
+
+        [data-theme="dark"] .table {
+            color: var(--cor-texto-corpo);
+            --bs-table-bg: transparent;
+            --bs-table-hover-bg: var(--cor-hover);
+            --bs-table-border-color: var(--cor-borda);
+        }
+
+        [data-theme="dark"] th {
+            color: var(--cor-texto-titulo);
         }
     </style>
 </head>
 
 <body>
     <div class="d-flex min-vh-100">
-        
         <x-sidebar />
-
         <main class="main-content">
             {{ $slot }}
         </main>
-
     </div>
 </body>
+
 </html>
