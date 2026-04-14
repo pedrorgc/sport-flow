@@ -13,7 +13,7 @@
         <div class="text-secondary small">{{ $subtitle }}</div>
     </div>
 
-    <div class="bg-{{ $color }} bg-opacity-10 text-{{ $color }} rounded-4 d-flex align-items-center justify-content-center border border-{{ $color }} border-opacity-25"
+    <div class="bg-{{ $color }} text-white rounded-4 d-flex align-items-center justify-content-center shadow-sm"
          style="width: 54px; height: 54px; min-width: 54px;">
         <i class="{{ $icon }}" style="font-size: 1.5rem; line-height: 1;"></i>
     </div>

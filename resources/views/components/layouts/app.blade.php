@@ -203,6 +203,26 @@
         [data-theme="dark"] th {
             color: var(--cor-texto-titulo);
         }
+
+        [x-cloak] { display: none !important; }
+
+        [data-theme="dark"] .form-control::placeholder,
+        [data-theme="dark"] .form-select::placeholder {
+            color: #94a3b8 !important;
+            opacity: 1 !important;
+        }
+
+        [data-theme="dark"] .form-label {
+            color: var(--cor-texto-titulo) !important;
+        }
+
+        [data-theme="dark"] .form-text {
+            color: #94a3b8 !important;
+        }
+
+        [data-theme="dark"] .text-primary { color: #60a5fa !important; }
+        [data-theme="dark"] .bg-primary { background-color: #3b82f6 !important; }
+        [data-theme="dark"] .text-secondary { color: #94a3b8 !important; }
     </style>
 </head>
 
