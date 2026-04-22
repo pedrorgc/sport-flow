@@ -73,6 +73,7 @@
             <x-sidebar-item icon="bi bi-journal-check" label="Inscrições" href="/inscricoes" :active="request()->is('inscricoes')" />
             <x-sidebar-item icon="bi bi-award" label="Resultados" href="/resultados" :active="request()->is('resultados')" />
             <x-sidebar-item icon="bi bi-geo-alt" label="Espaços" href="/espacos" :active="request()->is('espacos')" />
+            <x-sidebar-item icon="bi bi-calendar-check" label="Reservas" href="/reservas" :active="request()->is('reservas')" />
         </div>
 
         <div class="p-3 mt-auto border-top">

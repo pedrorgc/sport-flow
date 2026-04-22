@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" x-data="{ theme: localStorage.getItem('theme') || 'light' }" :data-theme="theme">
 
 <head>
     <meta charset="UTF-8">
@@ -12,6 +12,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=League+Spartan:wght@700&display=swap" rel="stylesheet">
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
 
     <style>
         body {
@@ -140,6 +146,44 @@
             .mb-5 { margin-bottom: 1.5rem !important; }
             .mb-4 { margin-bottom: 1rem !important; }
             .mt-4 { margin-top: 1rem !important; }
+        }
+
+        /* MODO ESCURO */
+        [data-theme="dark"] body {
+            background-color: #0f172a;
+        }
+
+        [data-theme="dark"] .left-panel {
+            background-color: #1e293b;
+        }
+
+        [data-theme="dark"] .brand-title,
+        [data-theme="dark"] h2,
+        [data-theme="dark"] .text-dark,
+        [data-theme="dark"] .form-label {
+            color: #f8fafc !important;
+        }
+
+        [data-theme="dark"] .text-muted,
+        [data-theme="dark"] .brand-description {
+            color: #94a3b8 !important;
+        }
+
+        [data-theme="dark"] .input-custom {
+            background-color: #0f172a;
+            border-color: #334155;
+            color: #f8fafc;
+        }
+
+        [data-theme="dark"] .input-custom:focus {
+            background-color: #0f172a;
+            border-color: #3b82f6;
+        }
+
+        [data-theme="dark"] .error-alert {
+            background-color: rgba(220, 38, 38, 0.1);
+            border-color: rgba(220, 38, 38, 0.2);
+            color: #ef4444;
         }
     </style>
 </head>

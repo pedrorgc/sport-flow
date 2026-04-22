@@ -63,5 +63,49 @@
                 </table>
             </div>
         </div>
+
+        <div x-show="openModal" x-cloak class="position-fixed top-0 start-0 w-100 h-100"
+            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;" 
+            x-transition.opacity
+            @click.self="openModal = false">
+            
+            <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
+                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 600px;" 
+                     x-show="openModal"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 translate-y-4"
+                     x-transition:enter-end="opacity-100 translate-y-0">
+
+                    <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+                        <h4 class="titulo-marca mb-0">Nova Inscrição</h4>
+                        <button class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;" @click="openModal = false">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+
+                    <form class="p-4">
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold small text-secondary">Atleta <span class="text-danger">*</span></label>
+                            <select class="form-select bg-light">
+                                <option>Selecionar atleta...</option>
+                                <option>teste (Sub-20 - Futsal)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold small text-secondary">Evento <span class="text-danger">*</span></label>
+                            <select class="form-select bg-light">
+                                <option>Selecionar evento...</option>
+                                <option>Campeonato Regional (Futsal)</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 pt-3 border-top">
+                            <button type="button" class="btn btn-light fw-medium" @click="openModal = false">Cancelar</button>
+                            <button type="button" class="btn btn-premium px-4">Confirmar Inscrição</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-</x-layouts.app>
+        </div> </x-layouts.app>
