@@ -5,10 +5,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\ProfileController;
 
-Route::get('/', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/', function () {
+    return view('portal.index');
+})->name('home');
 
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login-validar', [AuthController::class, 'authenticate'])->name('login.validar');
-
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
