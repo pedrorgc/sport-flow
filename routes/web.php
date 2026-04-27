@@ -42,5 +42,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/reservas', function () {
         return view('reservas.index');
     })->name('reservas.index');
+
+    Route::get('/times', function () {
+        return view('times.index');
+    })->name('times.index');
 });
 

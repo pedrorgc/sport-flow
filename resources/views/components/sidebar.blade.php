@@ -14,7 +14,8 @@
 
         <div class="p-3 mt-2">
             <x-sidebar-item icon="bi bi-grid" label="Dashboard" href="/dashboard" :active="request()->is('dashboard')" />
-            <x-sidebar-item icon="bi bi-people" label="Atletas" href="/atletas" :active="request()->is('atletas')" />
+            <x-sidebar-item icon="bi bi-person" label="Atletas" href="/atletas" :active="request()->is('atletas')" />
+            <x-sidebar-item icon="bi bi-people" label="Times" href="/times" :active="request()->is('times')" />
             <x-sidebar-item icon="bi bi-trophy" label="Eventos" href="/eventos" :active="request()->is('eventos')" />
             <x-sidebar-item icon="bi bi-journal-check" label="Inscrições" href="/inscricoes" :active="request()->is('inscricoes')" />
             <x-sidebar-item icon="bi bi-award" label="Resultados" href="/resultados" :active="request()->is('resultados')" />
@@ -69,6 +70,7 @@
         <div class="p-3">
             <x-sidebar-item icon="bi bi-grid" label="Dashboard" href="/dashboard" :active="request()->is('dashboard')" />
             <x-sidebar-item icon="bi bi-people" label="Atletas" href="/atletas" :active="request()->is('atletas')" />
+            <x-sidebar-item icon="bi bi-people" label="Times" href="/times" :active="request()->is('times')" />
             <x-sidebar-item icon="bi bi-trophy" label="Eventos" href="/eventos" :active="request()->is('eventos')" />
             <x-sidebar-item icon="bi bi-journal-check" label="Inscrições" href="/inscricoes" :active="request()->is('inscricoes')" />
             <x-sidebar-item icon="bi bi-award" label="Resultados" href="/resultados" :active="request()->is('resultados')" />
