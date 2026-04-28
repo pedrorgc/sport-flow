@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TimeController;
+use App\Http\Controllers\AtletaController;
 
 Route::get('/', function () {
     return view('portal.index');
@@ -23,9 +25,7 @@ Route::middleware('auth')->group(function () {
         return view('dashboard.index');
     })->name('dashboard');
 
-    Route::get('/atletas', function () {
-        return view('atletas.index');
-    })->name('atletas.index');
+    Route::resource('atletas', AtletaController::class);
 
     Route::get('/inscricoes', function () {
         return view('inscricoes.index');
@@ -45,8 +45,6 @@ Route::middleware('auth')->group(function () {
         return view('reservas.index');
     })->name('reservas.index');
 
-    Route::get('/times', function () {
-        return view('times.index');
-    })->name('times.index');
+    Route::resource('times', TimeController::class);
 });
 
