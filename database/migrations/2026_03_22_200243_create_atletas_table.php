@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             
             $table->string('nome');
-            $table->date('data_nascimento');
             $table->string('cpf_rg')->unique()->nullable();
-            $table->string('categoria');
+            $table->date('data_nascimento');
             $table->string('modalidade');
+            $table->string('categoria');
             $table->string('contato')->nullable();
             
             $table->timestamps();
