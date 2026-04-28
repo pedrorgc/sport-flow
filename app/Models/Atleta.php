@@ -17,4 +17,9 @@ class Atleta extends Model
         'modalidade',
         'contato',
     ];
+
+    public function times()
+    {
+        return $this->belongsToMany(Time::class);
+    }
 }
