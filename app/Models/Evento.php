@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Inscricao;
 
 class Evento extends Model
 {
@@ -16,4 +17,9 @@ class Evento extends Model
         'status',
         'descrição',
     ];
+
+    public function inscricoes()
+    {
+        return $this->hasMany(Inscricoes::class);
+    }
 }

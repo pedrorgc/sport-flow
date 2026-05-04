@@ -3,11 +3,17 @@
 
         <div class="d-flex align-items-center justify-content-between mb-4 ps-5 ps-md-0 pt-2 pt-md-0">
             <h2 class="titulo-marca mb-0" style="font-size: 2.2rem;">Times</h2>
-
             <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm" onclick="abrirNovaEquipe()">
                 <i class="bi bi-plus-lg"></i>
                 <span class="d-none d-md-inline">Nova equipe</span>
             </button>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <x-stat-card title="Times" value="{{ $times->count() }}" subtitle="Cadastrados"
+                    icon="bi bi-shield" color="primary" />
+            </div>
         </div>
         
         <div class="card-premium mb-4 py-3">

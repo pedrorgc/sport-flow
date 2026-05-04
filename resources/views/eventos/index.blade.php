@@ -1,11 +1,12 @@
 <x-layouts.app>
-    <main class="flex-grow-1" style="min-width: 0;" x-data="{ openModal: false }">
+    <!-- Adicionamos o evento para abrir o modal via JavaScript -->
+    <main class="flex-grow-1" style="min-width: 0;" x-data="{ openModal: false }" @open-modal-evento.window="openModal = true">
 
         <div class="d-flex align-items-center justify-content-between mb-4 ps-5 ps-md-0 pt-2 pt-md-0">
             <h2 class="titulo-marca mb-0" style="font-size: 2.2rem;">Eventos</h2>
 
-            <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm"
-                @click="openModal = true">
+            <!-- Chama a função JS para abrir o modal limpo -->
+            <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm" onclick="abrirNovoEvento()">
                 <i class="bi bi-plus-lg"></i>
                 <span class="d-none d-md-inline">Novo Evento</span>
             </button>
@@ -13,8 +14,7 @@
 
         <div class="row g-3 mb-4">
             <div class="col-md-4">
-                <x-stat-card title="Eventos" value="1" subtitle="Cadastrados" icon="bi bi-trophy"
-                    color="primary" />
+                <x-stat-card title="Eventos" value="{{ $eventos->count() }}" subtitle="Cadastrados" icon="bi bi-trophy" color="primary" />
             </div>
         </div>
 
@@ -37,9 +37,8 @@
                                 };
                             @endphp
 
-                            <span
-                                class="badge rounded-pill bg-{{ $cor }} bg-opacity-10 text-{{ $cor }} px-3 py-2 fw-medium border border-{{ $cor }} border-opacity-25">
-                                {{ $evento->status }}
+                            <span class="badge rounded-pill bg-{{ $cor }} bg-opacity-10 text-{{ $cor }} px-3 py-2 fw-medium border border-{{ $cor }} border-opacity-25">
+                                {{ $evento->status ?? 'Agendado' }}
                             </span>
                         </div>
 
@@ -50,16 +49,20 @@
                                 <span class="fw-medium">{{ $evento->modalidade }}</span>
                             </div>
 
-                            {{-- data inicio --}}
+                            {{-- data inicio e fim formatadas --}}
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
-                                <span>{{ $evento->data_inicio }} até {{ $evento->data_fim }}</span>
+                                <span>
+                                    {{ \Carbon\Carbon::parse($evento->data_inicio)->format('d/m/Y') }} 
+                                    até 
+                                    {{ \Carbon\Carbon::parse($evento->data_fim)->format('d/m/Y') }}
+                                </span>
                             </div>
 
-                            {{-- prazo inscricao --}}
+                            {{-- prazo inscricao formatado --}}
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-clock text-primary me-2 fs-5"></i>
-                                <span>Inscrições até {{ $evento->prazo_inscricao }}</span>
+                                <span>Inscrições até {{ \Carbon\Carbon::parse($evento->prazo_inscricoes)->format('d/m/Y') }}</span>
                             </div>
 
                             {{-- local do evento --}}
@@ -71,64 +74,64 @@
 
                         {{-- descrição do evento --}}
                         <p class="text-secondary small mb-4 flex-grow-1" style="line-height: 1.6;">
-                            {{ $evento->descricao }}
+                            {{ Str::limit($evento->descricao, 100, '...') }}
                         </p>
 
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                            <button class="btn btn-sm btn-light text-primary hover-shadow fw-medium px-3">
+                            <!-- Botão Editar chama a função JS passando o ID -->
+                            <button type="button" class="btn btn-sm btn-light text-primary hover-shadow fw-medium px-3" onclick="abrirEdicaoEvento({{ $evento->id }})">
                                 <i class="bi bi-pencil-square me-1"></i> Editar
                             </button>
 
-                            <button class="btn btn-sm btn-light text-danger hover-shadow fw-medium px-3">
-                                <i class="bi bi-trash3 me-1"></i> Excluir
-                            </button>
+                            <!-- Formulário de Exclusão -->
+                            <form action="/eventos/{{ $evento->id }}" method="POST" onsubmit="return confirm('Tem certeza que deseja cancelar/excluir este evento?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-light text-danger hover-shadow fw-medium px-3">
+                                    <i class="bi bi-trash3 me-1"></i> Excluir
+                                </button>
+                            </form>
                         </div>
 
                     </div>
                 </div>
 
             @empty
-                <p class="text-center text-secondary">Nenhum evento cadastrado</p>
+                <div class="col-12">
+                    <p class="text-center text-secondary py-5">Nenhum evento cadastrado no momento. Clique em "Novo Evento" para começar.</p>
+                </div>
             @endforelse
 
         </div>
 
-        <div x-show="openModal" x-cloak class="position-fixed top-0 start-0 w-100 h-100"
-            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;" x-transition.opacity
-            @click.self="openModal = false">
+        <!-- MODAL (CRIAR E EDITAR) -->
+        <div x-show="openModal" x-cloak class="position-fixed top-0 start-0 w-100 h-100" style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;" x-transition.opacity @click.self="openModal = false">
 
             <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
-                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 700px;" x-show="openModal"
-                    x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0 translate-y-4"
-                    x-transition:enter-end="opacity-100 translate-y-0">
+                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 700px;" x-show="openModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
 
                     <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
-                        <h4 class="titulo-marca mb-0">Novo Evento</h4>
-
-                        <button
-                            class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center"
-                            style="width: 35px; height: 35px;" @click="openModal = false">
+                        <h4 class="titulo-marca mb-0" id="tituloModalEvento">Novo Evento</h4>
+                        <button type="button" class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;" @click="openModal = false">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
 
                     <form method="POST" action="{{ route('eventos.store') }}" class="p-4" id="formEvento">
                         @csrf
+                        <input type="hidden" name="_method" id="metodoFormEvento" value="POST">
 
                         {{-- nome --}}
                         <div class="mb-3">
-                            <label class="form-label fw-semibold small text-secondary">Nome do Evento <span
-                                    class="text-danger">*</span></label>
-                            <input type="text" name="nome" id="inputNomeEvento" class="form-control bg-light">
+                            <label class="form-label fw-semibold small text-secondary">Nome do Evento <span class="text-danger">*</span></label>
+                            <input type="text" name="nome" id="inputNomeEvento" class="form-control bg-light" required>
                         </div>
 
                         {{-- modalidsde --}}
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Modalidade <span
-                                        class="text-danger">*</span></label>
-                                <select name="modalidade" class="form-select bg-light">
+                                <label class="form-label fw-semibold small text-secondary">Modalidade <span class="text-danger">*</span></label>
+                                <select name="modalidade" id="inputModalidade" class="form-select bg-light" required>
                                     <option value="">Selecionar</option>
                                     <option value="Futebol">Futebol</option>
                                     <option value="Futsal">Futsal</option>
@@ -140,58 +143,49 @@
                             {{-- status --}}
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold small text-secondary">Status</label>
-                                <select name="status" class="form-select bg-light">
-                                    <option value="Agendado">Agendado </option>
-                                    <option value="Em Andamento">Em Andamento </option>
-                                    <option value="Concluído">Concluído </option>
-                                    <option value="Cancelado">Cancelado </option>
+                                <select name="status" id="inputStatus" class="form-select bg-light">
+                                    <option value="Agendado">Agendado</option>
+                                    <option value="Em Andamento">Em Andamento</option>
+                                    <option value="Concluído">Concluído</option>
+                                    <option value="Cancelado">Cancelado</option>
                                 </select>
                             </div>
                         </div>
 
                         {{-- local --}}
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Local <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" name="local" class="form-control bg-light">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label fw-semibold small text-secondary">Local <span class="text-danger">*</span></label>
+                                <input type="text" name="local" id="inputLocal" class="form-control bg-light" required>
                             </div>
 
                             {{-- prazo inscricao --}}
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Prazo de Inscrição <span
-                                        class="text-danger">*</span></label>
-                                <input type="date" name="prazo_inscricao" class="form-control bg-light">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold small text-secondary">Prazo de Inscrição <span class="text-danger">*</span></label>
+                                <input type="date" name="prazo_inscricoes" id="inputPrazo" class="form-control bg-light" required>
                             </div>
 
                             {{-- data inicio --}}
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Data <span
-                                        class="text-danger">*</span></label>
-                                <input type="date" name="data_inicio" class="form-control bg-light">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold small text-secondary">Data Início <span class="text-danger">*</span></label>
+                                <input type="date" name="data_inicio" id="inputDataInicio" class="form-control bg-light" required>
                             </div>
 
                             {{-- data fim --}}
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Data de Fim<span
-                                        class="text-danger">*</span></label>
-                                <input type="date" name="data_fim" class="form-control bg-light">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold small text-secondary">Data Fim <span class="text-danger">*</span></label>
+                                <input type="date" name="data_fim" id="inputDataFim" class="form-control bg-light" required>
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label fw-semibold small text-secondary">Regulamento / Descrição</label>
-                            <textarea name="descricao" class="form-control bg-light" rows="4"></textarea>
+                            <textarea name="descricao" id="inputDescricao" class="form-control bg-light" rows="3"></textarea>
                         </div>
 
                         <div class="d-flex justify-content-end gap-3 pt-3 border-top">
-                            <button type="button" class="btn btn-light fw-medium" @click="openModal = false">
-                                Cancelar
-                            </button>
-
-                            <button type="submit" class="btn btn-premium px-4">
-                                Salvar Evento
-                            </button>
+                            <button type="button" class="btn btn-light fw-medium" @click="openModal = false">Cancelar</button>
+                            <button type="submit" id="btnSalvarEvento" class="btn btn-premium px-4">Salvar Evento</button>
                         </div>
                     </form>
                 </div>
@@ -199,4 +193,53 @@
         </div>
 
     </main>
+
+    <!-- SCRIPT DE GERENCIAMENTO (CREATE E EDIT) -->
+    <script>
+        const formEvento = document.getElementById('formEvento');
+        const metodoFormEvento = document.getElementById('metodoFormEvento');
+        const tituloModalEvento = document.getElementById('tituloModalEvento');
+        const btnSalvarEvento = document.getElementById('btnSalvarEvento');
+
+        function abrirNovoEvento() {
+            formEvento.reset();
+            formEvento.action = "{{ route('eventos.store') }}";
+            metodoFormEvento.value = "POST";
+            tituloModalEvento.innerText = "Novo Evento";
+            btnSalvarEvento.innerText = "Salvar Evento";
+            window.dispatchEvent(new CustomEvent('open-modal-evento'));
+        }
+
+        function abrirEdicaoEvento(id) {
+            tituloModalEvento.innerText = "Carregando...";
+            window.dispatchEvent(new CustomEvent('open-modal-evento'));
+
+            fetch(`/eventos/${id}/edit`)
+                .then(response => response.json())
+                .then(dados => {
+                    document.getElementById('inputNomeEvento').value = dados.nome;
+                    document.getElementById('inputModalidade').value = dados.modalidade;
+                    document.getElementById('inputStatus').value = dados.status || 'Agendado';
+                    document.getElementById('inputLocal').value = dados.local;
+                    document.getElementById('inputDescricao').value = dados.descricao || '';
+
+                    // Tratamento de Datas (Cortando qualquer HORA que venha do banco)
+                    const tratarData = (dataHora) => {
+                        if (!dataHora) return '';
+                        return dataHora.includes('T') ? dataHora.split('T')[0] : dataHora.split(' ')[0];
+                    };
+
+                    document.getElementById('inputPrazo').value = tratarData(dados.prazo_inscricoes);
+                    document.getElementById('inputDataInicio').value = tratarData(dados.data_inicio);
+                    document.getElementById('inputDataFim').value = tratarData(dados.data_fim);
+
+                    // Configura o formulário para Atualização (PUT)
+                    formEvento.action = `/eventos/${id}`;
+                    metodoFormEvento.value = "PUT";
+                    tituloModalEvento.innerText = "Editar Evento";
+                    btnSalvarEvento.innerText = "Atualizar Evento";
+                })
+                .catch(erro => console.error("Erro ao buscar dados do evento:", erro));
+        }
+    </script>
 </x-layouts.app>

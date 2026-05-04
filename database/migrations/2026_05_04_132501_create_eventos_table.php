@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('eventos', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->string('modalidade', ['Futebol','Futsal', 'Vôlei', 'Basquete'])-> default('Futebol');
+            $table->string('modalidade');
             $table->date('data_inicio');
             $table->date('data_fim');
             $table->date('prazo_inscricoes');
             $table->string('local');
-            $table->enum('status', ['Planejado', 'Em Andamento', 'Finalizado', 'Cancelado'])->default('Planejado');
-            $table->string('descrição');
+            $table->text('descricao')->nullable(); 
+
+            $table->enum('status', ['Agendado', 'Em Andamento', 'Concluído', 'Cancelado'])->default('Agendado');
+
             $table->timestamps();
         });
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\EventoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TimeController;
 use App\Http\Controllers\AtletaController;
+use App\Http\Controllers\InscricoesController;
 
 Route::get('/', function () {
     return view('portal.index');
@@ -26,12 +27,9 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
     Route::resource('atletas', AtletaController::class);
-
-    Route::get('/inscricoes', function () {
-        return view('inscricoes.index');
-    })->name('inscricoes.index');
-
-    Route::get('/eventos', [EventoController::class, 'index'])->name('eventos.index');
+    Route::resource('times', TimeController::class);
+    Route::resource('inscricoes', InscricoesController::class);
+    Route::resource('eventos', EventoController::class);
 
     Route::get('/resultados', function () {
         return view('resultados.index');
@@ -45,6 +43,5 @@ Route::middleware('auth')->group(function () {
         return view('reservas.index');
     })->name('reservas.index');
 
-    Route::resource('times', TimeController::class);
 });
 

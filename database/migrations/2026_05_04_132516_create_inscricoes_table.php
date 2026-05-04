@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('inscricoes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('evento_id')->constrained()->onDelete('cascade');
-            $table->foreignId('atleta_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('time_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('evento_id')->constrained('eventos')->onDelete('cascade');
+            $table->foreignId('atleta_id')->nullable()->constrained('atletas')->onDelete('cascade');
+            $table->foreignId('time_id')->nullable()->constrained('times')->onDelete('cascade');
             $table->string('status_inscricao')->default('Confirmada');
+            $table->timestamps();
         });
     }
 
