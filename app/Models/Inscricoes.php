@@ -12,4 +12,19 @@ class Inscricoes extends Model
         'time_id',
         'status_inscricao', 
     ];
+
+    public function evento()
+    {
+        return $this->belongsTo(Evento::class);
+    }
+
+    public function atleta()
+    {
+        return $this->belongsTo(Atleta::class);
+    }
+
+    public function time()
+    {
+        return $this->belongsTo(Time::class);
+    }
 }
