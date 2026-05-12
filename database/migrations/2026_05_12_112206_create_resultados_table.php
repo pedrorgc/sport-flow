@@ -18,8 +18,6 @@ return new class extends Migration
             $table->foreignId('inscricao_id')->constrained('inscricoes')->onDelete('cascade');
             $table->integer('posicao');
             $table->string('marca_pontuacao')->nullable();
-
-            
         });
     }
 

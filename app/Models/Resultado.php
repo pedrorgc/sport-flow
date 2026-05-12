@@ -8,7 +8,7 @@ class Resultado extends Model
 {
       protected $fillable = [
         'evento_id',
-        '~inscricao_id',
+        'inscricao_id',
         'posicao',
         'marca_pontuacao', 
     ];
