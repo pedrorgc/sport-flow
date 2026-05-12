@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('posicao');
             $table->string('marca_pontuacao')->nullable();
 
+            
         });
     }
 
