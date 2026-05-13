@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Inscricao;
+use App\Models\Modalidade;
 
 class Evento extends Model
 {
     protected $fillable = [
         'nome',
-        'modalidade',
+        'modalidade_id',
         'data_inicio',
         'data_fim',
         'prazo_inscricoes',
@@ -21,5 +22,10 @@ class Evento extends Model
     public function inscricoes()
     {
         return $this->hasMany(Inscricoes::class);
+    }
+
+    public function modalidade()
+    {
+        return $this->belongsTo(Modalidade::class);
     }
 }

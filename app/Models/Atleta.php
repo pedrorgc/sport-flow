@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Time;
+use App\Models\Modalidade;
 
 class Atleta extends Model
 {
@@ -13,13 +15,18 @@ class Atleta extends Model
         'nome',
         'data_nascimento',
         'cpf_rg',
+        'modalidade_id',
         'categoria',
-        'modalidade',
         'contato',
     ];
 
     public function times()
     {
         return $this->belongsToMany(Time::class);
+    }
+
+    public function modalidade()
+    {
+        return $this->belongsTo(Modalidade::class);
     }
 }

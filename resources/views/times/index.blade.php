@@ -1,9 +1,11 @@
 <x-layouts.app>
-    <main class="flex-grow-1" style="min-width: 0;" x-data="{ modal: null }" @open-modal-equipe.window="modal = 'equipe'" @open-modal-atletas.window="modal = 'atletas'" @open-modal-visualizar.window="modal = 'visualizar_elenco'">
+    <main class="flex-grow-1" style="min-width: 0;" x-data="{ modal: null }" @open-modal-equipe.window="modal = 'equipe'"
+        @open-modal-atletas.window="modal = 'atletas'" @open-modal-visualizar.window="modal = 'visualizar_elenco'">
 
         <div class="d-flex align-items-center justify-content-between mb-4 ps-5 ps-md-0 pt-2 pt-md-0">
             <h2 class="titulo-marca mb-0" style="font-size: 2.2rem;">Times</h2>
-            <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm" onclick="abrirNovaEquipe()">
+            <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm"
+                onclick="abrirNovaEquipe()">
                 <i class="bi bi-plus-lg"></i>
                 <span class="d-none d-md-inline">Nova equipe</span>
             </button>
@@ -11,17 +13,19 @@
 
         <div class="row g-3 mb-4">
             <div class="col-md-4">
-                <x-stat-card title="Times" value="{{ $times->count() }}" subtitle="Cadastrados"
-                    icon="bi bi-shield" color="primary" />
+                <x-stat-card title="Times" value="{{ $times->count() }}" subtitle="Cadastrados" icon="bi bi-shield"
+                    color="primary" />
             </div>
         </div>
-        
+
         <div class="card-premium mb-4 py-3">
             <div class="d-flex flex-wrap gap-3 align-items-center">
                 <div class="flex-grow-1" style="min-width:220px;">
                     <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control bg-light border-start-0 ps-0" placeholder="Buscar por nome da equipe...">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i
+                                class="bi bi-search"></i></span>
+                        <input type="text" class="form-control bg-light border-start-0 ps-0"
+                            placeholder="Buscar por nome da equipe...">
                     </div>
                 </div>
 
@@ -43,7 +47,7 @@
                 </select>
             </div>
         </div>
-        
+
         <div class="card-premium p-0 overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -62,7 +66,8 @@
                             <tr>
                                 <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase" style="width: 40px; height: 40px;">
+                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase"
+                                            style="width: 40px; height: 40px;">
                                             {{ substr($time->nome, 0, 2) }}
                                         </div>
                                         <div>
@@ -70,9 +75,10 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="py-3 text-secondary">{{ $time->modalidade }}</td>
+                                <td class="py-3 text-secondary">{{ $time->modalidade->nome ?? 'Não informado' }}</td>
                                 <td class="py-3">
-                                    <span class="badge rounded-pill bg-success bg-opacity-10 text-success px-3 py-2 fw-medium border border-success border-opacity-25">
+                                    <span
+                                        class="badge rounded-pill bg-success bg-opacity-10 text-success px-3 py-2 fw-medium border border-success border-opacity-25">
                                         {{ $time->categoria }}
                                     </span>
                                 </td>
@@ -81,22 +87,28 @@
                                 </td>
                                 <td class="text-end pe-4 py-3">
                                     <div class="d-flex gap-2 justify-content-end">
-                                        <button type="button" class="btn btn-sm btn-light text-secondary hover-shadow" title="Visualizar Elenco" onclick="visualizarElenco({{ $time->id }})">
+                                        <button type="button" class="btn btn-sm btn-light text-secondary hover-shadow"
+                                            title="Visualizar Elenco" onclick="visualizarElenco({{ $time->id }})">
                                             <i class="bi bi-eye"></i>
                                         </button>
 
-                                        <button type="button" class="btn btn-sm btn-light text-primary hover-shadow" title="Gerenciar Elenco" onclick="abrirElenco({{ $time->id }})">
+                                        <button type="button" class="btn btn-sm btn-light text-primary hover-shadow"
+                                            title="Gerenciar Elenco" onclick="abrirElenco({{ $time->id }})">
                                             <i class="bi bi-person-plus"></i>
                                         </button>
-                                        
-                                        <button type="button" class="btn btn-sm btn-light text-primary hover-shadow" title="Editar" onclick="abrirEdicaoEquipe({{ $time->id }})">
+
+                                        <button type="button" class="btn btn-sm btn-light text-primary hover-shadow"
+                                            title="Editar" onclick="abrirEdicaoEquipe({{ $time->id }})">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
-                                        
-                                        <form action="/times/{{ $time->id }}" method="POST" onsubmit="return confirm('Excluir esta equipe? Os atletas não serão excluídos, apenas desvinculados.');" class="d-inline">
+
+                                        <form action="/times/{{ $time->id }}" method="POST"
+                                            onsubmit="return confirm('Excluir esta equipe? Os atletas não serão excluídos, apenas desvinculados.');"
+                                            class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-light text-danger hover-shadow" title="Excluir">
+                                            <button type="submit" class="btn btn-sm btn-light text-danger hover-shadow"
+                                                title="Excluir">
                                                 <i class="bi bi-trash3"></i>
                                             </button>
                                         </form>
@@ -115,13 +127,20 @@
             </div>
         </div>
 
-        <div x-show="modal === 'equipe'" x-cloak class="position-fixed top-0 start-0 w-100 h-100" style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;" x-transition.opacity @click.self="modal = null">
+        <div x-show="modal === 'equipe'" x-cloak class="position-fixed top-0 start-0 w-100 h-100"
+            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;" x-transition.opacity
+            @click.self="modal = null">
             <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
-                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 700px;" x-show="modal === 'equipe'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
-                    
+                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 700px;" x-show="modal === 'equipe'"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-4"
+                    x-transition:enter-end="opacity-100 translate-y-0">
+
                     <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
                         <h4 class="titulo-marca mb-0" id="tituloModalEquipe">Nova equipe</h4>
-                        <button class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;" @click="modal = null">
+                        <button
+                            class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center"
+                            style="width: 35px; height: 35px;" @click="modal = null">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
@@ -131,23 +150,27 @@
                         <input type="hidden" name="_method" id="metodoFormEquipe" value="POST">
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold small text-secondary">Nome da equipe <span class="text-danger">*</span></label>
-                            <input type="text" name="nome" id="inputNome" class="form-control bg-light" required>
+                            <label class="form-label fw-semibold small text-secondary">Nome da equipe <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="nome" id="inputNome" class="form-control bg-light"
+                                required>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Modalidade <span class="text-danger">*</span></label>
-                                <select name="modalidade" id="inputModalidade" class="form-select bg-light" required>
-                                    <option value="">Selecionar</option>
-                                    <option value="Futsal">Futsal</option>
-                                    <option value="Vôlei">Vôlei</option>
-                                    <option value="Basquete">Basquete</option>
-                                    <option value="Natação">Natação</option>
+                                <label class="form-label fw-semibold small text-secondary">Modalidade <span
+                                        class="text-danger">*</span></label>
+                                <select name="modalidade_id" id="inputModalidade" class="form-select bg-light"
+                                    required>
+                                    <option value="" disabled selected>Selecione a Modalidade</option>
+                                    @foreach ($modalidades as $id => $nome)
+                                        <option value="{{ $id }}">{{ $nome }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Categoria <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold small text-secondary">Categoria <span
+                                        class="text-danger">*</span></label>
                                 <select name="categoria" id="inputCategoria" class="form-select bg-light" required>
                                     <option value="">Selecionar</option>
                                     <option value="Sub-15">Sub-15</option>
@@ -158,7 +181,8 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-end gap-3 pt-3 border-top">
-                            <button type="button" class="btn btn-light fw-medium" @click="modal = null">Cancelar</button>
+                            <button type="button" class="btn btn-light fw-medium"
+                                @click="modal = null">Cancelar</button>
                             <button type="submit" id="btnSalvarEquipe" class="btn btn-premium px-4">Salvar</button>
                         </div>
                     </form>
@@ -166,19 +190,27 @@
             </div>
         </div>
 
-        <div x-show="modal === 'atletas'" x-cloak class="position-fixed top-0 start-0 w-100 h-100" style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;" @click.self="modal = null">
+        <div x-show="modal === 'atletas'" x-cloak class="position-fixed top-0 start-0 w-100 h-100"
+            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;"
+            @click.self="modal = null">
             <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
-                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 750px;" x-show="modal === 'atletas'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 750px;"
+                    x-show="modal === 'atletas'" x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-4"
+                    x-transition:enter-end="opacity-100 translate-y-0">
 
                     <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
                         <h4 class="titulo-marca mb-0" id="tituloModalElenco">Adicionar atletas</h4>
-                        <button class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;" @click="modal = null">
+                        <button
+                            class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center"
+                            style="width: 35px; height: 35px;" @click="modal = null">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
 
                     <div class="p-4 border-bottom">
-                        <input type="text" id="buscaAtleta" class="form-control form-control-lg bg-light" placeholder="Buscar atleta na lista..." onkeyup="filtrarAtletas()">
+                        <input type="text" id="buscaAtleta" class="form-control form-control-lg bg-light"
+                            placeholder="Buscar atleta na lista..." onkeyup="filtrarAtletas()">
                     </div>
 
                     <form id="formElenco" method="POST">
@@ -187,30 +219,38 @@
                         <input type="hidden" name="sync_atletas" value="1">
 
                         <div class="p-4" style="max-height: 400px; overflow-y: auto;">
-                            
+
                             @forelse($todosAtletas as $atleta)
-                                <div class="linha-atleta d-flex align-items-center justify-content-between mb-3 p-3 rounded-3 border hover-shadow" data-nome="{{ strtolower($atleta->nome) }}">
-                                    
+                                <div class="linha-atleta d-flex align-items-center justify-content-between mb-3 p-3 rounded-3 border hover-shadow"
+                                    data-nome="{{ strtolower($atleta->nome) }}">
+
                                     <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase" style="width: 40px; height: 40px;">
+                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase"
+                                            style="width: 40px; height: 40px;">
                                             {{ substr($atleta->nome, 0, 2) }}
                                         </div>
                                         <div>
-                                            <div class="fw-semibold"><label for="check_atleta_{{ $atleta->id }}" style="cursor:pointer;">{{ $atleta->nome }}</label></div>
-                                            <small class="text-muted">{{ $atleta->modalidade }} • {{ $atleta->categoria }}</small>
+                                            <div class="fw-semibold"><label for="check_atleta_{{ $atleta->id }}"
+                                                    style="cursor:pointer;">{{ $atleta->nome }}</label></div>
+                                            <small class="text-muted">{{ $atleta->modalidade->nome ?? 'Não informado' }} •
+                                                {{ $atleta->categoria }}</small>
                                         </div>
                                     </div>
 
-                                    <input type="checkbox" name="atletas[]" value="{{ $atleta->id }}" id="check_atleta_{{ $atleta->id }}" class="check-atleta form-check-input border-secondary" style="width: 22px; height: 22px; cursor:pointer;">
+                                    <input type="checkbox" name="atletas[]" value="{{ $atleta->id }}"
+                                        id="check_atleta_{{ $atleta->id }}"
+                                        class="check-atleta form-check-input border-secondary"
+                                        style="width: 22px; height: 22px; cursor:pointer;">
                                 </div>
                             @empty
                                 <div class="text-center text-muted">Nenhum atleta cadastrado no sistema ainda.</div>
                             @endforelse
-                            
+
                         </div>
 
                         <div class="d-flex justify-content-end gap-3 p-4 border-top">
-                            <button type="button" class="btn btn-light fw-medium" @click="modal = null">Cancelar</button>
+                            <button type="button" class="btn btn-light fw-medium"
+                                @click="modal = null">Cancelar</button>
                             <button type="submit" class="btn btn-premium px-4">Salvar Elenco</button>
                         </div>
                     </form>
@@ -219,23 +259,30 @@
             </div>
         </div>
 
-        <div x-show="modal === 'visualizar_elenco'" x-cloak class="position-fixed top-0 start-0 w-100 h-100" style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;" @click.self="modal = null" x-transition.opacity>
+        <div x-show="modal === 'visualizar_elenco'" x-cloak class="position-fixed top-0 start-0 w-100 h-100"
+            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;"
+            @click.self="modal = null" x-transition.opacity>
             <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
-                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 550px;" x-show="modal === 'visualizar_elenco'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 550px;"
+                    x-show="modal === 'visualizar_elenco'" x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-4"
+                    x-transition:enter-end="opacity-100 translate-y-0">
 
                     <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
                         <div>
                             <h4 class="titulo-marca mb-0" id="tituloVisualizarTime">Elenco da Equipe</h4>
                             <small class="text-secondary" id="subtituloVisualizarTime"></small>
                         </div>
-                        <button class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;" @click="modal = null">
+                        <button
+                            class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center"
+                            style="width: 35px; height: 35px;" @click="modal = null">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
 
                     <div class="p-4" style="max-height: 450px; overflow-y: auto;">
                         <div id="listaAtletasTime" class="d-flex flex-column gap-2">
-                            </div>
+                        </div>
                     </div>
 
                     <div class="d-flex justify-content-end p-4 border-top">
@@ -277,7 +324,7 @@
                     metodoFormEquipe.value = "PUT";
                     tituloModalEquipe.innerText = "Editar Equipe";
                     btnSalvarEquipe.innerText = "Atualizar";
-                    
+
                     window.dispatchEvent(new CustomEvent('open-modal-equipe'));
                 });
         }
@@ -286,21 +333,21 @@
         function abrirElenco(id) {
             document.querySelectorAll('.check-atleta').forEach(cb => cb.checked = false);
             document.getElementById('buscaAtleta').value = '';
-            filtrarAtletas(); 
+            filtrarAtletas();
 
             fetch(`/times/${id}/edit`)
                 .then(response => response.json())
                 .then(dados => {
                     document.getElementById('tituloModalElenco').innerText = `Elenco: ${dados.nome}`;
-                    formElenco.action = `/times/${id}`; 
-                    
-                    if(dados.atletas && dados.atletas.length > 0) {
+                    formElenco.action = `/times/${id}`;
+
+                    if (dados.atletas && dados.atletas.length > 0) {
                         dados.atletas.forEach(atleta => {
                             let checkbox = document.getElementById(`check_atleta_${atleta.id}`);
-                            if(checkbox) checkbox.checked = true;
+                            if (checkbox) checkbox.checked = true;
                         });
                     }
-                    
+
                     window.dispatchEvent(new CustomEvent('open-modal-atletas'));
                 });
         }
@@ -308,14 +355,16 @@
         // Função de Visualizar Elenco (Somente Leitura)
         function visualizarElenco(id) {
             const listaContainer = document.getElementById('listaAtletasTime');
-            listaContainer.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
-            
+            listaContainer.innerHTML =
+                '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
+
             fetch(`/times/${id}/edit`)
                 .then(response => response.json())
                 .then(dados => {
                     document.getElementById('tituloVisualizarTime').innerText = dados.nome;
-                    document.getElementById('subtituloVisualizarTime').innerText = `${dados.modalidade} • ${dados.categoria}`;
-                    
+                    document.getElementById('subtituloVisualizarTime').innerText =
+                        `${dados.modalidade} • ${dados.categoria}`;
+
                     listaContainer.innerHTML = '';
 
                     if (dados.atletas && dados.atletas.length > 0) {
@@ -334,14 +383,16 @@
                             `;
                         });
                     } else {
-                        listaContainer.innerHTML = '<div class="text-center py-4 text-secondary">Nenhum atleta vinculado a esta equipe.</div>';
+                        listaContainer.innerHTML =
+                            '<div class="text-center py-4 text-secondary">Nenhum atleta vinculado a esta equipe.</div>';
                     }
 
                     window.dispatchEvent(new CustomEvent('open-modal-visualizar'));
                 })
                 .catch(error => {
                     console.error("Erro ao buscar elenco:", error);
-                    listaContainer.innerHTML = '<div class="text-center py-4 text-danger">Erro ao carregar os dados.</div>';
+                    listaContainer.innerHTML =
+                        '<div class="text-center py-4 text-danger">Erro ao carregar os dados.</div>';
                 });
         }
 

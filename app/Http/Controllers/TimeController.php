@@ -5,16 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Time;
 use App\Models\Atleta;
+use App\Models\Modalidade;
 
 class TimeController extends Controller
 {
     public function index()
     {
         $times = Time::withCount('atletas')->get(); 
-        
+        $modalidades = Modalidade::all()->pluck('nome', 'id');
         $todosAtletas = Atleta::all();
 
-        return view('times.index', compact('times', 'todosAtletas'));
+        return view('times.index', compact('times', 'modalidades', 'todosAtletas'));
     }
 
     public function create()
@@ -27,7 +28,7 @@ class TimeController extends Controller
         $validate = $request->validate([
             'nome' => 'required|string|max:255',
             'categoria' => 'required|string',
-            'modalidade' => 'required|string',
+            'modalidade_id' => 'required|exists:modalidades,id',
         ]);
 
         Time::create($validate);
@@ -57,7 +58,7 @@ class TimeController extends Controller
         $validate = $request->validate([
             'nome' => 'required|string|max:255',
             'categoria' => 'required|string',
-            'modalidade' => 'required|string',
+            'modalidade_id' => 'required|exists:modalidades,id',
         ]);
 
         $time->update($validate);
