@@ -20,7 +20,7 @@ class ModalidadeFactory extends Factory
     public function definition(): array
     {   
         return [
-            "nome"=> $this->faker()->unique()->randomElement(['Futsal', 'Futebol', 'Basquete', 'Vôlei', 'Handebol'])
+            "nome"=> fake()->unique()->randomElement(['Futsal', 'Futebol', 'Basquete', 'Vôlei', 'Handebol'])
         ];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\modalidade;
+use App\Models\Modalidade;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,6 +17,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
         ]);
 
-        modalidade::factory()->count(5)->create();
+        Modalidade::factory()->count(5)->create();
     }
 }
