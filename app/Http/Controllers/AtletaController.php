@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Atleta;
+use App\Models\Modalidade;
 
 class AtletaController extends Controller
 {
 
     public function index()
     {
-        $atletas = Atleta::all();
+        $atletas = Atleta::with('modalidade')->get();
+        $modalidades = Modalidade::all()->pluck('nome', 'id');
 
-        return view('atletas.index', compact('atletas'));
+        return view('atletas.index', compact('atletas', 'modalidades'));
+
     }
 
     public function create()
@@ -25,9 +28,9 @@ class AtletaController extends Controller
         $validate = $request->validate([
             'nome' => 'required|string|max:255',
             'data_nascimento' => 'required|date',
-            'cpf_rg' => 'nullable|string|max:20|unique:atletas,cpf_rg|',
+            'cpf_rg' => 'nullable|string|max:20|unique:atletas,cpf_rg',
             'categoria' => 'required|string',
-            'modalidade' => 'required|string',
+            'modalidade_id' => 'required|exists:modalidades,id',
             'contato' => 'nullable|string|max:255',
         ]);
 
@@ -37,7 +40,7 @@ class AtletaController extends Controller
 
     public function show(string $id)
     {
-        
+        //
     }
 
     public function edit(string $id)
@@ -53,7 +56,7 @@ class AtletaController extends Controller
             'data_nascimento' => 'required|date',
             'cpf_rg' => 'nullable|string|max:20|unique:atletas,cpf_rg,' . $id,
             'categoria' => 'required|string',
-            'modalidade' => 'required|string',
+            'modalidade_id' => 'required|exists:modalidades,id',
             'contato' => 'nullable|string|max:255',
         ]);
 

@@ -76,7 +76,7 @@
                                 </td>
                                 <td class="py-3">
                                     <div class="fw-medium titulo-marca">{{ $inscricao->evento->nome }}</div>
-                                    <div class="text-secondary small">{{ $inscricao->evento->modalidade }}</div>
+                                    <div class="text-secondary small">{{ $inscricao->evento->modalidade->nome ?? 'Não informado' }}</div>
                                 </td>
                                 <td class="py-3">
                                     @php
@@ -158,7 +158,7 @@
                                 <option value="">Selecionar evento...</option>
                                 @foreach ($eventos as $evento)
                                     <option value="{{ $evento->id }}">{{ $evento->nome }}
-                                        ({{ $evento->modalidade }})</option>
+                                        ({{ $evento->modalidade->nome ?? 'Não informado' }})</option>
                                 @endforeach
                             </select>
                         </div>

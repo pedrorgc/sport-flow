@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Evento;
+use App\Models\Modalidade;
 
 class EventoController extends Controller
 {
     public function index()
     {
-    
         $eventos = Evento::orderBy('data_inicio', 'asc')->get();
-        return view('eventos.index', compact('eventos'));
+        $modalidades = Modalidade::all()->pluck('nome', 'id');
+        return view('eventos.index', compact('eventos', 'modalidades'));
     }
 
     public function create()
@@ -23,7 +24,7 @@ class EventoController extends Controller
     {
         $validate = $request->validate([
             'nome' => 'required|string|max:255',
-            'modalidade' => 'required|string',
+            'modalidade_id' => 'required|exists:modalidades,id',
             'data_inicio' => 'required|date',
             'data_fim' => 'required|date|after_or_equal:data_inicio',
             'prazo_inscricoes' => 'required|date|before:data_inicio',
@@ -53,7 +54,7 @@ class EventoController extends Controller
 
         $validate = $request->validate([
             'nome' => 'required|string|max:255',
-            'modalidade' => 'required|string',
+            'modalidade_id' => 'required|exists:modalidades,id',
             'data_inicio' => 'required|date',
             'data_fim' => 'required|date|after_or_equal:data_inicio',
             'prazo_inscricoes' => 'required|date|before:data_inicio',

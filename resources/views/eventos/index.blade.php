@@ -6,7 +6,8 @@
             <h2 class="titulo-marca mb-0" style="font-size: 2.2rem;">Eventos</h2>
 
             <!-- Chama a função JS para abrir o modal limpo -->
-            <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm" onclick="abrirNovoEvento()">
+            <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm"
+                onclick="abrirNovoEvento()">
                 <i class="bi bi-plus-lg"></i>
                 <span class="d-none d-md-inline">Novo Evento</span>
             </button>
@@ -14,7 +15,8 @@
 
         <div class="row g-3 mb-4">
             <div class="col-md-4">
-                <x-stat-card title="Eventos" value="{{ $eventos->count() }}" subtitle="Cadastrados" icon="bi bi-trophy" color="primary" />
+                <x-stat-card title="Eventos" value="{{ $eventos->count() }}" subtitle="Cadastrados" icon="bi bi-trophy"
+                    color="primary" />
             </div>
         </div>
 
@@ -37,7 +39,8 @@
                                 };
                             @endphp
 
-                            <span class="badge rounded-pill bg-{{ $cor }} bg-opacity-10 text-{{ $cor }} px-3 py-2 fw-medium border border-{{ $cor }} border-opacity-25">
+                            <span
+                                class="badge rounded-pill bg-{{ $cor }} bg-opacity-10 text-{{ $cor }} px-3 py-2 fw-medium border border-{{ $cor }} border-opacity-25">
                                 {{ $evento->status ?? 'Agendado' }}
                             </span>
                         </div>
@@ -46,15 +49,15 @@
                         <div class="mb-4 mt-2">
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-trophy text-primary me-2 fs-5"></i>
-                                <span class="fw-medium">{{ $evento->modalidade }}</span>
+                                <span class="fw-medium">{{ $evento->modalidade->nome ?? 'Não informado' }}</span>
                             </div>
 
                             {{-- data inicio e fim formatadas --}}
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
                                 <span>
-                                    {{ \Carbon\Carbon::parse($evento->data_inicio)->format('d/m/Y') }} 
-                                    até 
+                                    {{ \Carbon\Carbon::parse($evento->data_inicio)->format('d/m/Y') }}
+                                    até
                                     {{ \Carbon\Carbon::parse($evento->data_fim)->format('d/m/Y') }}
                                 </span>
                             </div>
@@ -62,7 +65,8 @@
                             {{-- prazo inscricao formatado --}}
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-clock text-primary me-2 fs-5"></i>
-                                <span>Inscrições até {{ \Carbon\Carbon::parse($evento->prazo_inscricoes)->format('d/m/Y') }}</span>
+                                <span>Inscrições até
+                                    {{ \Carbon\Carbon::parse($evento->prazo_inscricoes)->format('d/m/Y') }}</span>
                             </div>
 
                             {{-- local do evento --}}
@@ -79,15 +83,18 @@
 
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                             <!-- Botão Editar chama a função JS passando o ID -->
-                            <button type="button" class="btn btn-sm btn-light text-primary hover-shadow fw-medium px-3" onclick="abrirEdicaoEvento({{ $evento->id }})">
+                            <button type="button" class="btn btn-sm btn-light text-primary hover-shadow fw-medium px-3"
+                                onclick="abrirEdicaoEvento({{ $evento->id }})">
                                 <i class="bi bi-pencil-square me-1"></i> Editar
                             </button>
 
                             <!-- Formulário de Exclusão -->
-                            <form action="/eventos/{{ $evento->id }}" method="POST" onsubmit="return confirm('Tem certeza que deseja cancelar/excluir este evento?');">
+                            <form action="/eventos/{{ $evento->id }}" method="POST"
+                                onsubmit="return confirm('Tem certeza que deseja cancelar/excluir este evento?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-light text-danger hover-shadow fw-medium px-3">
+                                <button type="submit"
+                                    class="btn btn-sm btn-light text-danger hover-shadow fw-medium px-3">
                                     <i class="bi bi-trash3 me-1"></i> Excluir
                                 </button>
                             </form>
@@ -98,21 +105,29 @@
 
             @empty
                 <div class="col-12">
-                    <p class="text-center text-secondary py-5">Nenhum evento cadastrado no momento. Clique em "Novo Evento" para começar.</p>
+                    <p class="text-center text-secondary py-5">Nenhum evento cadastrado no momento. Clique em "Novo
+                        Evento" para começar.</p>
                 </div>
             @endforelse
 
         </div>
 
         <!-- MODAL (CRIAR E EDITAR) -->
-        <div x-show="openModal" x-cloak class="position-fixed top-0 start-0 w-100 h-100" style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;" x-transition.opacity @click.self="openModal = false">
+        <div x-show="openModal" x-cloak class="position-fixed top-0 start-0 w-100 h-100"
+            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;" x-transition.opacity
+            @click.self="openModal = false">
 
             <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
-                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 700px;" x-show="openModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 700px;" x-show="openModal"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-4"
+                    x-transition:enter-end="opacity-100 translate-y-0">
 
                     <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
                         <h4 class="titulo-marca mb-0" id="tituloModalEvento">Novo Evento</h4>
-                        <button type="button" class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;" @click="openModal = false">
+                        <button type="button"
+                            class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center"
+                            style="width: 35px; height: 35px;" @click="openModal = false">
                             <i class="bi bi-x-lg"></i>
                         </button>
                     </div>
@@ -123,20 +138,22 @@
 
                         {{-- nome --}}
                         <div class="mb-3">
-                            <label class="form-label fw-semibold small text-secondary">Nome do Evento <span class="text-danger">*</span></label>
-                            <input type="text" name="nome" id="inputNomeEvento" class="form-control bg-light" required>
+                            <label class="form-label fw-semibold small text-secondary">Nome do Evento <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="nome" id="inputNomeEvento" class="form-control bg-light"
+                                required>
                         </div>
 
-                        {{-- modalidsde --}}
+                        {{-- modalidade --}}
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Modalidade <span class="text-danger">*</span></label>
-                                <select name="modalidade" id="inputModalidade" class="form-select bg-light" required>
-                                    <option value="">Selecionar</option>
-                                    <option value="Futebol">Futebol</option>
-                                    <option value="Futsal">Futsal</option>
-                                    <option value="Basquete">Basquete</option>
-                                    <option value="Vôlei">Vôlei</option>
+                                <label class="form-label fw-semibold small text-secondary">Modalidade <span
+                                        class="text-danger">*</span></label>
+                                <select name="modalidade_id" id="inputModalidade" class="form-select bg-light" required>
+                                    <option value="" disabled selected>Selecione a Modalidade</option>
+                                    @foreach ($modalidades as $id => $nome)
+                                        <option value="{{ $id }}">{{ $nome }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -155,26 +172,34 @@
                         {{-- local --}}
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Local <span class="text-danger">*</span></label>
-                                <input type="text" name="local" id="inputLocal" class="form-control bg-light" required>
+                                <label class="form-label fw-semibold small text-secondary">Local <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="local" id="inputLocal" class="form-control bg-light"
+                                    required>
                             </div>
 
                             {{-- prazo inscricao --}}
                             <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Prazo de Inscrição <span class="text-danger">*</span></label>
-                                <input type="date" name="prazo_inscricoes" id="inputPrazo" class="form-control bg-light" required>
+                                <label class="form-label fw-semibold small text-secondary">Prazo de Inscrição <span
+                                        class="text-danger">*</span></label>
+                                <input type="date" name="prazo_inscricoes" id="inputPrazo"
+                                    class="form-control bg-light" required>
                             </div>
 
                             {{-- data inicio --}}
                             <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Data Início <span class="text-danger">*</span></label>
-                                <input type="date" name="data_inicio" id="inputDataInicio" class="form-control bg-light" required>
+                                <label class="form-label fw-semibold small text-secondary">Data Início <span
+                                        class="text-danger">*</span></label>
+                                <input type="date" name="data_inicio" id="inputDataInicio"
+                                    class="form-control bg-light" required>
                             </div>
 
                             {{-- data fim --}}
                             <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Data Fim <span class="text-danger">*</span></label>
-                                <input type="date" name="data_fim" id="inputDataFim" class="form-control bg-light" required>
+                                <label class="form-label fw-semibold small text-secondary">Data Fim <span
+                                        class="text-danger">*</span></label>
+                                <input type="date" name="data_fim" id="inputDataFim"
+                                    class="form-control bg-light" required>
                             </div>
                         </div>
 
@@ -184,8 +209,10 @@
                         </div>
 
                         <div class="d-flex justify-content-end gap-3 pt-3 border-top">
-                            <button type="button" class="btn btn-light fw-medium" @click="openModal = false">Cancelar</button>
-                            <button type="submit" id="btnSalvarEvento" class="btn btn-premium px-4">Salvar Evento</button>
+                            <button type="button" class="btn btn-light fw-medium"
+                                @click="openModal = false">Cancelar</button>
+                            <button type="submit" id="btnSalvarEvento" class="btn btn-premium px-4">Salvar
+                                Evento</button>
                         </div>
                     </form>
                 </div>
