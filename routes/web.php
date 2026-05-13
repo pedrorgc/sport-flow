@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TimeController;
 use App\Http\Controllers\AtletaController;
 use App\Http\Controllers\InscricoesController;
+use App\Http\Controllers\ResultadoController;
 
 Route::get('/', function () {
     return view('portal.index');
@@ -15,6 +16,13 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login-validar', [AuthController::class, 'authenticate'])->name('login.validar');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/api/eventos/{id}/inscricoes', function ($id) {
+    return App\Models\Inscricoes::with('atleta', 'time')
+    ->where('evento_id', $id)
+    ->where('status_inscricao', '!=', 'Cancelada')
+    ->get();
+});
 
 Route::middleware('auth')->group(function () {
 
@@ -30,10 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('times', TimeController::class);
     Route::resource('inscricoes', InscricoesController::class);
     Route::resource('eventos', EventoController::class);
-
-    Route::get('/resultados', function () {
-        return view('resultados.index');
-    })->name('resultados.index');
+    Route::resource('resultados', ResultadoController::class);
 
     Route::get('/espacos', function () {
         return view('espacos.index');
@@ -44,4 +49,3 @@ Route::middleware('auth')->group(function () {
     })->name('reservas.index');
 
 });
-
