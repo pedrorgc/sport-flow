@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nome');
             $table->string('cpf_rg')->unique()->nullable();
             $table->date('data_nascimento');
-            $table->string('modalidade');
+            $table->foreignId('modalidade_id')->constrained('modalidades')->onDelete('cascade');
             $table->string('categoria');
             $table->string('contato')->nullable();
             

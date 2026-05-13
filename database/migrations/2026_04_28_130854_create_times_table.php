@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('nome');
-            $table->string('modalidade');
+            $table->foreignId('modalidade_id')->constrained('modalidades')->onDelete('cascade');
             $table->string('categoria');
 
             $table->timestamps();
