@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('eventos', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->string('modalidade');
+            $table->foreignId('modalidade_id')->constrained('modalidades')->onDelete('cascade');
             $table->date('data_inicio');
             $table->date('data_fim');
             $table->date('prazo_inscricoes');
