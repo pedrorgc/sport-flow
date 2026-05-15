@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Modalidade extends Model
 {
-    /** @use HasFactory<\Database\Factories\ModalidadeFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'nome'
+    ];
 }

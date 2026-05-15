@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Inscricao;
 use App\Models\Modalidade;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Evento extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'nome',
         'modalidade_id',

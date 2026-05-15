@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Atleta;
 use App\Models\Inscricoes;
 use App\Models\Modalidade;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Time extends Model
 {
+
+    use HasFactory;
+
     protected $fillable = [
         'nome',
         'categoria',
