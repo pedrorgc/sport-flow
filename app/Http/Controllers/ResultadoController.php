@@ -2,56 +2,70 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Resultado;
-// use App\Models\Inscricoes;
 use Illuminate\Http\Request;
+use App\Models\Resultado;
+use App\Models\Evento;
+use App\Models\Modalidade;
+use App\Models\Time;
+use App\Models\Atleta;
 
 class ResultadoController extends Controller
 {
-    // listar os resultados
     public function index()
     {
-        $resultados = Resultado::with('evento', 'inscricoes')->get();
-
-        return view('resultados.index', compact('resultados'));
+        return view('resultados.index');
     }
 
-    // vai salvar os resultados
+    public function create()
+    {
+        //
+    }
+
     public function store(Request $request)
     {
-        $request->validate([
-            'evento_id' => 'required',
-            'inscricao_id' => 'required',
-            'posicao' => 'required|integer',
+        $validate = $request->validate([
+            'evento_id' => 'required|exists:eventos,id',
+            'modalidade_id' => 'required|exists:modalidades,id',
+            'categoria' => 'required|string',
+            'tipo_resultado' => 'required|string',
+            'descricao' => 'nullable|string',
         ]);
 
-        // pra verificar se ja existe
-        $existe = Resultado::query()
-            ->where('evento_id', '=', $request->evento_id)
-            ->where('posicao', '=', $request->posicao)
-            ->exists();
-
-        // se tiver
-        if ($existe) {
-            return back()->with('erro', 'Essa posição já existe nesse evento.');
-        }
-
-        // salvar
-        Resultado::create([
-            'evento_id' => $request->evento_id,
-            'inscricao_id' => $request->inscricao_id,
-            'posicao' => $request->posicao,
-            'marca_pontuacao' => $request->marca_pontuacao,
-        ]);
-
-        return back()->with('sucesso', 'Resultado cadastrado!');
+        Resultado::create($validate);
+        return redirect()->route('resultados.index')->with('success', 'Resultado registrado com sucesso!');
     }
 
-    // excluir
-    public function destroy(int $id)
+    public function show(string $id)
     {
-        Resultado::destroy($id);
+        //
+    }
 
-        return back()->with('sucesso', 'Resultado excluído!');
+    public function edit(string $id)
+    {
+        $resultado = Resultado::with('evento', 'modalidade')->findOrFail($id);
+        return response()->json($resultado);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $resultado = Resultado::findOrFail($id);
+
+        $validate = $request->validate([
+            'evento_id' => 'required|exists:eventos,id',
+            'modalidade_id' => 'required|exists:modalidades,id',
+            'categoria' => 'required|string',
+            'tipo_resultado' => 'required|string',
+            'descricao' => 'nullable|string',
+        ]);
+
+        $resultado->update($validate);
+        return redirect()->route('resultados.index')->with('success', 'Resultado atualizado com sucesso!');
+    }
+
+    public function destroy(string $id)
+    {
+        $resultado = Resultado::findOrFail($id);
+        $resultado->delete();
+        return redirect()->route('resultados.index')->with('success', 'Resultado excluído com sucesso!');
     }
 }
