@@ -317,7 +317,7 @@
                 .then(response => response.json())
                 .then(dados => {
                     document.getElementById('inputNome').value = dados.nome;
-                    document.getElementById('inputModalidade').value = dados.modalidade;
+                    document.getElementById('inputModalidade').value = dados.modalidade_id;
                     document.getElementById('inputCategoria').value = dados.categoria;
 
                     formEquipe.action = `/times/${id}`;
@@ -363,7 +363,7 @@
                 .then(dados => {
                     document.getElementById('tituloVisualizarTime').innerText = dados.nome;
                     document.getElementById('subtituloVisualizarTime').innerText =
-                        `${dados.modalidade} • ${dados.categoria}`;
+                        `${dados.modalidade?.nome ?? 'Sem modalidade'} • ${dados.categoria}`;
 
                     listaContainer.innerHTML = '';
 

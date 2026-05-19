@@ -245,7 +245,7 @@
                 .then(response => response.json())
                 .then(dados => {
                     document.getElementById('inputNomeEvento').value = dados.nome;
-                    document.getElementById('inputModalidade').value = dados.modalidade;
+                    document.getElementById('inputModalidade').value = dados.modalidade_id;
                     document.getElementById('inputStatus').value = dados.status || 'Agendado';
                     document.getElementById('inputLocal').value = dados.local;
                     document.getElementById('inputDescricao').value = dados.descricao || '';

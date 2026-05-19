@@ -13,9 +13,7 @@ class AtletaFactory extends Factory
         return [
             'nome' => fake()->name(),
 
-            'cpf_rg' => fake()->boolean()
-                ? fake()->unique()->numerify('###.###.###-##')
-                : fake()->unique()->numerify('##.###.###-#'),
+            'cpf_rg' => fake()->numerify('###.###.###-##'),
 
             'categoria' => fake()->randomElement([
                 'Sub-15',

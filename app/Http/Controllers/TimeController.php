@@ -42,7 +42,7 @@ class TimeController extends Controller
 
     public function edit(string $id)
     {
-        $time = Time::with('atletas')->findOrFail($id);
+        $time = Time::with('atletas', 'modalidade')->findOrFail($id);
         return response()->json($time);
     }
 
