@@ -249,7 +249,7 @@
                     if (dataNasc && dataNasc.includes(' ')) dataNasc = dataNasc.split(' ')[0];
                     document.getElementById('inputDataNasc').value = dataNasc;
 
-                    document.getElementById('inputModalidade').value = dados.modalidade;
+                    document.getElementById('inputModalidade').value = dados.modalidade_id;
                     document.getElementById('inputCategoria').value = dados.categoria;
                     document.getElementById('inputContato').value = dados.contato || '';
 
