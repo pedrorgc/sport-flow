@@ -1,13 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AtletaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventoController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TimeController;
-use App\Http\Controllers\AtletaController;
 use App\Http\Controllers\InscricoesController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResultadoController;
+use App\Http\Controllers\TimeController;
+use App\Models\Inscricoes;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('portal.index');
@@ -18,10 +19,10 @@ Route::post('/login-validar', [AuthController::class, 'authenticate'])->name('lo
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/api/eventos/{id}/inscricoes', function ($id) {
-    return App\Models\Inscricoes::with('atleta', 'time')
-    ->where('evento_id', $id)
-    ->where('status_inscricao', '!=', 'Cancelada')
-    ->get();
+    return Inscricoes::with('atleta', 'time')
+        ->where('evento_id', $id)
+        ->where('status_inscricao', '!=', 'Cancelada')
+        ->get();
 });
 
 Route::middleware('auth')->group(function () {
@@ -39,6 +40,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('inscricoes', InscricoesController::class);
     Route::resource('eventos', EventoController::class);
     Route::resource('resultados', ResultadoController::class);
+
+    Route::get('/api/eventos/{id}/inscricoes', function ($id) {
+        return Inscricoes::with(['atleta', 'time'])
+            ->where('evento_id', $id)
+            ->get();
+    });
 
     Route::get('/espacos', function () {
         return view('espacos.index');

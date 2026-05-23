@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Resultado extends Model
 {
-        use HasFactory;
-        
-      protected $fillable = [
+    use HasFactory;
+
+    protected $fillable = [
         'evento_id',
         'inscricao_id',
         'posicao',
-        'marca_pontuacao', 
+        'marca_pontuacao',
     ];
 
     public function evento()
@@ -21,8 +21,8 @@ class Resultado extends Model
         return $this->belongsTo(Evento::class);
     }
 
-    public function inscricoes()
+    public function inscricao()
     {
-        return $this->belongsTo(Inscricoes::class);
+        return $this->belongsTo(Inscricoes::class, 'inscricao_id');
     }
 }
