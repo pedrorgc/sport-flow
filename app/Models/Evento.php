@@ -30,4 +30,9 @@ class Evento extends Model
     {
         return $this->belongsTo(Modalidade::class);
     }
+
+    public function resultados()
+    {
+        return $this->hasMany(Resultado::class);
+    }
 }
