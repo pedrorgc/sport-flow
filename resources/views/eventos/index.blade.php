@@ -20,6 +20,36 @@
             </div>
         </div>
 
+        @if ($errors->any())
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+
+                <div id="toastErro" class="toast align-items-center text-bg-danger border-0 show" role="alert"
+                    style="min-width: 420px; font-size: 16px; border-radius: 12px;">
+
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @foreach ($errors->all() as $erro)
+                                {{ $erro }}
+                            @endforeach
+                        </div>
+
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toastErro');
+
+                    if (toast) {
+                        toast.classList.remove('show');
+                    }
+                }, 5000);
+            </script>
+        @endif
+
         <div class="row g-4">
             @forelse ($eventos as $evento)
                 <div class="col-12 col-md-6 col-lg-4">
@@ -62,18 +92,28 @@
                                 </span>
                             </div>
 
-                            {{-- prazo inscricao formatado --}}
+                            {{-- periodo inscricoes --}}
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-clock text-primary me-2 fs-5"></i>
                                 @php
                                     $hoje = \Carbon\Carbon::today();
-                                    $prazo = \Carbon\Carbon::parse($evento->prazo_inscricoes);
-                                    $abertas = $hoje->lte($prazo);
+                                    $inicioInscricao = $evento->inscricao_inicio
+                                        ? \Carbon\Carbon::parse($evento->inscricao_inicio)
+                                        : null;
+                                    $fimInscricao = $evento->inscricao_fim
+                                        ? \Carbon\Carbon::parse($evento->inscricao_fim)
+                                        : null;
+                                    $abertas =
+                                        $inicioInscricao &&
+                                        $fimInscricao &&
+                                        $hoje->between($inicioInscricao, $fimInscricao);
                                 @endphp
 
                                 <span>
-                                    Inscrições até
-                                    {{ $prazo->format('d/m/Y') }}
+                                    Inscrições:
+                                    {{ $inicioInscricao?->format('d/m/Y') ?? '--' }}
+                                    até
+                                    {{ $fimInscricao?->format('d/m/Y') ?? '--' }}
                                 </span>
 
                                 @if ($abertas)
@@ -132,8 +172,8 @@
 
         <!-- MODAL (CRIAR E EDITAR) -->
         <div x-show="openModal" x-cloak class="position-fixed top-0 start-0 w-100 h-100"
-            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000; overflow-y: auto;" x-transition.opacity
-            @click.self="openModal = false">
+            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000; overflow-y: auto;"
+            x-transition.opacity @click.self="openModal = false">
 
             <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
                 <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 700px;" x-show="openModal"
@@ -167,7 +207,8 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold small text-secondary">Modalidade <span
                                         class="text-danger">*</span></label>
-                                <select name="modalidade_id" id="inputModalidade" class="form-select bg-light" required>
+                                <select name="modalidade_id" id="inputModalidade" class="form-select bg-light"
+                                    required>
                                     <option value="" disabled selected>Selecione a Modalidade</option>
                                     @foreach ($modalidades as $id => $nome)
                                         <option value="{{ $id }}">{{ $nome }}</option>
@@ -207,7 +248,7 @@
                                 </label>
 
                                 <input type="date" name="inscricao_inicio" id="inputInscricaoInicio"
-                                    class="form-control bg-light">
+                                    class="form-control bg-light" required>
                             </div>
 
                             {{-- fim inscricoes --}}
@@ -217,7 +258,7 @@
                                 </label>
 
                                 <input type="date" name="inscricao_fim" id="inputInscricaoFim"
-                                    class="form-control bg-light">
+                                    class="form-control bg-light" required>
                             </div>
 
                             {{-- data inicio --}}
@@ -294,9 +335,11 @@
                         return dataHora.includes('T') ? dataHora.split('T')[0] : dataHora.split(' ')[0];
                     };
 
-                    document.getElementById('inputPrazo').value = tratarData(dados.prazo_inscricoes);
                     document.getElementById('inputDataInicio').value = tratarData(dados.data_inicio);
                     document.getElementById('inputDataFim').value = tratarData(dados.data_fim);
+                    document.getElementById('inputInscricaoInicio').value = tratarData(dados.inscricao_inicio);
+                    document.getElementById('inputInscricaoFim').value = tratarData(dados.inscricao_fim);
+
 
                     // Configura o formulário para Atualização (PUT)
                     formEvento.action = `/eventos/${id}`;

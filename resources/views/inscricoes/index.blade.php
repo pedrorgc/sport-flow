@@ -32,6 +32,36 @@
             </div>
         </div>
 
+        @if ($errors->any())
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+
+                <div id="toastErro" class="toast align-items-center text-bg-danger border-0 show" role="alert"
+                    style="min-width: 420px; font-size: 16px; border-radius: 12px;">
+
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @foreach ($errors->all() as $erro)
+                                {{ $erro }}
+                            @endforeach
+                        </div>
+
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toastErro');
+
+                    if (toast) {
+                        toast.classList.remove('show');
+                    }
+                }, 5000);
+            </script>
+        @endif
+
         <div class="card-premium p-0 overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -76,7 +106,8 @@
                                 </td>
                                 <td class="py-3">
                                     <div class="fw-medium titulo-marca">{{ $inscricao->evento->nome }}</div>
-                                    <div class="text-secondary small">{{ $inscricao->evento->modalidade->nome ?? 'Não informado' }}</div>
+                                    <div class="text-secondary small">
+                                        {{ $inscricao->evento->modalidade->nome ?? 'Não informado' }}</div>
                                 </td>
                                 <td class="py-3">
                                     @php
@@ -147,7 +178,8 @@
                         </button>
                     </div>
 
-                    <form id="formInscricao" method="POST" action="{{ route('inscricoes.store') }}" class="p-4">
+                    <form id="formInscricao" method="POST" action="{{ route('inscricoes.store') }}"
+                        class="p-4">
                         @csrf
                         <input type="hidden" name="_method" id="metodoFormInscricao" value="POST">
 
@@ -158,7 +190,8 @@
                                 <option value="">Selecionar evento...</option>
                                 @foreach ($eventos as $evento)
                                     <option value="{{ $evento->id }}">{{ $evento->nome }}
-                                        ({{ $evento->modalidade->nome ?? 'Não informado' }})</option>
+                                        ({{ $evento->modalidade->nome ?? 'Não informado' }})
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -238,10 +271,12 @@
             metodoFormInscricao.value = "POST";
             tituloModalInscricao.innerText = "Nova Inscrição";
             btnSalvarInscricao.innerText = "Confirmar Inscrição";
-            
+
             // Dispara um evento limpo para o Alpine voltar para a aba 'atleta'
-            window.dispatchEvent(new CustomEvent('set-tipo', { detail: 'atleta' }));
-            
+            window.dispatchEvent(new CustomEvent('set-tipo', {
+                detail: 'atleta'
+            }));
+
             window.dispatchEvent(new CustomEvent('open-modal-inscricao'));
         }
 
@@ -254,14 +289,18 @@
                 .then(dados => {
                     document.getElementById('inputEvento').value = dados.evento_id;
                     document.getElementById('inputStatusInscricao').value = dados.status_inscricao;
-                    
+
                     // Dispara o evento avisando o Alpine qual aba abrir e preenche os dados
-                    if(dados.time_id) {
-                        window.dispatchEvent(new CustomEvent('set-tipo', { detail: 'time' }));
+                    if (dados.time_id) {
+                        window.dispatchEvent(new CustomEvent('set-tipo', {
+                            detail: 'time'
+                        }));
                         document.getElementById('inputTime').value = dados.time_id;
                         document.getElementById('inputAtleta').value = "";
                     } else {
-                        window.dispatchEvent(new CustomEvent('set-tipo', { detail: 'atleta' }));
+                        window.dispatchEvent(new CustomEvent('set-tipo', {
+                            detail: 'atleta'
+                        }));
                         document.getElementById('inputAtleta').value = dados.atleta_id;
                         document.getElementById('inputTime').value = "";
                     }
