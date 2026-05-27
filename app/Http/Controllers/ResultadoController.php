@@ -10,6 +10,7 @@ use App\Models\Modalidade;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Http\Requests\ResultadoRequest;
 
 class ResultadoController extends Controller
 {
@@ -27,22 +28,10 @@ class ResultadoController extends Controller
         //
     }
 
-    public function store(Request $request)
+    public function store(ResultadoRequest $request)
     {
-        $validate = $request->validate([
-            'evento_id' => 'required|exists:eventos,id',
-            'inscricao_id' => 'required|exists:inscricoes,id',
-            'posicao' => [
-                'required',
-                'integer',
-                Rule::unique('resultados', 'posicao')->where(function ($query) use ($request) {
-                    return $query->where('evento_id', $request->input('evento_id'));
-                }),
-            ],
-            'marca_pontuacao' => 'nullable|string', 
-        ]);
+        Resultado::create($request->validated());
 
-        Resultado::create($validate);
         return redirect()->route('resultados.index')->with('success', 'Resultado registrado com sucesso!');
     }
 
@@ -57,24 +46,12 @@ class ResultadoController extends Controller
         return response()->json($resultado);
     }
 
-    public function update(Request $request, string $id)
+    public function update(ResultadoRequest $request, string $id)
     {
         $resultado = Resultado::findOrFail($id);
 
-        $validate = $request->validate([
-            'evento_id' => 'required|exists:eventos,id',
-            'inscricao_id' => 'required|exists:inscricoes,id',
-            'posicao' => [
-                'required',
-                'integer',
-                Rule::unique('resultados', 'posicao')->where(function ($query) use ($request) {
-                    return $query->where('evento_id', $request->input('evento_id'));
-                })->ignore($id),
-            ],
-            'marca_pontuacao' => 'nullable|string',
-        ]);
+        $resultado->update($request->validated());
 
-        $resultado->update($validate);
         return redirect()->route('resultados.index')->with('success', 'Resultado atualizado com sucesso!');
     }
 

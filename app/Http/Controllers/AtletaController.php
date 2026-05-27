@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Atleta;
 use App\Models\Modalidade;
+use App\Http\Requests\AtletaRequest;
 
 class AtletaController extends Controller
 {
@@ -23,18 +23,10 @@ class AtletaController extends Controller
         //
     }
 
-    public function store(Request $request)
+    public function store(AtletaRequest $request)
     {
-        $validate = $request->validate([
-            'nome' => 'required|string|max:255',
-            'data_nascimento' => 'required|date',
-            'cpf_rg' => 'nullable|string|max:20|unique:atletas,cpf_rg',
-            'categoria' => 'required|string',
-            'modalidade_id' => 'required|exists:modalidades,id',
-            'contato' => 'nullable|string|max:255',
-        ]);
+        Atleta::create($request->validated());
 
-        Atleta::create($validate);
         return redirect()->route('atletas.index')->with('success', 'Atleta criado com sucesso!');
     }
 
@@ -43,30 +35,23 @@ class AtletaController extends Controller
         //
     }
 
+    public function destroy(string $id)
+    {
+        Atleta::destroy($id);
+        return redirect()->route('atletas.index')->with('success', 'Atleta deletado com sucesso!');
+    }
+
     public function edit(string $id)
     {
         $atleta = Atleta::findOrFail($id);
         return response()->json($atleta);
     }
 
-    public function update(Request $request, string $id)
+    public function update(AtletaRequest $request, string $id)
     {
-        $validate = $request->validate([
-            'nome' => 'required|string|max:255',
-            'data_nascimento' => 'required|date',
-            'cpf_rg' => 'nullable|string|max:20|unique:atletas,cpf_rg,' . $id,
-            'categoria' => 'required|string',
-            'modalidade_id' => 'required|exists:modalidades,id',
-            'contato' => 'nullable|string|max:255',
-        ]);
 
-        Atleta::findOrFail($id)->update($validate);
+        Atleta::findOrFail($id)->update($request->validated());
+
         return redirect()->route('atletas.index')->with('success', 'Atleta atualizado com sucesso!');
-    }
-
-    public function destroy(string $id)
-    {
-        Atleta::destroy($id);
-        return redirect()->route('atletas.index')->with('success', 'Atleta deletado com sucesso!');
     }
 }

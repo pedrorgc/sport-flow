@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Evento;
 use App\Models\Modalidade;
+use App\Http\Requests\EventoRequest;
 
 class EventoController extends Controller
 {
@@ -20,20 +20,9 @@ class EventoController extends Controller
         //
     }
 
-    public function store(Request $request)
+    public function store(EventoRequest $request)
     {
-        $validate = $request->validate([
-            'nome' => 'required|string|max:255',
-            'modalidade_id' => 'required|exists:modalidades,id',
-            'data_inicio' => 'required|date',
-            'data_fim' => 'required|date|after_or_equal:data_inicio',
-            'prazo_inscricoes' => 'required|date|before:data_inicio',
-            'local' => 'required|string|max:255',
-            'descricao' => 'nullable|string',
-            'status' => 'required|string',
-        ]);
-        
-        Evento::create($validate);
+        Evento::create($request->validated());
         return redirect()->route('eventos.index')->with('success', 'Evento criado com sucesso!');
     }
 
@@ -48,22 +37,11 @@ class EventoController extends Controller
         return response()->json($evento);
     }
 
-    public function update(Request $request, string $id)
+    public function update(EventoRequest $request, string $id)
     {
         $evento = Evento::findOrFail($id);
 
-        $validate = $request->validate([
-            'nome' => 'required|string|max:255',
-            'modalidade_id' => 'required|exists:modalidades,id',
-            'data_inicio' => 'required|date',
-            'data_fim' => 'required|date|after_or_equal:data_inicio',
-            'prazo_inscricoes' => 'required|date|before:data_inicio',
-            'local' => 'required|string|max:255',
-            'descricao' => 'nullable|string',
-            'status' => 'required|string',
-        ]);
-
-        $evento->update($validate);
+        $evento->update($request->validated());
         return redirect()->route('eventos.index')->with('success', 'Evento atualizado com sucesso!');
     }
 

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Time;
 use App\Models\Atleta;
 use App\Models\Modalidade;
+use App\Http\Requests\TimeRequest; 
 
 class TimeController extends Controller
 {
@@ -23,21 +23,16 @@ class TimeController extends Controller
         //
     }
 
-    public function store(Request $request)
+    public function store(TimeRequest $request) 
     {
-        $validate = $request->validate([
-            'nome' => 'required|string|max:255',
-            'categoria' => 'required|string',
-            'modalidade_id' => 'required|exists:modalidades,id',
-        ]);
-
-        Time::create($validate);
+        Time::create($request->validated());
+        
         return redirect()->route('times.index')->with('success', 'Equipe criada com sucesso!');
     }
 
     public function show(string $id)
     {
-        
+        //
     }
 
     public function edit(string $id)
@@ -45,23 +40,19 @@ class TimeController extends Controller
         $time = Time::with('atletas', 'modalidade')->findOrFail($id);
         return response()->json($time);
     }
-
-    public function update(Request $request, string $id)
+    public function update(TimeRequest $request, string $id)
     {
         $time = Time::findOrFail($id);
 
+        // O fluxo do elenco continua funcionando, mas agora os IDs foram validados!
         if ($request->has('sync_atletas')) {
-            $time->atletas()->sync($request->input('atletas', []));
+            // Usamos $request->input porque 'atletas' pode vir vazio se o time não tiver ninguém
+            $time->atletas()->sync($request->input('atletas', [])); 
             return redirect()->route('times.index')->with('success', 'Elenco atualizado com sucesso!');
         }
 
-        $validate = $request->validate([
-            'nome' => 'required|string|max:255',
-            'categoria' => 'required|string',
-            'modalidade_id' => 'required|exists:modalidades,id',
-        ]);
-
-        $time->update($validate);
+        $time->update($request->validated());
+        
         return redirect()->route('times.index')->with('success', 'Equipe atualizada com sucesso!');
     }
 
