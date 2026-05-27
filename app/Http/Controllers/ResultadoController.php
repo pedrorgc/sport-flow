@@ -5,17 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Resultado;
 use App\Models\Evento;
-use App\Models\Inscricoes; // Certifique-se de que o nome do Model está exatamente como o seu
+use App\Models\Inscricoes;
+use App\Models\Modalidade;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ResultadoController extends Controller
 {
     public function index()
     {
-        $resultados = Resultado::with(['evento', 'inscricao'])->get(); 
-        $eventos = Evento::all(); 
+        $eventos = Evento::with(['resultados' => function ($query) {
+            $query->orderBy('posicao', 'asc');
+        }, 'resultados.inscricao.atleta', 'resultados.inscricao.time', 'modalidade'])->get();
 
-        return view('resultados.index', compact('resultados', 'eventos'));
+        return view('resultados.index', compact('eventos'));
     }
 
     public function create()
