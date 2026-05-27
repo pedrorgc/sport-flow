@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('time_id')->nullable()->constrained('times')->onDelete('cascade');
             $table->string('status_inscricao')->default('Confirmada');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
