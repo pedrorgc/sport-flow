@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Atleta;
 use App\Models\Evento;
-use App\Models\Inscricoes; // Dica: O ideal no Laravel é o model ser Singular (Inscricao), mas deixei igual ao seu
+use App\Models\Inscricoes;
 use App\Models\Time;
 use App\Http\Requests\InscricoesRequest;
 
@@ -15,8 +15,8 @@ class InscricoesController extends Controller
         $inscricoes = Inscricoes::with('evento', 'atleta', 'time')->get();
 
         $eventos = Evento::query()->where('status', '!=', 'Cancelado')->get();
-        $atletas = Atleta::query()->orderBy('nome')->get();
-        $times = Time::query()->orderBy('nome')->get();
+        $atletas = Atleta::query()->orderBy('nome', 'asc')->get();
+        $times = Time::query()->orderBy('nome', 'asc')->get();
 
         return view('inscricoes.index', compact('inscricoes', 'eventos', 'atletas', 'times'));
     }
@@ -28,6 +28,19 @@ class InscricoesController extends Controller
 
     public function store(InscricoesRequest $request)
     {
+        $evento = Evento::findOrFail($request->evento_id);
+
+        $hoje = now();
+
+        if (
+            $hoje->lt($evento->inscricao_inicio) ||
+            $hoje->gt($evento->inscricao_fim)
+        ) {
+            return back()->withErrors([
+                'inscricao' => 'As inscrições para este evento estão encerradas.',
+            ]);
+        }
+
         Inscricoes::create($request->dadosTratados());
 
         return redirect()->route('inscricoes.index')->with('success', 'Inscrição realizada com sucesso!');
