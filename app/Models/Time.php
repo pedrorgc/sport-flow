@@ -16,6 +16,7 @@ class Time extends Model
 
     protected $fillable = [
         'nome',
+        'brasao',
         'categoria',
         'modalidade_id',
     ];

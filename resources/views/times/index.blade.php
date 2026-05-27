@@ -66,10 +66,19 @@
                             <tr>
                                 <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase"
-                                            style="width: 40px; height: 40px;">
-                                            {{ substr($time->nome, 0, 2) }}
-                                        </div>
+                                         @if ($time->brasao)
+                                            <img 
+                                                src="{{ asset('storage/' . $time->brasao) }}"
+                                                width="40"
+                                                height="40"
+                                                class="rounded-circle object-fit-cover border"
+                                                alt="Brasão do time">
+                                        @else
+                                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase"
+                                                style="width: 40px; height: 40px;">
+                                                {{ substr($time->nome, 0, 2) }}
+                                            </div>
+                                        @endif
                                         <div>
                                             <div class="fw-semibold titulo-marca">{{ $time->nome }}</div>
                                         </div>
@@ -145,7 +154,7 @@
                         </button>
                     </div>
 
-                    <form id="formEquipe" action="{{ route('times.store') }}" method="POST" class="p-4">
+                    <form id="formEquipe" action="{{ route('times.store') }}" method="POST" enctype="multipart/form-data" class="p-4">
                         @csrf
                         <input type="hidden" name="_method" id="metodoFormEquipe" value="POST">
 
@@ -179,6 +188,16 @@
                                     <option value="Adulto">Adulto</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class = "mb-3">
+                            <label class="form-label fw-semibold small text-secondary">
+                                Brasão da equipe
+                            </label>
+                            <input 
+                                type='file'
+                                name='brasao'
+                                class='form-control bg-light'
+                                accept=".png, .jpg, .jpeg">
                         </div>
                         <div class="d-flex justify-content-end gap-3 pt-3 border-top">
                             <button type="button" class="btn btn-light fw-medium"
