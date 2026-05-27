@@ -4,15 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Atleta;
 use App\Models\Evento;
-use App\Models\Inscricoes;
+use App\Models\Inscricoes; // Dica: O ideal no Laravel é o model ser Singular (Inscricao), mas deixei igual ao seu
 use App\Models\Time;
-use Illuminate\Http\Request;
+use App\Http\Requests\InscricoesRequest;
 
 class InscricoesController extends Controller
 {
     public function index()
     {
-
         $inscricoes = Inscricoes::with('evento', 'atleta', 'time')->get();
 
         $eventos = Evento::query()->where('status', '!=', 'Cancelado')->get();
@@ -27,25 +26,9 @@ class InscricoesController extends Controller
         // 
     }
 
-    public function store(Request $request)
+    public function store(InscricoesRequest $request)
     {
-        $validate = $request->validate([
-            'evento_id' => 'required|exists:eventos,id',
-            'tipo' => 'required|in:atleta,time',
-            'atleta_id' => 'required_if:tipo,atleta|nullable|exists:atletas,id',
-            'time_id' => 'required_if:tipo,time|nullable|exists:times,id',
-            'status_inscricao' => 'required|string',
-        ]);
-
-        if ($validate['tipo'] === 'atleta') {
-            $validate['time_id'] = null;
-        } else {
-            $validate['atleta_id'] = null;
-        }
-
-        unset($validate['tipo']);
-
-        Inscricoes::create($validate);
+        Inscricoes::create($request->dadosTratados());
 
         return redirect()->route('inscricoes.index')->with('success', 'Inscrição realizada com sucesso!');
     }
@@ -62,27 +45,11 @@ class InscricoesController extends Controller
         return response()->json($inscricao);
     }
 
-    public function update(Request $request, string $id)
+    public function update(InscricoesRequest $request, string $id)
     {
         $inscricao = Inscricoes::findOrFail($id);
 
-        $validate = $request->validate([
-            'evento_id' => 'required|exists:eventos,id',
-            'tipo' => 'required|in:atleta,time',
-            'atleta_id' => 'required_if:tipo,atleta|nullable|exists:atletas,id',
-            'time_id' => 'required_if:tipo,time|nullable|exists:times,id',
-            'status_inscricao' => 'required|string',
-        ]);
-
-        if ($validate['tipo'] === 'atleta') {
-            $validate['time_id'] = null;
-        } else {
-            $validate['atleta_id'] = null;
-        }
-
-        unset($validate['tipo']);
-
-        $inscricao->update($validate);
+        $inscricao->update($request->dadosTratados());
 
         return redirect()->route('inscricoes.index')->with('success', 'Inscrição atualizada com sucesso!');
     }
