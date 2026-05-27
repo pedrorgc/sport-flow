@@ -65,8 +65,26 @@
                             {{-- prazo inscricao formatado --}}
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-clock text-primary me-2 fs-5"></i>
-                                <span>Inscrições até
-                                    {{ \Carbon\Carbon::parse($evento->prazo_inscricoes)->format('d/m/Y') }}</span>
+                                @php
+                                    $hoje = \Carbon\Carbon::today();
+                                    $prazo = \Carbon\Carbon::parse($evento->prazo_inscricoes);
+                                    $abertas = $hoje->lte($prazo);
+                                @endphp
+
+                                <span>
+                                    Inscrições até
+                                    {{ $prazo->format('d/m/Y') }}
+                                </span>
+
+                                @if ($abertas)
+                                    <span class="badge bg-success ms-2">
+                                        Abertas
+                                    </span>
+                                @else
+                                    <span class="badge bg-danger ms-2">
+                                        Encerradas
+                                    </span>
+                                @endif
                             </div>
 
                             {{-- local do evento --}}
@@ -114,7 +132,7 @@
 
         <!-- MODAL (CRIAR E EDITAR) -->
         <div x-show="openModal" x-cloak class="position-fixed top-0 start-0 w-100 h-100"
-            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000;" x-transition.opacity
+            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000; overflow-y: auto;" x-transition.opacity
             @click.self="openModal = false">
 
             <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
@@ -170,34 +188,54 @@
                         </div>
 
                         {{-- local --}}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-secondary">
+                                Local <span class="text-danger">*</span>
+                            </label>
+
+                            <input type="text" name="local" id="inputLocal" class="form-control bg-light"
+                                required>
+                        </div>
+
+                        {{-- datas --}}
                         <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Local <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" name="local" id="inputLocal" class="form-control bg-light"
-                                    required>
+
+                            {{-- inicio inscricoes --}}
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    Início das Inscrições
+                                </label>
+
+                                <input type="date" name="inscricao_inicio" id="inputInscricaoInicio"
+                                    class="form-control bg-light">
                             </div>
 
-                            {{-- prazo inscricao --}}
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Prazo de Inscrição <span
-                                        class="text-danger">*</span></label>
-                                <input type="date" name="prazo_inscricoes" id="inputPrazo"
-                                    class="form-control bg-light" required>
+                            {{-- fim inscricoes --}}
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    Fim das Inscrições
+                                </label>
+
+                                <input type="date" name="inscricao_fim" id="inputInscricaoFim"
+                                    class="form-control bg-light">
                             </div>
 
                             {{-- data inicio --}}
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Data Início <span
-                                        class="text-danger">*</span></label>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    Data Início <span class="text-danger">*</span>
+                                </label>
+
                                 <input type="date" name="data_inicio" id="inputDataInicio"
                                     class="form-control bg-light" required>
                             </div>
 
                             {{-- data fim --}}
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Data Fim <span
-                                        class="text-danger">*</span></label>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold small text-secondary">
+                                    Data Fim <span class="text-danger">*</span>
+                                </label>
+
                                 <input type="date" name="data_fim" id="inputDataFim"
                                     class="form-control bg-light" required>
                             </div>
