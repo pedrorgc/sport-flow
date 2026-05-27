@@ -24,6 +24,7 @@ return new class extends Migration
             $table->enum('status', ['Agendado', 'Em Andamento', 'Concluído', 'Cancelado'])->default('Agendado');
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
