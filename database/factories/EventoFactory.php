@@ -9,13 +9,17 @@ class EventoFactory extends Factory
 {
     public function definition(): array
     {
-        $dataInicio = fake()->dateTimeBetween('now', '+2 months');
+        // 1. Define quando o evento começa e termina
+        $dataInicio = fake()->dateTimeBetween('+1 month', '+3 months');
 
         $dataFim = (clone $dataInicio)
             ->modify('+' . rand(1, 10) . ' days');
 
-        $prazoInscricao = (clone $dataInicio)
-            ->modify('-' . rand(1, 10) . ' days');
+        $inscricaoFim = (clone $dataInicio)
+            ->modify('-' . rand(3, 7) . ' days');
+
+        $inscricaoInicio = (clone $inscricaoFim)
+            ->modify('-' . rand(10, 20) . ' days');
 
         return [
             'nome' => 'Evento ' . fake()->word(),
@@ -26,7 +30,8 @@ class EventoFactory extends Factory
 
             'data_fim' => $dataFim,
 
-            'prazo_inscricoes' => $prazoInscricao,
+            'inscricao_inicio' => $inscricaoInicio,
+            'inscricao_fim' => $inscricaoFim,
 
             'local' => fake()->randomElement([
                 'Ginásio Municipal',
