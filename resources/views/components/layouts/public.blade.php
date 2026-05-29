@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" x-data="{ theme: localStorage.getItem('theme') || 'light' }" :data-theme="theme" x-effect="localStorage.setItem('theme', theme)">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,11 +19,15 @@
         }
     </script>
 
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.4/dist/turbo.es2017-esm.js"></script>
+
     <style>
         :root {
-            --bg-sistema: #f8fafc; /* Um tom ligeiramente mais limpo para o público */
+            --bg-sistema: #f8fafc;
+            /* Um tom ligeiramente mais limpo para o público */
             --bg-cards: #ffffff;
-            --cor-primaria: #3b82f6; /* Azul moderno */
+            --cor-primaria: #3b82f6;
+            /* Azul moderno */
             --cor-borda: #e2e8f0;
         }
 
@@ -40,21 +45,33 @@
             transition: background-color 0.3s ease;
         }
 
-        [data-theme="dark"] body { color: #94a3b8; }
+        [data-theme="dark"] body {
+            color: #94a3b8;
+        }
 
-        h1, h2, h3, h4, h5, .titulo-marca {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        .titulo-marca {
             font-weight: 600;
             color: #0f172a;
         }
 
-        [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, 
-        [data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] .titulo-marca {
+        [data-theme="dark"] h1,
+        [data-theme="dark"] h2,
+        [data-theme="dark"] h3,
+        [data-theme="dark"] h4,
+        [data-theme="dark"] h5,
+        [data-theme="dark"] .titulo-marca {
             color: #f8fafc;
         }
 
         .card-premium {
             background-color: var(--bg-cards);
-            border-radius: 1rem; /* Bordas um pouco mais arredondadas no público */
+            border-radius: 1rem;
+            /* Bordas um pouco mais arredondadas no público */
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
@@ -66,7 +83,7 @@
             font-weight: 500;
             transition: background-color 0.2s, transform 0.1s;
         }
-        
+
         .btn-premium:hover {
             background-color: #2563eb;
             color: white;
@@ -102,8 +119,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-fade-in {
@@ -113,12 +137,12 @@
         /* ==============================================
            ANIMAÇÕES E MICRO-INTERAÇÕES
            ============================================== */
-           
+
         /* Efeito de levitação nos cards principais */
         .hover-scale-up {
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
         }
-        
+
         .hover-scale-up:hover {
             transform: translateY(-8px);
             box-shadow: 0 20px 40px -10px rgba(var(--cor-primaria-rgb, 13, 110, 253), 0.15) !important;
@@ -128,7 +152,7 @@
         .hover-scale-up .icon-bounce {
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        
+
         .hover-scale-up:hover .icon-bounce {
             transform: scale(1.15) rotate(5deg);
         }
@@ -138,21 +162,33 @@
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
             padding-left: 0.5rem;
-            margin-left: -0.5rem; /* Compensa o padding inicial */
+            margin-left: -0.5rem;
+            /* Compensa o padding inicial */
             border-radius: 0.5rem;
         }
 
         .list-hover-highlight:hover {
-            background-color: rgba(0, 0, 0, 0.02); /* Fundo sutil */
-            border-left-color: var(--cor-primaria); /* Borda azul acende na esquerda */
-            transform: translateX(4px); /* Desliza sutilmente para a direita */
+            background-color: rgba(0, 0, 0, 0.02);
+            /* Fundo sutil */
+            border-left-color: var(--cor-primaria);
+            /* Borda azul acende na esquerda */
+            transform: translateX(4px);
+            /* Desliza sutilmente para a direita */
         }
 
         [data-theme="dark"] .list-hover-highlight:hover {
             background-color: rgba(255, 255, 255, 0.02);
         }
+
+        /* Estilizando a barra de progresso do Turbo Drive */
+        .turbo-progress-bar {
+            height: 4px;
+            background-color: #10b981;
+            /* A cor 'success' do seu sistema */
+        }
     </style>
 </head>
+
 <body class="d-flex flex-column min-vh-100 hero-gradient">
 
     <nav class="glass-nav border-bottom py-3" style="border-color: var(--cor-borda) !important;">
@@ -162,10 +198,12 @@
             </a>
 
             <div class="d-flex align-items-center gap-3">
-                <button @click="theme = theme === 'light' ? 'dark' : 'light'" class="btn btn-light rounded-circle d-flex align-items-center justify-content-center border-0 text-secondary shadow-sm" style="width: 40px; height: 40px; background-color: var(--bg-sistema);">
+                <button @click="theme = theme === 'light' ? 'dark' : 'light'"
+                    class="btn btn-light rounded-circle d-flex align-items-center justify-content-center border-0 text-secondary shadow-sm"
+                    style="width: 40px; height: 40px; background-color: var(--bg-sistema);">
                     <i class="bi" :class="theme === 'dark' ? 'bi-moon-stars-fill' : 'bi-sun-fill'"></i>
                 </button>
-                
+
                 <a href="/login" class="btn btn-premium px-4 rounded-pill d-none d-sm-block shadow-sm">
                     Acesso Restrito
                 </a>
@@ -186,4 +224,5 @@
     </footer>
 
 </body>
+
 </html>

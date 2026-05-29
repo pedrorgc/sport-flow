@@ -19,6 +19,8 @@
         }
     </script>
 
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.4/dist/turbo.es2017-esm.js"></script>
+
     <style>
         /* ==============================================
            PALETA DE CORES: MODO CLARO (Padrão)
@@ -204,7 +206,9 @@
             color: var(--cor-texto-titulo);
         }
 
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
 
         [data-theme="dark"] .form-control::placeholder,
         [data-theme="dark"] .form-select::placeholder {
@@ -220,9 +224,23 @@
             color: #94a3b8 !important;
         }
 
-        [data-theme="dark"] .text-primary { color: #60a5fa !important; }
-        [data-theme="dark"] .bg-primary { background-color: #3b82f6 !important; }
-        [data-theme="dark"] .text-secondary { color: #94a3b8 !important; }
+        [data-theme="dark"] .text-primary {
+            color: #60a5fa !important;
+        }
+
+        [data-theme="dark"] .bg-primary {
+            background-color: #3b82f6 !important;
+        }
+
+        [data-theme="dark"] .text-secondary {
+            color: #94a3b8 !important;
+        }
+
+        /* Estilizando a barra de progresso do Turbo Drive */
+        .turbo-progress-bar {
+            height: 4px;
+            background-color: #10b981;
+        }
     </style>
 </head>
 
