@@ -30,4 +30,9 @@ class Atleta extends Model
     {
         return $this->belongsTo(Modalidade::class);
     }
+
+    public function inscricoes()
+    {
+        return $this->hasMany(Inscricoes::class);
+    }
 }
