@@ -188,7 +188,7 @@
                                         {{ $evento->nome }}
                                     </div>
 
-                                    <div class="text-secondary small d-flex flex-wrap align-items-center gap-2">
+                                    <div class="text-secondary small d-flex flex-wrap align-items-center gap-2 mb-2">
                                         <span>
                                             <i class="bi bi-geo-alt me-1"></i>
                                             {{ $evento->local }}
@@ -209,6 +209,17 @@
                                         </span>
                                     </div>
 
+                                    @if ($evento->regulamento_path)
+                                        <div>
+                                            <a href="{{ asset('storage/' . $evento->regulamento_path) }}"
+                                                target="_blank"
+                                                class="btn btn-sm btn-light border shadow-sm d-inline-flex align-items-center gap-2 hover-scale-up py-1"
+                                                style="font-size: 0.8rem;">
+                                                <i class="bi bi-file-earmark-pdf-fill text-danger"></i>
+                                                <span class="fw-medium">Baixar Regulamento</span>
+                                            </a>
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <span

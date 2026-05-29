@@ -10,11 +10,22 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        // Cria o usuário de teste Administrativo
         User::create([
-            'name' => 'Administrador',
-            'username' => 'ADM',
-            'password' => 'ADM12345678'
+            'name' => 'Pedro',
+            'username' => 'prgc',
+            'password' => 'pedro10'
+        ]);
+
+        User::create([
+            'name' => 'Rai',
+            'username' => 'raipb',
+            'password' => 'raipb10'
+        ]);
+
+        User::create([
+            'name' => 'Luiz',
+            'username' => 'luiz',
+            'password' => 'luiz10'
         ]);
     }
 }

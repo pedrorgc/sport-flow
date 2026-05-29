@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Evento;
 use App\Models\Modalidade;
 use App\Http\Requests\EventoRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EventoController extends Controller
 {
     public function index()
     {
-        $eventos = Evento::orderBy('data_inicio', 'asc')->get();
+        $eventos = Evento::with('modalidade')->orderBy('data_inicio', 'asc')->get();
         $modalidades = Modalidade::all()->pluck('nome', 'id');
         return view('eventos.index', compact('eventos', 'modalidades'));
     }
@@ -22,7 +24,13 @@ class EventoController extends Controller
 
     public function store(EventoRequest $request)
     {
-        Evento::create($request->validated());
+        $dados = $request->validated();
+
+        if ($request->hasFile('regulamento_path')) {
+            $dados['regulamento_path'] = $request->file('regulamento_path')->store('regulamentos', 'public');
+        }
+
+        Evento::create($dados);
         return redirect()->route('eventos.index')->with('success', 'Evento criado com sucesso!');
     }
 
@@ -41,7 +49,13 @@ class EventoController extends Controller
     {
         $evento = Evento::findOrFail($id);
 
-        $evento->update($request->validated());
+        $dados = $request->validated();
+
+        if ($request->hasFile('regulamento_path')) {
+            $dados['regulamento_path'] = $request->file('regulamento_path')->store('regulamentos', 'public');
+        }
+
+        $evento->update($dados);
         return redirect()->route('eventos.index')->with('success', 'Evento atualizado com sucesso!');
     }
 
