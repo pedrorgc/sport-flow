@@ -86,9 +86,9 @@
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
                                 <span>
-                                    {{ \Carbon\Carbon::parse($evento->data_inicio)->format('d/m/Y') }}
+                                    {{ \Carbon\Carbon::parse($evento->data_inicio)->format('d/m/Y H:i') }}
                                     até
-                                    {{ \Carbon\Carbon::parse($evento->data_fim)->format('d/m/Y') }}
+                                    {{ \Carbon\Carbon::parse($evento->data_fim)->format('d/m/Y H:i') }}
                                 </span>
                             </div>
 
@@ -267,7 +267,7 @@
                                     Data Início <span class="text-danger">*</span>
                                 </label>
 
-                                <input type="date" name="data_inicio" id="inputDataInicio"
+                                <input type="datetime-local" name="data_inicio" id="inputDataInicio"
                                     class="form-control bg-light" required>
                             </div>
 
@@ -277,7 +277,7 @@
                                     Data Fim <span class="text-danger">*</span>
                                 </label>
 
-                                <input type="date" name="data_fim" id="inputDataFim"
+                                <input type="datetime-local" name="data_fim" id="inputDataFim"
                                     class="form-control bg-light" required>
                             </div>
                         </div>
@@ -332,7 +332,8 @@
                     // Tratamento de Datas (Cortando qualquer HORA que venha do banco)
                     const tratarData = (dataHora) => {
                         if (!dataHora) return '';
-                        return dataHora.includes('T') ? dataHora.split('T')[0] : dataHora.split(' ')[0];
+
+                        return dataHora.replace(' ', 'T').slice(0, 16);
                     };
 
                     document.getElementById('inputDataInicio').value = tratarData(dados.data_inicio);

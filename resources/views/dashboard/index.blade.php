@@ -148,40 +148,54 @@
 
                 <div class="timeline-container mt-2">
 
-                    <div class="timeline-item">
-                        <div class="timeline-marker bg-secondary"></div>
-                        <div class="p-3 rounded-4 bg-light border" style="border-color: var(--cor-borda) !important;">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="fw-bold text-dark fs-5">14:00</span>
-                                    <span class="text-secondary small">às 16:00</span>
-                                </div>
-                                <span
-                                    class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-3">Grade
-                                    Fixa</span>
-                            </div>
-                            <div class="fw-bold titulo-marca fs-6 mb-1">Treino Basquete Sub-12</div>
-                            <div class="text-secondary small"><i class="bi bi-geo-alt text-primary me-1"></i> Ginásio
-                                Principal</div>
-                        </div>
-                    </div>
+                    @forelse($agendaHoje as $reserva)
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-primary"></div>
 
-                    <div class="timeline-item">
-                        <div class="timeline-marker bg-primary"></div>
-                        <div class="p-3 rounded-4 border border-primary border-opacity-25"
-                            style="background-color: var(--bg-sistema);">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="fw-bold text-primary fs-5">19:00</span>
-                                    <span class="text-secondary small">às 21:00</span>
+                            <div class="p-3 rounded-4 border border-primary border-opacity-25"
+                                style="background-color: var(--bg-sistema);">
+
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fw-bold text-primary fs-5">
+                                            {{ \Carbon\Carbon::parse($reserva->inicio)->format('H:i') }}
+                                        </span>
+
+                                        <span class="text-secondary small">
+                                            às {{ \Carbon\Carbon::parse($reserva->fim)->format('H:i') }}
+                                        </span>
+                                    </div>
+
+                                    <span class="badge bg-primary rounded-pill px-3 shadow-sm">
+                                        Reserva
+                                    </span>
                                 </div>
-                                <span class="badge bg-primary rounded-pill px-3 shadow-sm">Reserva Avulsa</span>
+
+                                <div class="fw-bold titulo-marca fs-6 mb-1">
+                                    {{ $reserva->titulo ?? 'Reserva de Espaço' }}
+                                </div>
+
+                                <div class="text-secondary small">
+                                    <i class="bi bi-geo-alt text-primary me-1"></i>
+                                    {{ $reserva->local ?? 'Local não informado' }}
+                                </div>
                             </div>
-                            <div class="fw-bold titulo-marca fs-6 mb-1">Aluguel Quadra - João Carlos</div>
-                            <div class="text-secondary small"><i class="bi bi-geo-alt text-primary me-1"></i> Quadra
-                                Coberta (Futsal)</div>
                         </div>
-                    </div>
+
+                    @empty
+
+                        <div class="text-center py-5">
+                            <i class="bi bi-calendar-x text-secondary fs-1"></i>
+
+                            <div class="fw-bold titulo-marca mt-3">
+                                Nenhuma atividade hoje
+                            </div>
+
+                            <div class="text-secondary small">
+                                Não há reservas ou atividades programadas para hoje.
+                            </div>
+                        </div>
+                    @endforelse
 
                 </div>
             </div>
@@ -196,23 +210,40 @@
 
                     <h6 class="titulo-marca mb-4 fw-bold">Avisos do Sistema</h6>
 
-                    <div
-                        class="d-flex gap-3 mb-3 p-3 rounded-4 bg-warning bg-opacity-10 border border-warning border-opacity-25">
-                        <div class="text-warning mt-1"><i class="bi bi-exclamation-circle-fill fs-5"></i></div>
-                        <div>
-                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">Inscrições Encerrando</div>
-                            <div class="text-secondary small mt-1">A Copa Regional fecha inscrições amanhã.</div>
-                        </div>
-                    </div>
+                    @forelse($avisosInscricoes as $aviso)
+                        <div
+                            class="d-flex gap-3 mb-3 p-3 rounded-4 bg-warning bg-opacity-10 border border-warning border-opacity-25">
 
-                    <div
-                        class="d-flex gap-3 p-3 rounded-4 bg-primary bg-opacity-10 border border-primary border-opacity-25">
-                        <div class="text-primary mt-1"><i class="bi bi-info-circle-fill fs-5"></i></div>
-                        <div>
-                            <div class="fw-bold text-dark" style="font-size: 0.95rem;">2 Novas Reservas</div>
-                            <div class="text-secondary small mt-1">Existem solicitações pendentes de aprovação.</div>
+                            <div class="text-warning mt-1">
+                                <i class="bi bi-exclamation-circle-fill fs-5"></i>
+                            </div>
+
+                            <div>
+                                <div class="fw-bold text-dark" style="font-size: 0.95rem;">
+                                    Inscrições Encerrando: {{ $aviso->nome }}
+                                </div>
+
+                                <div class="text-secondary small mt-1">
+                                    Atenção: O prazo acaba dia
+                                    {{ \Carbon\Carbon::parse($aviso->inscricao_fim)->format('d/m/Y') }}
+                                </div>
+                            </div>
                         </div>
-                    </div>
+
+                    @empty
+
+                        <div class="text-center py-4">
+                            <i class="bi bi-check-circle text-success fs-1"></i>
+
+                            <div class="fw-bold titulo-marca mt-3">
+                                Nenhum aviso no momento
+                            </div>
+
+                            <div class="text-secondary small">
+                                Todas as inscrições estão dentro do prazo.
+                            </div>
+                        </div>
+                    @endforelse
                 </div>
 
                 <div class="card-premium p-4 border-0 shadow-sm rounded-4 flex-grow-1">
@@ -220,27 +251,44 @@
 
                     <div class="d-flex flex-column gap-3">
 
-                        <div class="d-flex align-items-center gap-3 p-2 rounded-3 hover-bg transition">
-                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                                style="width: 40px; height: 40px; font-size: 0.85rem;">RO</div>
-                            <div class="flex-grow-1">
-                                <div class="fw-semibold titulo-marca" style="font-size: 0.9rem;">Nova Inscrição:
-                                    Ricardo O.</div>
-                                <div class="text-secondary small">Copa Verão • Há 2 horas</div>
-                            </div>
-                        </div>
+                        @forelse($atividadesRecentes as $atividade)
+                            <div class="d-flex align-items-center gap-3 p-2 rounded-3 hover-bg transition 
+                                @if (!$loop->first) border-top @endif"
+                                style="border-color: var(--cor-borda) !important;">
 
-                        <div class="d-flex align-items-center gap-3 p-2 rounded-3 hover-bg transition border-top"
-                            style="border-color: var(--cor-borda) !important;">
-                            <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center fw-bold"
-                                style="width: 40px; height: 40px; font-size: 0.85rem;"><i
-                                    class="bi bi-shield-fill"></i></div>
-                            <div class="flex-grow-1">
-                                <div class="fw-semibold titulo-marca" style="font-size: 0.9rem;">Equipe Cadastrada:
-                                    Fênix F.C.</div>
-                                <div class="text-secondary small">Futsal • Há 5 horas</div>
+                                <div 
+                                    class="bg-{{ $atividade->cor }} bg-opacity-10 text-{{ $atividade->cor }}
+                                    rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                                    style="width: 40px; height: 40px; font-size: 0.85rem;">
+
+                                    <i class="{{ $atividade->icone }}"></i>
+                                </div>
+
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold titulo-marca" style="font-size: 0.9rem;">
+                                        {{ $atividade->mensagem }}
+                                    </div>
+
+                                    <div class="text-secondary small">
+                                        {{ $atividade->data->diffForHumans() }}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+
+                        @empty
+
+                            <div class="text-center py-5">
+                                <i class="bi bi-activity text-secondary fs-1"></i>
+
+                                <div class="fw-bold titulo-marca mt-3">
+                                    Nenhuma atividade recente
+                                </div>
+
+                                <div class="text-secondary small">
+                                    O sistema ainda não registrou movimentações.
+                                </div>
+                            </div>
+                        @endforelse
 
                     </div>
                 </div>
