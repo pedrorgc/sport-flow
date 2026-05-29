@@ -250,7 +250,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('turbo:load', function() {
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             const commonOptions = {
                 chart: {
