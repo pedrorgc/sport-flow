@@ -32,6 +32,7 @@ class EventoRequest extends FormRequest
             'local' => 'required|string|max:255',
             'descricao' => 'nullable|string',
             'status' => 'required|string',
+            'regulamento_path' => 'nullable|file|mimes:pdf|max:5120',
         ];
     }
 }

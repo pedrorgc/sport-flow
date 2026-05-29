@@ -190,7 +190,8 @@
                         </button>
                     </div>
 
-                    <form method="POST" action="{{ route('eventos.store') }}" class="p-4" id="formEvento">
+                    <form method="POST" action="{{ route('eventos.store') }}" class="p-4" id="formEvento"
+                        enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="_method" id="metodoFormEvento" value="POST">
 
@@ -282,9 +283,19 @@
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold small text-secondary">Regulamento / Descrição</label>
-                            <textarea name="descricao" id="inputDescricao" class="form-control bg-light" rows="3"></textarea>
+                        <div class="mb-3">
+                            <label for="regulamento_path" class="form-label fw-bold">Regulamento Técnico do
+                                Evento</label>
+                            <input type="file" class="form-control @error('regulamento_path') is-invalid @enderror"
+                                id="regulamento_path" name="regulamento_path" accept=".pdf">
+
+                            <div class="form-text text-secondary small">
+                                <i class="bi bi-info-circle"></i> Opcional. Apenas arquivos PDF (máx. 5MB).
+                            </div>
+
+                            @error('regulamento_path')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="d-flex justify-content-end gap-3 pt-3 border-top">

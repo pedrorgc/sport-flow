@@ -15,9 +15,9 @@ class TimeController extends Controller
 {
     public function index()
     {
-        $times = Time::withCount('atletas')->get(); 
+        $times = Time::with('modalidade')->with('atletas')->get(); 
         $modalidades = Modalidade::all()->pluck('nome', 'id');
-        $todosAtletas = Atleta::all();
+        $todosAtletas = Atleta::with('modalidade')->get();
 
         return view('times.index', compact('times', 'modalidades', 'todosAtletas'));
     }

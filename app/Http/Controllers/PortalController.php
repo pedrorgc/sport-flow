@@ -20,7 +20,8 @@ class PortalController extends Controller
             ->groupBy('status')
             ->get();
 
-        $topAtletas = Atleta::withCount('inscricoes')
+        $topAtletas = Atleta::with('modalidade')
+            ->withCount('inscricoes')
             ->orderBy('inscricoes_count', 'desc')
             ->take(5)
             ->get();

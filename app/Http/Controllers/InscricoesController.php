@@ -12,11 +12,12 @@ class InscricoesController extends Controller
 {
     public function index()
     {
-        $inscricoes = Inscricoes::with('evento', 'atleta', 'time')->get();
+        $inscricoes = Inscricoes::with(['evento.modalidade', 'atleta', 'time'])->get();
 
-        $eventos = Evento::query()->where('status', '!=', 'Cancelado')->get();
-        $atletas = Atleta::query()->orderBy('nome', 'asc')->get();
-        $times = Time::query()->orderBy('nome', 'asc')->get();
+        $eventos = Evento::with('modalidade')->where('status', '!=', 'Cancelado')->get();
+        
+        $atletas = Atleta::query()->orderBy('nome')->get();
+        $times = Time::query()->orderBy('nome')->get();
 
         return view('inscricoes.index', compact('inscricoes', 'eventos', 'atletas', 'times'));
     }
