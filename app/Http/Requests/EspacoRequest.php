@@ -12,7 +12,7 @@ class EspacoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,15 @@ class EspacoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Regras de validação para o espaço
+            'nome' => 'required|string|max:255',
+            
+            'tipo' => 'required|string|max:255',
+
+            'endereco' => 'required|string',
+
+            'capacidade' => 'nullable|integer',
+
+            'foto' => 'nullable|image|mimes:jpg,png,jpeg|max:3072',
         ];
     }
 }
