@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EspacoRequest;
 use Illuminate\Http\Request;
 
 class EspacoController extends Controller
@@ -25,16 +26,9 @@ class EspacoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(EspacoRequest $request)
     {
-        $validate = $request->validate([
-            'nome' => 'required|string|max:255',
-            'tipo' => 'required|string|max:255',
-            'endereco' => 'required|string',
-            'capacidade' => 'nullable|interger',
-
-            'foto' => 'nullable|image|mimes:jpg,png,jpeg|max:3072',
-        ]);
+        $validate = $request->validated();
 
         if ($request->hasFile('foto')) {
 
@@ -69,18 +63,11 @@ class EspacoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(EspacoRequest $request, string $id)
     {
         $espaco = Espaco::findOrFail($id);
 
-        $validate = $request->validate([
-            'nome' => 'required|string|max:255',
-            'tipo' => 'required|string|max:255',
-            'capacidade' => 'nullable|integer',
-            'endereco' => 'required|string',
-
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:3072',
-        ]);
+        $validate = $request->validated();
 
         if ($request->hasFile('foto')) {
 
