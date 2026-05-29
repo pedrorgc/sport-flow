@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EspacoRequest;
 use Illuminate\Http\Request;
+use App\Models\Espaco;
 
 class EspacoController extends Controller
 {

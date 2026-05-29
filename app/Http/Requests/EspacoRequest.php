@@ -29,7 +29,7 @@ class EspacoRequest extends FormRequest
 
             'endereco' => 'required|string',
 
-            'capacidade' => 'nullable|interger',
+            'capacidade' => 'nullable|integer',
 
             'foto' => 'nullable|image|mimes:jpg,png,jpeg|max:3072',
         ];
