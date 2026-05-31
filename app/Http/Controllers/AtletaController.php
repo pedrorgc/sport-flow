@@ -2,20 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AtletaRequest;
 use App\Models\Atleta;
 use App\Models\Modalidade;
-use App\Http\Requests\AtletaRequest;
+use Illuminate\Http\Request;
 
 class AtletaController extends Controller
 {
-
-    public function index()
+    public function index(Request $request)
     {
-        $atletas = Atleta::with('modalidade')->get();
-        $modalidades = Modalidade::all()->pluck('nome', 'id');
+        $query = Atleta::with('modalidade');
+
+        $query->when($request->search, function ($q, $search) {
+            return $q->where(function ($subQuery) use ($search) {
+                $subQuery->where('nome', 'like', "%{$search}%")
+                    ->orWhere('cpf_rg', 'like', "%{$search}%");
+            });
+        });
+
+        $query->when($request->modalidade_id, function ($q, $modalidade) {
+            return $q->where('modalidade_id', $modalidade);
+        });
+
+        $query->when($request->categoria, function ($q, $categoria) {
+            return $q->where('categoria', $categoria);
+        });
+
+        $atletas = $query->orderBy('nome')->get();
+        $modalidades = Modalidade::pluck('nome', 'id');
 
         return view('atletas.index', compact('atletas', 'modalidades'));
-
     }
 
     public function create()
@@ -38,12 +54,14 @@ class AtletaController extends Controller
     public function destroy(string $id)
     {
         Atleta::destroy($id);
+
         return redirect()->route('atletas.index')->with('success', 'Atleta deletado com sucesso!');
     }
 
     public function edit(string $id)
     {
         $atleta = Atleta::findOrFail($id);
+
         return response()->json($atleta);
     }
 

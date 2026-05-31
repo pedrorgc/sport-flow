@@ -14,13 +14,25 @@ use App\Http\Requests\ResultadoRequest;
 
 class ResultadoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $eventos = Evento::with(['resultados' => function ($query) {
-            $query->orderBy('posicao', 'asc');
-        }, 'resultados.inscricao.atleta', 'resultados.inscricao.time', 'modalidade'])->get();
+        $query = Evento::with([
+            'resultados' => function ($q) {
+                $q->orderBy('posicao', 'asc');
+            }, 
+            'resultados.inscricao.atleta', 
+            'resultados.inscricao.time', 
+            'modalidade'
+        ]);
 
-        return view('resultados.index', compact('eventos'));
+        $query->when($request->evento_id, function ($q, $evento_id) {
+            return $q->where('id', $evento_id);
+        });
+
+        $eventos = $query->latest()->get(); 
+        $listaEventos = Evento::orderBy('nome')->get();
+
+        return view('resultados.index', compact('eventos', 'listaEventos'));
     }
 
     public function create()

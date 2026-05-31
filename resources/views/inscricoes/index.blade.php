@@ -21,15 +21,31 @@
             </div>
         </div>
 
-        <div class="card-premium mb-4 py-3">
-            <div class="d-flex flex-wrap gap-3 align-items-center">
-                <select class="form-select bg-light border-0 shadow-none" style="width:250px;">
-                    <option>Todos os Eventos</option>
+        <div class="card-premium mb-4 py-3 px-4">
+            <form method="GET" action="{{ route('inscricoes.index') }}"
+                class="d-flex flex-wrap gap-3 align-items-center">
+
+                <select name="evento_id" class="form-select bg-light shadow-sm" style="width:250px;">
+                    <option value="">Todos os Eventos</option>
                     @foreach ($eventos as $ev)
-                        <option value="{{ $ev->id }}">{{ $ev->nome }}</option>
+                        <option value="{{ $ev->id }}" {{ request('evento_id') == $ev->id ? 'selected' : '' }}>
+                            {{ $ev->nome }}
+                        </option>
                     @endforeach
                 </select>
-            </div>
+
+                <button type="submit" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+
+                @if (request()->filled('evento_id'))
+                    <a href="{{ route('inscricoes.index') }}"
+                        class="btn btn-light text-danger d-flex align-items-center gap-2 shadow-sm"
+                        title="Limpar Filtro">
+                        <i class="bi bi-x-circle"></i> Limpar
+                    </a>
+                @endif
+            </form>
         </div>
 
         @if ($errors->any())

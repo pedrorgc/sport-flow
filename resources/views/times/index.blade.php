@@ -18,34 +18,44 @@
             </div>
         </div>
 
-        <div class="card-premium mb-4 py-3">
-            <div class="d-flex flex-wrap gap-3 align-items-center">
+        <div class="card-premium mb-4 py-3 px-4">
+            <form method="GET" action="{{ route('times.index') }}" class="d-flex flex-wrap gap-3 align-items-center">
+                
                 <div class="flex-grow-1" style="min-width:220px;">
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0 text-muted"><i
-                                class="bi bi-search"></i></span>
-                        <input type="text" class="form-control bg-light border-start-0 ps-0"
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                        <input type="text" name="search" value="{{ request('search') }}" class="form-control bg-light border-start-0 ps-0"
                             placeholder="Buscar por nome da equipe...">
                     </div>
                 </div>
 
-                <select class="form-select bg-light" style="width:200px;">
-                    <option>Todas modalidades</option>
-                    <option>Futebol</option>
-                    <option>Vôlei</option>
-                    <option>Basquete</option>
-                    <option>Futsal</option>
-                    <option>Handebol</option>
+                <select name="modalidade_id" class="form-select bg-light shadow-sm" style="width:200px;">
+                    <option value="">Todas modalidades</option>
+                    @foreach ($modalidades as $id => $nome)
+                        <option value="{{ $id }}" {{ request('modalidade_id') == $id ? 'selected' : '' }}>
+                            {{ $nome }}
+                        </option>
+                    @endforeach
                 </select>
 
-                <select class="form-select bg-light" style="width:200px;">
-                    <option>Todas categorias</option>
-                    <option>Sub-15</option>
-                    <option>Sub-17</option>
-                    <option>Sub-20</option>
-                    <option>Adulto</option>
+                <select name="categoria" class="form-select bg-light shadow-sm" style="width:200px;">
+                    <option value="">Todas categorias</option>
+                    <option value="Sub-15" {{ request('categoria') == 'Sub-15' ? 'selected' : '' }}>Sub-15</option>
+                    <option value="Sub-17" {{ request('categoria') == 'Sub-17' ? 'selected' : '' }}>Sub-17</option>
+                    <option value="Sub-20" {{ request('categoria') == 'Sub-20' ? 'selected' : '' }}>Sub-20</option>
+                    <option value="Adulto" {{ request('categoria') == 'Adulto' ? 'selected' : '' }}>Adulto</option>
                 </select>
-            </div>
+
+                <button type="submit" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+
+                @if(request()->anyFilled(['search', 'modalidade_id', 'categoria']))
+                    <a href="{{ route('times.index') }}" class="btn btn-light text-danger d-flex align-items-center gap-2 shadow-sm" title="Limpar Filtros">
+                        <i class="bi bi-x-circle"></i> Limpar
+                    </a>
+                @endif
+            </form>
         </div>
 
         <div class="card-premium p-0 overflow-hidden">
@@ -92,7 +102,7 @@
                                     </span>
                                 </td>
                                 <td class="py-3 text-secondary">
-                                    {{ $time->atletas_count }} atletas
+                                    {{ $time->atletas_count ?? 0 }} atletas
                                 </td>
                                 <td class="text-end pe-4 py-3">
                                     <div class="d-flex gap-2 justify-content-end">

@@ -7,15 +7,21 @@ use App\Models\Evento;
 use App\Models\Inscricoes;
 use App\Models\Time;
 use App\Http\Requests\InscricoesRequest;
+use Illuminate\Http\Request;
 
 class InscricoesController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $inscricoes = Inscricoes::with(['evento.modalidade', 'atleta', 'time'])->get();
+        $query = Inscricoes::with(['evento.modalidade', 'atleta', 'time']);
+
+        $query->when($request->evento_id, function ($q, $evento_id) {
+            return $q->where('evento_id', $evento_id);
+        });
+
+        $inscricoes = $query->latest()->get(); 
 
         $eventos = Evento::with('modalidade')->where('status', '!=', 'Cancelado')->get();
-        
         $atletas = Atleta::query()->orderBy('nome')->get();
         $times = Time::query()->orderBy('nome')->get();
 
