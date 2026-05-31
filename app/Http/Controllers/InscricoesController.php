@@ -13,19 +13,18 @@ class InscricoesController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Inscricoes::with(['evento.modalidade', 'atleta', 'time']);
+        $query = Evento::with('modalidade')->withCount('inscricoes');
 
-        $query->when($request->evento_id, function ($q, $evento_id) {
-            return $q->where('evento_id', $evento_id);
+        $query->when($request->search, function ($q, $search) {
+            return $q->where('nome', 'like', "%{$search}%");
         });
 
-        $inscricoes = $query->latest()->get(); 
+        $eventos = $query->latest()->get();
+        
+        $atletas = Atleta::orderBy('nome')->get();
+        $times = Time::orderBy('nome')->get();
 
-        $eventos = Evento::with('modalidade')->where('status', '!=', 'Cancelado')->get();
-        $atletas = Atleta::query()->orderBy('nome')->get();
-        $times = Time::query()->orderBy('nome')->get();
-
-        return view('inscricoes.index', compact('inscricoes', 'eventos', 'atletas', 'times'));
+        return view('inscricoes.index', compact('eventos', 'atletas', 'times'));
     }
 
     public function create()
@@ -36,13 +35,9 @@ class InscricoesController extends Controller
     public function store(InscricoesRequest $request)
     {
         $evento = Evento::findOrFail($request->evento_id);
-
         $hoje = now();
 
-        if (
-            $hoje->lt($evento->inscricao_inicio) ||
-            $hoje->gt($evento->inscricao_fim)
-        ) {
+        if ($hoje->lt($evento->inscricao_inicio) || $hoje->gt($evento->inscricao_fim)) {
             return back()->withErrors([
                 'inscricao' => 'As inscrições para este evento estão encerradas.',
             ]);
@@ -53,24 +48,26 @@ class InscricoesController extends Controller
         return redirect()->route('inscricoes.index')->with('success', 'Inscrição realizada com sucesso!');
     }
 
-    public function show(string $id)
+    public function show(string $evento_id)
     {
-        //
+        $inscricoes = Inscricoes::with(['atleta', 'time'])
+            ->where('evento_id', $evento_id)
+            ->latest()
+            ->get();
+
+        return response()->json($inscricoes);
     }
 
     public function edit(string $id)
     {
         $inscricao = Inscricoes::with('evento', 'atleta', 'time')->findOrFail($id);
-
         return response()->json($inscricao);
     }
 
     public function update(InscricoesRequest $request, string $id)
     {
         $inscricao = Inscricoes::findOrFail($id);
-
         $inscricao->update($request->dadosTratados());
-
         return redirect()->route('inscricoes.index')->with('success', 'Inscrição atualizada com sucesso!');
     }
 
@@ -78,7 +75,6 @@ class InscricoesController extends Controller
     {
         $inscricao = Inscricoes::findOrFail($id);
         $inscricao->delete();
-
         return redirect()->route('inscricoes.index')->with('success', 'Inscrição removida com sucesso!');
     }
 }
