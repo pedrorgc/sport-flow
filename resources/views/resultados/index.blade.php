@@ -4,26 +4,43 @@
         <div class="d-flex align-items-center justify-content-between mb-4 ps-5 ps-md-0 pt-2 pt-md-0">
             <div>
                 <h2 class="titulo-marca mb-0" style="font-size: 2.2rem;">Resultados</h2>
-                <div class="text-secondary small mt-1">{{ $eventos->sum(fn($e) => $e->resultados->count()) }} resultado(s) registrado(s)</div>
+                <div class="text-secondary small mt-1">{{ $eventos->sum(fn($e) => $e->resultados->count()) }}
+                    resultado(s) registrado(s)</div>
             </div>
         </div>
 
         <div class="row g-3 mb-4">
             <div class="col-md-4">
-                <x-stat-card title="Resultados" value="{{ $eventos->sum(fn($e) => $e->resultados->count()) }}" subtitle="Cadastrados"
-                    icon="bi bi-award" color="warning" />
+                <x-stat-card title="Resultados" value="{{ $eventos->sum(fn($e) => $e->resultados->count()) }}"
+                    subtitle="Cadastrados" icon="bi bi-award" color="warning" />
             </div>
         </div>
 
-        <div class="card-premium mb-4 py-3">
-            <div class="d-flex flex-wrap gap-3 align-items-center">
-                <select class="form-select bg-light border-0 shadow-none" style="width:250px;">
-                    <option>Todos os Eventos</option>
-                    @foreach ($eventos as $evento)
-                        <option value="{{ $evento->id }}">{{ $evento->nome }}</option>
+        <div class="card-premium mb-4 py-3 px-4">
+            <form method="GET" action="{{ route('resultados.index') }}"
+                class="d-flex flex-wrap gap-3 align-items-center">
+
+                <select name="evento_id" class="form-select bg-light shadow-sm" style="width:250px;">
+                    <option value="">Todos os Eventos</option>
+                    @foreach ($eventos as $ev)
+                        <option value="{{ $ev->id }}" {{ request('evento_id') == $ev->id ? 'selected' : '' }}>
+                            {{ $ev->nome }}
+                        </option>
                     @endforeach
                 </select>
-            </div>
+
+                <button type="submit" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+
+                @if (request()->filled('evento_id'))
+                    <a href="{{ route('resultados.index') }}"
+                        class="btn btn-light text-danger d-flex align-items-center gap-2 shadow-sm"
+                        title="Limpar Filtro">
+                        <i class="bi bi-x-circle"></i> Limpar
+                    </a>
+                @endif
+            </form>
         </div>
 
         @forelse ($eventos as $evento)

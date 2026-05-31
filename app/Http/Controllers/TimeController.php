@@ -9,15 +9,28 @@ use App\Http\Requests\TimeRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-use function Pest\Laravel\put;
-
 class TimeController extends Controller
 {
-    public function index()
+
+    public function index(Request $request) 
     {
-        $times = Time::with('modalidade')->with('atletas')->get(); 
-        $modalidades = Modalidade::all()->pluck('nome', 'id');
-        $todosAtletas = Atleta::with('modalidade')->get();
+        $query = Time::with('modalidade')->withCount('atletas');
+
+        $query->when($request->search, function ($q, $search) {
+            return $q->where('nome', 'like', "%{$search}%");
+        });
+
+        $query->when($request->modalidade_id, function ($q, $modalidade) {
+            return $q->where('modalidade_id', $modalidade);
+        });
+
+        $query->when($request->categoria, function ($q, $categoria) {
+            return $q->where('categoria', $categoria);
+        });
+
+        $times = $query->orderBy('nome')->get();
+        $modalidades = Modalidade::pluck('nome', 'id');
+        $todosAtletas = Atleta::with('modalidade')->orderBy('nome')->get();
 
         return view('times.index', compact('times', 'modalidades', 'todosAtletas'));
     }
@@ -27,24 +40,18 @@ class TimeController extends Controller
         //
     }
 
-    public function store(Request $request) 
+    public function store(TimeRequest $request) 
     {
-        $validate = $request->validate([
-            'nome' => 'required|string|max:255',
-            'categoria' => 'required|string',
-            'modalidade_id' => 'required|exists:modalidades,id',
-            'brasao' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        $validate = $request->validated(); 
 
         if ($request->hasFile('brasao')){
-            $caminho = Storage::disk('public')
-            ->put('brasoes', $request->file('brasao'));
+            $caminho = Storage::disk('public')->put('brasoes', $request->file('brasao'));
+            $validate['brasao'] = $caminho;
         }
+        
         Time::create($validate);
         
-        return redirect()
-        ->route('times.index')
-        ->with('success', 'Equipe criada com sucesso!');
+        return redirect()->route('times.index')->with('success', 'Equipe criada com sucesso!');
     }
 
     public function show(string $id)
@@ -58,42 +65,25 @@ class TimeController extends Controller
         return response()->json($time);
     }
 
-
-    public function update(Request $request, string $id)
+    public function update(TimeRequest $request, string $id)
     {
         $time = Time::findOrFail($id);
 
         if ($request->has('sync_atletas')) {
-
-            $time->atletas()->sync(
-                $request->input('atletas', [])
-            );
-
-            return redirect()
-            ->route('times.index')
-            ->with('success', 'Elenco atualizado com sucesso!');
+            $time->atletas()->sync($request->input('atletas', []));
+            return redirect()->route('times.index')->with('success', 'Elenco atualizado com sucesso!');
         }
 
-        $validate = $request->validate([
-            'nome' => 'required|string|max:255',
-            'categoria' => 'required|string',
-            'modalidade_id' => 'required|exists:modalidades,id',
-            'brasao' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        $validate = $request->validated();
 
         if ($request->hasFile("brasao")) {
             if($time->brasao && Storage::disk('public')->exists($time->brasao)){
                 Storage::disk('public')->delete($time->brasao);
-                
             }
 
-            $caminho = Storage::disk('public')
-            ->put('brasoes', $request->file('brasao'));
-            
+            $caminho = Storage::disk('public')->put('brasoes', $request->file('brasao'));
             $validate['brasao'] = $caminho;
         }
-
-
 
         $time->update($validate);
         
@@ -103,6 +93,10 @@ class TimeController extends Controller
     public function destroy(string $id)
     {
         $time = Time::findOrFail($id);
+        
+        if($time->brasao && Storage::disk('public')->exists($time->brasao)){
+            Storage::disk('public')->delete($time->brasao);
+        }
         
         $time->atletas()->detach();
         $time->delete();
