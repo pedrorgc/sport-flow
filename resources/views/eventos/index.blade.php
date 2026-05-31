@@ -1,11 +1,9 @@
 <x-layouts.app>
-    <!-- Adicionamos o evento para abrir o modal via JavaScript -->
     <main class="flex-grow-1" style="min-width: 0;" x-data="{ openModal: false }" @open-modal-evento.window="openModal = true">
 
         <div class="d-flex align-items-center justify-content-between mb-4 ps-5 ps-md-0 pt-2 pt-md-0">
             <h2 class="titulo-marca mb-0" style="font-size: 2.2rem;">Eventos</h2>
 
-            <!-- Chama a função JS para abrir o modal limpo -->
             <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm"
                 onclick="abrirNovoEvento()">
                 <i class="bi bi-plus-lg"></i>
@@ -96,17 +94,20 @@
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-clock text-primary me-2 fs-5"></i>
                                 @php
-                                    $hoje = \Carbon\Carbon::today();
+                                    $agora = \Carbon\Carbon::now();
+                                    
                                     $inicioInscricao = $evento->inscricao_inicio
-                                        ? \Carbon\Carbon::parse($evento->inscricao_inicio)
+                                        ? \Carbon\Carbon::parse($evento->inscricao_inicio)->startOfDay()
                                         : null;
+
                                     $fimInscricao = $evento->inscricao_fim
-                                        ? \Carbon\Carbon::parse($evento->inscricao_fim)
+                                        ? \Carbon\Carbon::parse($evento->inscricao_fim)->endOfDay()
                                         : null;
+                                        
                                     $abertas =
                                         $inicioInscricao &&
                                         $fimInscricao &&
-                                        $hoje->between($inicioInscricao, $fimInscricao);
+                                        $agora->betweenIncluded($inicioInscricao, $fimInscricao);
                                 @endphp
 
                                 <span>
