@@ -3,6 +3,7 @@
 use App\Http\Controllers\AtletaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EspacoController;
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\InscricoesController;
 use App\Http\Controllers\PortalController;
@@ -42,9 +43,7 @@ Route::middleware('auth')->group(function () {
             ->get();
     });
 
-    Route::get('/espacos', function () {
-        return view('espacos.index');
-    })->name('espacos.index');
+    Route::resource('espacos', EspacoController::class);
 
     Route::get('/reservas', function () {
         return view('reservas.index');

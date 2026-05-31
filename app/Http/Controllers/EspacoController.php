@@ -13,7 +13,8 @@ class EspacoController extends Controller
      */
     public function index()
     {
-        //
+        $espacos = Espaco::all();
+        return view('espacos.index', compact('espacos'));
     }
 
     /**
@@ -58,7 +59,8 @@ class EspacoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $espaco = Espaco::findOrFail($id);
+        return response()->json($espaco);
     }
 
     /**
@@ -90,6 +92,11 @@ class EspacoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $espaco = Espaco::findOrFail($id);
+        $espaco->delete();
+
+        return redirect()
+            ->route('espacos.index')
+            ->with('success', 'Espaço excluído com sucesso!');
     }
 }
