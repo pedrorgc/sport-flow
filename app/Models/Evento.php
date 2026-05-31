@@ -18,9 +18,9 @@ class Evento extends Model
         'data_fim',
         'inscricao_inicio',
         'inscricao_fim',
-        'local',
+        'espaco_id',
         'status',
-        'descrição',
+        'descricao',
     ];
 
     public function inscricoes()
@@ -36,5 +36,10 @@ class Evento extends Model
     public function resultados()
     {
         return $this->hasMany(Resultado::class);
+    }
+
+    public function espaco()
+    {
+        return $this->belongsTo(Espaco::class);
     }
 }
