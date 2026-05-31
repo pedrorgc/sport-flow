@@ -76,12 +76,9 @@
                             <tr>
                                 <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center gap-3">
-                                         @if ($time->brasao)
-                                            <img 
-                                                src="{{ asset('storage/' . $time->brasao) }}"
-                                                width="40"
-                                                height="40"
-                                                class="rounded-circle object-fit-cover border"
+                                        @if ($time->brasao)
+                                            <img src="{{ asset('storage/' . $time->brasao) }}" width="40"
+                                                height="40" class="rounded-circle object-fit-cover border"
                                                 alt="Brasão do time">
                                         @else
                                             <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase"
@@ -121,16 +118,13 @@
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
 
-                                        <form action="/times/{{ $time->id }}" method="POST"
-                                            onsubmit="return confirm('Excluir esta equipe? Os atletas não serão excluídos, apenas desvinculados.');"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-light text-danger hover-shadow"
-                                                title="Excluir">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </form>
+                                        <button class="btn btn-sm btn-light text-danger hover-shadow" title="Excluir"
+                                            @click="$dispatch('confirmar-exclusao', { 
+                                                action: '/times/{{ $time->id }}',
+                                                mensagem: 'Excluir a equipe {{ $time->nome }}? Os atletas não serão excluídos, apenas desvinculados.'
+                                            })">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -164,7 +158,8 @@
                         </button>
                     </div>
 
-                    <form id="formEquipe" action="{{ route('times.store') }}" method="POST" enctype="multipart/form-data" class="p-4">
+                    <form id="formEquipe" action="{{ route('times.store') }}" method="POST"
+                        enctype="multipart/form-data" class="p-4">
                         @csrf
                         <input type="hidden" name="_method" id="metodoFormEquipe" value="POST">
 
@@ -203,10 +198,7 @@
                             <label class="form-label fw-semibold small text-secondary">
                                 Brasão da equipe
                             </label>
-                            <input 
-                                type='file'
-                                name='brasao'
-                                class='form-control bg-light'
+                            <input type='file' name='brasao' class='form-control bg-light'
                                 accept=".png, .jpg, .jpeg">
                         </div>
                         <div class="d-flex justify-content-end gap-3 pt-3 border-top">
@@ -261,7 +253,9 @@
                                         <div>
                                             <div class="fw-semibold"><label for="check_atleta_{{ $atleta->id }}"
                                                     style="cursor:pointer;">{{ $atleta->nome }}</label></div>
-                                            <small class="text-muted">{{ $atleta->modalidade->nome ?? 'Não informado' }} •
+                                            <small
+                                                class="text-muted">{{ $atleta->modalidade->nome ?? 'Não informado' }}
+                                                •
                                                 {{ $atleta->categoria }}</small>
                                         </div>
                                     </div>

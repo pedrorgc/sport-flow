@@ -141,22 +141,18 @@
                         </p>
 
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top">
-                            <!-- Botão Editar chama a função JS passando o ID -->
                             <button type="button" class="btn btn-sm btn-light text-primary hover-shadow fw-medium px-3"
                                 onclick="abrirEdicaoEvento({{ $evento->id }})">
                                 <i class="bi bi-pencil-square me-1"></i> Editar
                             </button>
 
-                            <!-- Formulário de Exclusão -->
-                            <form action="/eventos/{{ $evento->id }}" method="POST"
-                                onsubmit="return confirm('Tem certeza que deseja cancelar/excluir este evento?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="btn btn-sm btn-light text-danger hover-shadow fw-medium px-3">
-                                    <i class="bi bi-trash3 me-1"></i> Excluir
-                                </button>
-                            </form>
+                            <button class="btn btn-sm btn-light text-danger hover-shadow fw-medium px-3"
+                                @click="$dispatch('confirmar-exclusao', {
+                                    action: '/eventos/{{ $evento->id }}',
+                                    mensagem: 'Tem certeza que deseja cancelar/excluir o evento {{ $evento->nome }}?'
+                                })">
+                                <i class="bi bi-trash3 me-1"></i> Excluir
+                            </button>
                         </div>
 
                     </div>

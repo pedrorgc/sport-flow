@@ -113,16 +113,13 @@
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
 
-                                        <form action="/atletas/{{ $atleta->id }}" method="POST"
-                                            onsubmit="return confirm('Tem certeza que deseja excluir este atleta?');"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-light text-danger hover-shadow"
-                                                title="Excluir">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </form>
+                                        <button class="btn btn-sm btn-light text-danger hover-shadow" title="Excluir"
+                                            @click="$dispatch('confirmar-exclusao', {
+                                                action: '/atletas/{{ $atleta->id }}',
+                                                mensagem: 'Tem certeza que deseja excluir o atleta {{ $atleta->nome }}?'
+                                            })">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
