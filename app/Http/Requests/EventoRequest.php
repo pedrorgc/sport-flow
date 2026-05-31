@@ -29,7 +29,7 @@ class EventoRequest extends FormRequest
             'data_fim' => 'required|date|after_or_equal:data_inicio',
             'inscricao_inicio' => 'required|date',
             'inscricao_fim' => 'required|date|after_or_equal:inscricao_inicio',
-            'local' => 'required|string|max:255',
+            'espaco_id' => 'nullable|exists:espacos,id',
             'descricao' => 'nullable|string',
             'status' => 'required|string',
             'regulamento_path' => 'nullable|file|mimes:pdf|max:5120',

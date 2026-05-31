@@ -130,7 +130,7 @@
                             {{-- local do evento --}}
                             <div class="d-flex align-items-center text-secondary">
                                 <i class="bi bi-geo-alt text-primary me-2 fs-5"></i>
-                                <span>{{ $evento->local }}</span>
+                                <span>{{ $evento->espaco->nome ?? 'Espaço não definido' }}</span>
                             </div>
                         </div>
 
@@ -229,14 +229,18 @@
                             </div>
                         </div>
 
-                        {{-- local --}}
+                        {{-- espaço físico --}}
                         <div class="mb-3">
                             <label class="form-label fw-semibold small text-secondary">
-                                Local <span class="text-danger">*</span>
+                                Espaço Físico <span class="text-danger">*</span>
                             </label>
 
-                            <input type="text" name="local" id="inputLocal" class="form-control bg-light"
-                                required>
+                            <select name="espaco_id" id="inputEspaco" class="form-select bg-light" required>
+                                <option value="" disabled selected>Selecione onde ocorrerá o evento</option>
+                                @foreach ($espacos as $id => $nome)
+                                    <option value="{{ $id }}">{{ $nome }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         {{-- datas --}}
@@ -337,7 +341,7 @@
                     document.getElementById('inputNomeEvento').value = dados.nome;
                     document.getElementById('inputModalidade').value = dados.modalidade_id;
                     document.getElementById('inputStatus').value = dados.status || 'Agendado';
-                    document.getElementById('inputLocal').value = dados.local;
+                    document.getElementById('inputEspaco').value = dados.espaco_id;
                     document.getElementById('inputDescricao').value = dados.descricao || '';
 
                     // Tratamento de Datas (Cortando qualquer HORA que venha do banco)

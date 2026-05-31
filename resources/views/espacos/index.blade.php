@@ -110,9 +110,11 @@
                                 <label class="form-label fw-semibold small text-secondary">Tipo <span
                                         class="text-danger">*</span></label>
                                 <select name="tipo" class="form-select bg-light">
-                                    <option>Quadra</option>
-                                    <option>Piscina</option>
-                                    <option>Campo</option>
+                                    <option value="">Selecione o tipo</option>
+                                    <option value="Poliesportivo/Clube">Poliesportivo/Clube</option>
+                                    <option value="Poliesportivo">Poliesportivo</option>
+                                    <option value="Quadra Coberta">Quadra Coberta</option>
+                                    <option value="Campo Aberto">Campo Aberto</option>
                                 </select>
                             </div>
 
@@ -188,9 +190,10 @@
                                 <label class="form-label fw-semibold small text-secondary">Tipo <span
                                         class="text-danger">*</span></label>
                                 <select name="tipo" class="form-select bg-light" x-model="espaco.tipo">
-                                    <option>Quadra</option>
-                                    <option>Piscina</option>
-                                    <option>Campo</option>
+                                    <option>Poliesportivo/Clube</option>
+                                    <option>Poliesportivo</option>
+                                    <option>Quadra Aberta</option>
+                                    <option>Quadra Coberta</option>
                                 </select>
                             </div>
 
