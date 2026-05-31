@@ -10,6 +10,7 @@ use App\Http\Controllers\PortalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResultadoController;
 use App\Http\Controllers\TimeController;
+use App\Http\Controllers\ReservaController;
 use App\Models\Inscricoes;
 use Illuminate\Support\Facades\Route;
 
@@ -45,8 +46,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('espacos', EspacoController::class);
 
-    Route::get('/reservas', function () {
-        return view('reservas.index');
-    })->name('reservas.index');
+    Route::get('reservas', [ReservaController::class, 'index'])->name('reservas.index');
+    Route::get('/api/reservas-mensais', [App\Http\Controllers\ReservaController::class, 'getReservasMensais'])->name('reservas.api');
 
 });
