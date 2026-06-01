@@ -42,4 +42,9 @@ class Evento extends Model
     {
         return $this->belongsTo(Espaco::class);
     }
+
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class);
+    }
 }

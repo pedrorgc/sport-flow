@@ -17,4 +17,9 @@ class Espaco extends Model
         'endereco',
         'foto',
     ];
+
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class);
+    }
 }
