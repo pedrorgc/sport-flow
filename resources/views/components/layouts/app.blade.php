@@ -251,6 +251,8 @@
             {{ $slot }}
         </main>
     </div>
+
+    <x-modal.confirm-delete />
 </body>
 
 </html>

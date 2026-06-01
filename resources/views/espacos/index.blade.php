@@ -46,16 +46,13 @@
                                         title="Editar" @click="$dispatch('abrir-edicao', {{ $espaco }})">
                                         <i class="bi bi-pencil-square"></i>
                                     </button>
-                                    <form action="{{ route('espacos.destroy', $espaco->id) }}" method="POST"
-                                        onsubmit="return confirm('Tem certeza que deseja excluir este espaço?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="btn btn-sm btn-light text-danger hover-shadow px-2 py-1"
-                                            title="Excluir">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
-                                    </form>
+                                    <button class="btn btn-sm btn-light text-danger hover-shadow px-2 py-1" title="Excluir"
+                                        @click="$dispatch('confirmar-exclusao', {
+                                            action: '{{ route('espacos.destroy', $espaco->id) }}',
+                                            mensagem: 'Tem certeza que deseja excluir o espaço {{ $espaco->nome }}?'
+                                        })">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
                                 </div>
                             </div>
 
