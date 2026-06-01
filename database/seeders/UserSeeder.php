@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Luiz',
             'username' => 'luiz',
-            'password' => 'luiz10'
+            'password' => 'felipe20'
         ]);
     }
 }
