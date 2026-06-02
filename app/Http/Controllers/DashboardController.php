@@ -36,7 +36,7 @@ class DashboardController extends Controller
         }
 
         foreach ($ultimasInscricoes as $inscricao) {
-            $nomeInscrito = $inscricao->tipo === 'atleta' ? $inscricao->atleta->nome : $inscricao->time->nome;
+            $nomeInscrito = $inscricao->tipo === 'atleta' ? ($inscricao->atleta?->nome ?? 'Atleta Excluído/Não Encontrado') : ($inscricao->time?->nome?? 'Time Excluído/Não Encontrado');
             $atividadesRecentes->push((object)[
                 'tipo' => 'Nova Inscrição',
                 'mensagem' => "{$nomeInscrito} inscrito(a) no evento: {$inscricao->evento->nome}.",
