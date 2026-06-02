@@ -10,6 +10,7 @@ class Reserva extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'titulo',
         'espaco_id',
         'evento_id',
         'responsavel_id',
@@ -29,5 +30,10 @@ class Reserva extends Model
     public function evento()
     {
         return $this->belongsTo(Evento::class);
+    }
+
+    public function responsavel()
+    {
+        return $this->belongsTo(User::class, 'responsavel_id');
     }
 }

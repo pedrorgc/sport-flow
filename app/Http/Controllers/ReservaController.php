@@ -6,6 +6,7 @@ use App\Http\Requests\ReservaRequest;
 use App\Models\Espaco;
 use App\Models\Evento;
 use App\Models\Reserva;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,82 +14,79 @@ use Illuminate\Support\Str;
 
 class ReservaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $espacos = Espaco::orderBy('nome')->get();
+        $eventos = Evento::where('status', '!=', 'Cancelado')->orderBy('nome')->get();
+        $usuarios = User::orderBy('name')->get(); 
+        
+        $reservas = Reserva::with(['espaco', 'evento', 'responsavel'])->orderBy('data_hora_inicio')->get();
 
-        $eventos = Evento::where('status', '!=', 'Cancelado')
-            ->orderBy('nome')
-            ->get();
+        $dataFoco = $request->has('data') ? Carbon::parse($request->data) : Carbon::today();
 
-        $reservas = Reserva::with(['espaco', 'evento'])
-            ->orderBy('data_hora_inicio')
-            ->get();
+        $inicioSemana = $dataFoco->copy()->startOfWeek(Carbon::MONDAY);
+        $fimSemana = $dataFoco->copy()->endOfWeek(Carbon::SUNDAY);
 
-        return view('reservas.index', compact('espacos', 'eventos', 'reservas'));
+        $meses = [1 => 'Janeiro', 2 => 'Fevereiro', 3 => 'Março', 4 => 'Abril', 5 => 'Maio', 6 => 'Junho', 7 => 'Julho', 8 => 'Agosto', 9 => 'Setembro', 10 => 'Outubro', 11 => 'Novembro', 12 => 'Dezembro'];
+        $tituloSemana = $inicioSemana->format('d') . ' a ' . $fimSemana->format('d') . ' de ' . $meses[$inicioSemana->month] . ', ' . $inicioSemana->year;
+
+        $semanaAnterior = $inicioSemana->copy()->subWeek()->format('Y-m-d');
+        $proximaSemana = $inicioSemana->copy()->addWeek()->format('Y-m-d');
+
+        return view('reservas.index', compact('espacos', 'eventos', 'usuarios', 'reservas', 'inicioSemana', 'tituloSemana', 'semanaAnterior', 'proximaSemana'));
     }
 
-    /**
-     * API Exclusiva para alimentar o Calendário do Front-end (Lazy Loading)
-     */
     public function getReservasMensais(Request $request)
     {
-        // O calendário (ex: FullCalendar) envia esses parâmetros automaticamente
         $start = $request->query('start');
         $end = $request->query('end');
+        $espacoId = $request->query('espaco_id');
 
-        // 1. Buscamos as reservas com os relacionamentos necessários
-        $query = Reserva::with('evento')
-            ->where('status', 'Confirmada'); // No calendário visual, normalmente só mostramos as confirmadas
+        $query = Reserva::with(['evento', 'responsavel', 'espaco'])
+            ->where('status', 'Confirmada'); 
 
-        // 2. Filtramos apenas as reservas do mês que o usuário está visualizando
+        if ($espacoId) {
+            $query->where('espaco_id', $espacoId);
+        }
+
         if ($start && $end) {
             $query->whereBetween('data_hora_inicio', [$start, $end]);
         }
 
         $reservas = $query->get();
 
-        // 3. Mapeamos os dados do banco para o padrão exato que o Calendário exige
         $eventosCalendario = $reservas->map(function ($reserva) {
-
-            // Define o título visual no calendário
-            $titulo = 'Reserva ' . $reserva->tipo;
-            if ($reserva->tipo === 'Oficial' && $reserva->evento) {
-                $titulo = '🏆 ' . $reserva->evento->nome;
+            $tituloExibicao = $reserva->titulo . ' (' . $reserva->tipo . ')';
+            if ($reserva->tipo === 'Oficial') {
+                $tituloExibicao = '🏆 ' . $reserva->titulo;
             }
 
-            // Define a cor da "bolinha" ou do bloco no calendário
             $cor = match ($reserva->tipo) {
-                'Oficial' => '#dc3545', // Vermelho (Prioridade máxima)
-                'Fixa'    => '#0d6efd', // Azul (Atividades contínuas)
-                'Avulsa'  => '#198754', // Verde (Agendamento comum)
+                'Oficial' => '#dc3545', 
+                'Fixa'    => '#0d6efd', 
+                'Avulsa'  => '#198754', 
                 default   => '#6c757d'
             };
 
             return [
                 'id'    => $reserva->id,
-                'title' => $titulo,
-                // O calendário exige o formato ISO8601 (ex: 2026-05-31T14:30:00)
-                'start' => \Carbon\Carbon::parse($reserva->data_hora_inicio)->toIso8601String(),
-                'end'   => \Carbon\Carbon::parse($reserva->data_hora_fim)->toIso8601String(),
+                'title' => $tituloExibicao,
+                'start' => Carbon::parse($reserva->data_hora_inicio)->toIso8601String(),
+                'end'   => Carbon::parse($reserva->data_hora_fim)->toIso8601String(),
                 'color' => $cor,
-
-                // Variáveis extras que o Raí pode usar para preencher um modal ao clicar no evento
                 'extendedProps' => [
+                    'titulo_puro' => $reserva->titulo,
                     'tipo'   => $reserva->tipo,
                     'status' => $reserva->status,
-                    'espaco_id' => $reserva->espaco_id
+                    'espaco_id' => $reserva->espaco_id,
+                    'responsavel_nome' => $reserva->responsavel->name ?? 'Não informado',
+                    'espaco_nome'      => $reserva->espaco->nome ?? 'Espaço não definido',
+                    'grupo_reserva_id' => $reserva->grupo_reserva_id
                 ]
             ];
         });
 
-        // 4. Retorna o JSON puro para o JavaScript consumir
         return response()->json($eventosCalendario);
-    }
-
-    public function create()
-    {
-        //
     }
 
     public function store(ReservaRequest $request)
@@ -96,63 +94,201 @@ class ReservaController extends Controller
         $dados = $request->validated();
 
         try {
-            DB::transaction(function () use ($dados) {
+            DB::transaction(function () use ($dados, $request) {
 
-                $inicio = Carbon::parse($dados['data_hora_inicio']);
-                $fim = Carbon::parse($dados['data_hora_fim']);
+                $inicio = Carbon::parse($dados['data_reserva'] . ' ' . $dados['hora_inicio']);
+                $fim    = Carbon::parse($dados['data_reserva'] . ' ' . $dados['hora_fim']);
+                
+                $dados['data_hora_inicio'] = $inicio->format('Y-m-d H:i:s');
+                $dados['data_hora_fim']    = $fim->format('Y-m-d H:i:s');
+                
                 $tipo = $dados['tipo'];
+                $dados['status'] = 'Confirmada';
+                $dados['grupo_reserva_id'] = Str::uuid();
 
-                $grupoId = Str::uuid();
+                // Armazena os dias da semana selecionados antes do limpar o array $dados
+                $diasSelecionados = $request->input('dias_semana', []);
 
-                $dados['status'] = 'Pendente';
-                $dados['grupo_reserva_id'] = $grupoId;
+                unset($dados['data_reserva'], $dados['hora_inicio'], $dados['hora_fim'], $dados['data_limite_repeticao'], $dados['dias_semana']);
 
                 if ($tipo === 'Oficial') {
-                    $motivo = 'Cancelado por sobreposição de Evento Oficial';
+                    $motivo = 'Cancelado por sobreposição de Evento Oficial: ' . $dados['titulo'];
                     $this->derrubarConflitos($dados['espaco_id'], $inicio, $fim, $motivo);
 
                     Reserva::create($dados);
-                } elseif ($tipo === 'Fixa') {
-                    $limite = Carbon::parse($dados['data_limite_repeticao'])->endOfDay();
+                } 
+                // INTELEGÊNCIA REESCRITA PARA MÚLTIPLOS DIAS EM LOTE
+                elseif ($tipo === 'Fixa') {
+                    $limite = Carbon::parse($request->input('data_limite_repeticao'))->endOfDay();
+                    $atual = Carbon::parse($request->input('data_reserva'));
 
-                    $atualInicio = $inicio->copy();
-                    $atualFim = $fim->copy();
+                    // Varre a folha do calendário dia por dia do início ao limite final
+                    while ($atual->startOfDay()->lte($limite)) {
+                        
+                        // Carbon dayOfWeekIso devolve 1 para Segunda e 7 para Domingo
+                        if (in_array($atual->dayOfWeekIso, $diasSelecionados)) {
+                            
+                            $atualInicio = Carbon::parse($atual->format('Y-m-d') . ' ' . $request->input('hora_inicio'));
+                            $atualFim    = Carbon::parse($atual->format('Y-m-d') . ' ' . $request->input('hora_fim'));
 
-                    while ($atualInicio->lte($limite)) {
+                            if ($this->existeConflito($dados['espaco_id'], $atualInicio, $atualFim)) {
+                                throw new \Exception('Conflito detectado no dia ' . $atual->format('d/m/Y') . '. O espaço já está ocupado no horário selecionado.');
+                            }
 
-                        if ($this->existeConflito($dados['espaco_id'], $atualInicio, $atualFim)) {
-                            throw new \Exception('Conflito detectado no dia ' . $atualInicio->format('d/m/Y') . '. O espaco não está livre em todas as semanas deste período.');
+                            $dadosRepeticao = $dados;
+                            $dadosRepeticao['data_hora_inicio'] = $atualInicio->format('Y-m-d H:i:s');
+                            $dadosRepeticao['data_hora_fim']    = $atualFim->format('Y-m-d H:i:s');
+
+                            Reserva::create($dadosRepeticao);
                         }
-
-                        $dadosRepeticao = $dados;
-                        $dadosRepeticao['data_hora_inicio'] = $atualInicio;
-                        $dadosRepeticao['data_hora_fim'] = $atualFim;
-
-                        Reserva::create($dadosRepeticao);
-
-                        $atualInicio->addWeek();
-                        $atualFim->addWeek();
+                        
+                        $atual->addDay(); // Avança 1 dia por iteração
                     }
-                } else {
+                } 
+                else {
                     if ($this->existeConflito($dados['espaco_id'], $inicio, $fim)) {
-                        throw new \Exception('O horário selecionado já está ocupado por outra atividade confirmada');
+                        throw new \Exception('O horário selecionado já está ocupado por outra atividade confirmada.');
                     }
 
                     Reserva::create($dados);
                 }
             });
 
-            return redirect()->route('reservas.index')->with('success', 'Reserva(s) processada(s) com sucesso!');
+            if ($request->expectsJson()) {
+                return response()->json(['success' => true, 'message' => 'Reserva(s) criada(s) com sucesso!']);
+            }
+            return redirect()->route('reservas.index')->with('success', 'Reserva processada com sucesso!');
+            
         } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
+            }
             return back()->withInput()->withErrors(['conflito' => $e->getMessage()]);
         }
     }
 
+    public function edit($id)
+    {
+        $reserva = Reserva::findOrFail($id);
+        
+        return response()->json([
+            'id'             => $reserva->id,
+            'titulo'         => $reserva->titulo,
+            'espaco_id'      => $reserva->espaco_id,
+            'responsavel_id' => $reserva->responsavel_id,
+            'tipo'           => $reserva->tipo,
+            'evento_id'      => $reserva->evento_id,
+            'data_reserva'   => Carbon::parse($reserva->data_hora_inicio)->format('Y-m-d'),
+            'hora_inicio'    => Carbon::parse($reserva->data_hora_inicio)->format('H:i'),
+            'hora_fim'       => Carbon::parse($reserva->data_hora_fim)->format('H:i'),
+            'grupo_id'       => $reserva->grupo_reserva_id
+        ]);
+    }
+
+    public function update(ReservaRequest $request, $id)
+    {
+        $dados = $request->validated();
+        $reserva = Reserva::findOrFail($id);
+
+        try {
+            DB::transaction(function () use ($dados, $request, $reserva) {
+                $inicio = Carbon::parse($dados['data_reserva'] . ' ' . $dados['hora_inicio']);
+                $fim    = Carbon::parse($dados['data_reserva'] . ' ' . $dados['hora_fim']);
+                
+                $dados['data_hora_inicio'] = $inicio->format('Y-m-d H:i:s');
+                $dados['data_hora_fim']    = $fim->format('Y-m-d H:i:s');
+
+                unset($dados['data_reserva'], $dados['hora_inicio'], $dados['hora_fim'], $dados['data_limite_repeticao'], $dados['dias_semana']);
+
+                if ($request->input('alterar_grupo') == '1' && $reserva->grupo_reserva_id) {
+                    
+                    if ($this->existeConflitoEdicao($dados['espaco_id'], $inicio, $fim, $reserva->id)) {
+                        throw new \Exception('O horário escolhido gera conflito para este dia inicial.');
+                    }
+
+                    $reserva->update($dados);
+
+                    $proximasInstancias = Reserva::where('grupo_reserva_id', $reserva->grupo_reserva_id)
+                        ->where('id', '!=', $reserva->id)
+                        ->where('data_hora_inicio', '>', $reserva->data_hora_inicio)
+                        ->get();
+
+                    foreach ($proximasInstancias as $instancia) {
+                        $dataInstancia = Carbon::parse($instancia->data_hora_inicio)->format('Y-m-d');
+                        $novaInstanciaInicio = Carbon::parse($dataInstancia . ' ' . $request->hora_inicio);
+                        $novaInstanciaFim    = Carbon::parse($dataInstancia . ' ' . $request->hora_fim);
+
+                        if ($this->existeConflitoEdicao($dados['espaco_id'], $novaInstanciaInicio, $novaInstanciaFim, $instancia->id)) {
+                            throw new \Exception('A alteração em lote falhou devido a um conflito na semana do dia ' . $novaInstanciaInicio->format('d/m/Y'));
+                        }
+
+                        $instancia->update([
+                            'titulo'           => $dados['titulo'],
+                            'espaco_id'        => $dados['espaco_id'],
+                            'responsavel_id'   => $dados['responsavel_id'],
+                            'evento_id'        => $dados['evento_id'] ?? null,
+                            'data_hora_inicio' => $novaInstanciaInicio->format('Y-m-d H:i:s'),
+                            'data_hora_fim'    => $novaInstanciaFim->format('Y-m-d H:i:s'),
+                        ]);
+                    }
+                } else {
+                    if ($this->existeConflitoEdicao($dados['espaco_id'], $inicio, $fim, $reserva->id)) {
+                        throw new \Exception('O horário selecionado já está ocupado por outra atividade.');
+                    }
+                    
+                    if ($reserva->tipo === 'Fixa' && $dados['tipo'] !== 'Fixa') {
+                        $dados['grupo_reserva_id'] = null;
+                    }
+
+                    $reserva->update($dados);
+                }
+            });
+
+            if ($request->expectsJson()) {
+                return response()->json(['success' => true, 'message' => 'Reserva atualizada com sucesso!']);
+            }
+            return redirect()->route('reservas.index')->with('success', 'Reserva atualizada com sucesso!');
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
+            }
+            return back()->withInput()->withErrors(['conflito' => $e->getMessage()]);
+        }
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $reserva = Reserva::findOrFail($id);
+
+        if ($request->has('cancelar_grupo') && $reserva->grupo_reserva_id) {
+            Reserva::where('grupo_reserva_id', $reserva->grupo_reserva_id)
+                ->where('data_hora_inicio', '>=', $reserva->data_hora_inicio)
+                ->delete();
+                
+            return redirect()->route('reservas.index')->with('success', 'Toda a rotina foi cancelada.');
+        }
+
+        $reserva->delete();
+        return redirect()->route('reservas.index')->with('success', 'Reserva cancelada.');
+    }
+
     private function existeConflito($espacoId, $inicio, $fim)
     {
-        return Reserva::where('espaco_id', $espacoId)->where('status', 'Confirmada')->where(function ($query) use ($inicio, $fim) {
-            $query->where('data_hora_inicio', '<', $fim)->where('data_hora_fim', '>', $inicio);
-        })->exists();
+        return Reserva::where('espaco_id', $espacoId)
+            ->where('status', 'Confirmada')
+            ->where(function ($query) use ($inicio, $fim) {
+                $query->where('data_hora_inicio', '<', $fim)->where('data_hora_fim', '>', $inicio);
+            })->exists();
+    }
+
+    private function existeConflitoEdicao($espacoId, $inicio, $fim, $ignoreId)
+    {
+        return Reserva::where('espaco_id', $espacoId)
+            ->where('id', '!=', $ignoreId)
+            ->where('status', 'Confirmada')
+            ->where(function ($query) use ($inicio, $fim) {
+                $query->where('data_hora_inicio', '<', $fim)->where('data_hora_fim', '>', $inicio);
+            })->exists();
     }
 
     private function derrubarConflitos($espacoId, $inicio, $fim, $motivo)
@@ -160,8 +296,7 @@ class ReservaController extends Controller
         Reserva::where('espaco_id', $espacoId)
             ->where('status', 'Confirmada')
             ->where(function ($query) use ($inicio, $fim) {
-                $query->where('data_hora_inicio', '<', $fim)
-                    ->where('data_hora_fim', '>', $inicio);
+                $query->where('data_hora_inicio', '<', $fim)->where('data_hora_fim', '>', $inicio);
             })
             ->update([
                 'status' => 'Cancelada',

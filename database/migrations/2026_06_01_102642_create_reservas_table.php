@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('responsavel_id')->nullable()->constrained('users')->nullOnDelete();
             $table->dateTime('data_hora_inicio');
             $table->dateTime('data_hora_fim');
-            $table->enum('tipo',['fixa','Avulsa','Oficial']);
+            $table->enum('tipo',['Fixa','Avulsa','Oficial']);
             $table->enum('status',['Confirmada','Cancelada'])->default('Confirmada');
             $table->text('justificativa_cancelamento')->nullable();
             $table->string('grupo_reserva_id')->nullable();
