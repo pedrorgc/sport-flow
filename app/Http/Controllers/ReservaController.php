@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ReservaRequest;
+use App\Models\Espaco;
+use App\Models\Evento;
 use App\Models\Reserva;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -12,7 +15,17 @@ class ReservaController extends Controller
 {
     public function index()
     {
-        //
+        $espacos = Espaco::orderBy('nome')->get();
+
+        $eventos = Evento::where('status', '!=', 'Cancelado')
+            ->orderBy('nome')
+            ->get();
+
+        $reservas = Reserva::with(['espaco', 'evento'])
+            ->orderBy('data_hora_inicio')
+            ->get();
+
+        return view('reservas.index', compact('espacos', 'eventos', 'reservas'));
     }
 
     /**
@@ -37,7 +50,7 @@ class ReservaController extends Controller
 
         // 3. Mapeamos os dados do banco para o padrão exato que o Calendário exige
         $eventosCalendario = $reservas->map(function ($reserva) {
-            
+
             // Define o título visual no calendário
             $titulo = 'Reserva ' . $reserva->tipo;
             if ($reserva->tipo === 'Oficial' && $reserva->evento) {
@@ -59,7 +72,7 @@ class ReservaController extends Controller
                 'start' => \Carbon\Carbon::parse($reserva->data_hora_inicio)->toIso8601String(),
                 'end'   => \Carbon\Carbon::parse($reserva->data_hora_fim)->toIso8601String(),
                 'color' => $cor,
-                
+
                 // Variáveis extras que o Raí pode usar para preencher um modal ao clicar no evento
                 'extendedProps' => [
                     'tipo'   => $reserva->tipo,
@@ -108,7 +121,7 @@ class ReservaController extends Controller
                     while ($atualInicio->lte($limite)) {
 
                         if ($this->existeConflito($dados['espaco_id'], $atualInicio, $atualFim)) {
-                            throw new \Exception('Conflito detectado no dia '.$atualInicio->format('d/m/Y').'. O espaco não está livre em todas as semanas deste período.');
+                            throw new \Exception('Conflito detectado no dia ' . $atualInicio->format('d/m/Y') . '. O espaco não está livre em todas as semanas deste período.');
                         }
 
                         $dadosRepeticao = $dados;
@@ -130,7 +143,6 @@ class ReservaController extends Controller
             });
 
             return redirect()->route('reservas.index')->with('success', 'Reserva(s) processada(s) com sucesso!');
-
         } catch (\Exception $e) {
             return back()->withInput()->withErrors(['conflito' => $e->getMessage()]);
         }

@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('espacos', EspacoController::class);
 
-    Route::get('reservas', [ReservaController::class, 'index'])->name('reservas.index');
+    Route::resource('reservas', ReservaController::class);
     Route::get('/api/reservas-mensais', [App\Http\Controllers\ReservaController::class, 'getReservasMensais'])->name('reservas.api');
 
 });
