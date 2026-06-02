@@ -4,7 +4,7 @@
         <i class="bi bi-list fs-4 text-primary"></i>
     </button>
 
-    <aside class="sidebar-premium d-none d-md-flex flex-column" style="width: 250px; min-height: 100vh;">
+    <aside class="sidebar-premium d-none d-md-flex flex-column position-sticky top-0" style="width: 250px; height: 100vh;">
 
         <div class="p-4 text-center mt-2">
             <img :src="theme === 'dark' ? '{{ asset('images/SportFlow_Logo_Branca.png') }}' :
