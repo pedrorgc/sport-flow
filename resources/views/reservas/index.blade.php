@@ -106,11 +106,13 @@
                                 <td class="text-end pe-4 py-3">
                                     <div class="d-flex justify-content-end gap-2">
                                         <button class="btn btn-sm btn-light text-primary hover-shadow" onclick="executarEdicaoReserva({{ $reserva->id }})" @click="openModal = true"><i class="bi bi-pencil-square"></i></button>
-                                        <form action="{{ route('reservas.destroy', $reserva->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja cancelar esta reserva?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-light text-danger hover-shadow"><i class="bi bi-trash3"></i></button>
-                                        </form>
+                                        <button class="btn btn-sm btn-light text-danger hover-shadow" title="Cancelar Reserva"
+                                            @click="$dispatch('confirmar-exclusao', {
+                                                action: '{{ route('reservas.destroy', $reserva->id) }}',
+                                                mensagem: 'Tem certeza que deseja cancelar esta reserva?'
+                                            })">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -202,18 +204,22 @@
                                 <i class="bi bi-pencil-square me-1"></i>Editar
                             </button>
 
-                            <form :action="`/reservas/${reservaSelecionada.id}`" method="POST" onsubmit="return confirm('Tem certeza que deseja cancelar APENAS ESTE dia?');" class="m-0">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger px-4 shadow-sm" x-text="reservaSelecionada.tipo === 'Fixa' ? 'Cancelar Só Esta' : 'Cancelar Reserva'"></button>
-                            </form>
+                            <button class="btn btn-danger px-4 shadow-sm"
+                                x-text="reservaSelecionada.tipo === 'Fixa' ? 'Cancelar Só Esta' : 'Cancelar Reserva'"
+                                @click="$dispatch('confirmar-exclusao', {
+                                    action: `/reservas/${reservaSelecionada.id}`,
+                                    mensagem: 'Tem certeza que deseja cancelar apenas esta reserva?'
+                                })">
+                            </button>
 
                             <template x-if="reservaSelecionada.tipo === 'Fixa'">
-                                <form :action="`/reservas/${reservaSelecionada.id}?cancelar_grupo=1`" method="POST" onsubmit="return confirm('Isso cancelará toda a rotina futura. Confirmar?');" class="m-0">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-outline-danger px-3 shadow-sm fw-bold">Cancelar Rotina</button>
-                                </form>
+                                <button class="btn btn-outline-danger px-3 shadow-sm fw-bold"
+                                    @click="$dispatch('confirmar-exclusao', {
+                                        action: `/reservas/${reservaSelecionada.id}?cancelar_grupo=1`,
+                                        mensagem: 'Isso cancelará toda a rotina futura. Confirmar?'
+                                    })">
+                                    Cancelar Rotina
+                                </button>
                             </template>
                         </div>
                     </div>
