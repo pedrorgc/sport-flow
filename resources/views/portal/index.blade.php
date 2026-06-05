@@ -166,10 +166,10 @@
             d-flex align-items-center gap-3 list-hover-highlight"
                                 style="{{ $index > 0 ? 'background-color: var(--bg-sistema);' : '' }}">
 
-                                <div class="bg-white rounded-3 p-2 text-center shadow-sm d-flex flex-column justify-content-center"
-                                    style="min-width: 60px; height: 65px;">
+                                <div class="rounded-3 p-2 text-center shadow-sm d-flex flex-column justify-content-center"
+                                    style="min-width: 60px; height: 65px; background-color: var(--bg-cards);">
 
-                                    <span class="{{ $index == 0 ? 'text-primary' : 'text-dark' }} fw-bold lh-1"
+                                    <span class="{{ $index == 0 ? 'text-primary' : 'titulo-marca' }} fw-bold lh-1"
                                         style="font-size: 1.4rem;">
 
                                         {{ \Carbon\Carbon::parse($evento->data_inicio)->format('d') }}
@@ -191,7 +191,7 @@
                                     <div class="text-secondary small d-flex flex-wrap align-items-center gap-2 mb-2">
                                         <span>
                                             <i class="bi bi-geo-alt me-1"></i>
-                                            {{ $evento->local }}
+                                            {{ $evento->espaco->nome ?? 'Local não informado' }}
                                         </span>
 
                                         <span class="text-muted">•</span>
@@ -251,6 +251,10 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
         document.addEventListener('turbo:load', function() {
+            const chartModalidades = document.querySelector("#chart-modalidades");
+            const chartStatus = document.querySelector("#chart-status");
+            if (chartModalidades) chartModalidades.innerHTML = '';
+            if (chartStatus) chartStatus.innerHTML = '';
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
             const commonOptions = {
                 chart: {

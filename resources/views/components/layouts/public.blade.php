@@ -204,7 +204,8 @@
                     <i class="bi" :class="theme === 'dark' ? 'bi-moon-stars-fill' : 'bi-sun-fill'"></i>
                 </button>
 
-                <a href="/login" class="btn btn-premium px-4 rounded-pill d-none d-sm-block shadow-sm">
+                <a href="/login" class="btn btn-premium px-4 rounded-pill d-none d-sm-block shadow-sm"
+                    style="background-color: #3b82f6 !important; color: white !important;">
                     Acesso Restrito
                 </a>
             </div>
