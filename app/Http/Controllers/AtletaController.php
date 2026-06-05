@@ -67,8 +67,8 @@ class AtletaController extends Controller
 
     public function update(AtletaRequest $request, string $id)
     {
-
-        Atleta::findOrFail($id)->update($request->validated());
+        $atleta = Atleta::findOrFail($id);
+        $atleta->update($request->validated());
 
         return redirect()->route('atletas.index')->with('success', 'Atleta atualizado com sucesso!');
     }

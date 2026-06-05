@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Inscricoes extends Model
 {
     use HasFactory,SoftDeletes;
-    
+
     protected $fillable = [
         'evento_id',
         'atleta_id',
         'time_id',
-        'status_inscricao', 
+        'status_inscricao',
     ];
 
     public function evento()
@@ -24,11 +24,11 @@ class Inscricoes extends Model
 
     public function atleta()
     {
-        return $this->belongsTo(Atleta::class);
+        return $this->belongsTo(Atleta::class)->withTrashed();
     }
 
     public function time()
     {
-        return $this->belongsTo(Time::class);
+        return $this->belongsTo(Time::class)->withTrashed();
     }
 }
