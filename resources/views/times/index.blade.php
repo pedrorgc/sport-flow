@@ -20,11 +20,13 @@
 
         <div class="card-premium mb-4 py-3 px-4">
             <form method="GET" action="{{ route('times.index') }}" class="d-flex flex-wrap gap-3 align-items-center">
-                
+
                 <div class="flex-grow-1" style="min-width:220px;">
                     <div class="input-group shadow-sm">
-                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                        <input type="text" name="search" value="{{ request('search') }}" class="form-control bg-light border-start-0 ps-0"
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i
+                                class="bi bi-search"></i></span>
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            class="form-control bg-light border-start-0 ps-0"
                             placeholder="Buscar por nome da equipe...">
                     </div>
                 </div>
@@ -50,8 +52,10 @@
                     <i class="bi bi-funnel"></i> Filtrar
                 </button>
 
-                @if(request()->anyFilled(['search', 'modalidade_id', 'categoria']))
-                    <a href="{{ route('times.index') }}" class="btn btn-light text-danger d-flex align-items-center gap-2 shadow-sm" title="Limpar Filtros">
+                @if (request()->anyFilled(['search', 'modalidade_id', 'categoria']))
+                    <a href="{{ route('times.index') }}"
+                        class="btn btn-light text-danger d-flex align-items-center gap-2 shadow-sm"
+                        title="Limpar Filtros">
                         <i class="bi bi-x-circle"></i> Limpar
                     </a>
                 @endif
@@ -230,8 +234,12 @@
                     </div>
 
                     <div class="p-4 border-bottom">
-                        <input type="text" id="buscaAtleta" class="form-control form-control-lg bg-light"
-                            placeholder="Buscar atleta na lista..." onkeyup="filtrarAtletas()">
+                        <div class="position-relative">
+                            <i
+                                class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
+                            <input type="text" id="buscaAtleta" class="form-control form-control-lg bg-light ps-5"
+                                placeholder="Buscar atleta na lista..." onkeyup="filtrarAtletas()">
+                        </div>
                     </div>
 
                     <form id="formElenco" method="POST">
@@ -318,8 +326,6 @@
     </main>
 
     <script>
-        // Removemos as variáveis globais para evitar o bug do Hotwire Turbo!
-
         // Abre modal limpo para Nova Equipe
         function abrirNovaEquipe() {
             const formEquipe = document.getElementById('formEquipe');
@@ -434,12 +440,11 @@
                 });
         }
 
-        // Filtro de busca de atletas no modal de gerenciar
         function filtrarAtletas() {
             const termo = document.getElementById('buscaAtleta').value.toLowerCase();
+
             document.querySelectorAll('.linha-atleta').forEach(linha => {
                 const nome = linha.getAttribute('data-nome');
-                // Alterna entre as classes do Bootstrap
                 if (nome.includes(termo)) {
                     linha.classList.remove('d-none');
                     linha.classList.add('d-flex');

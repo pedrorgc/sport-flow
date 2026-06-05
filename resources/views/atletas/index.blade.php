@@ -220,45 +220,42 @@
         </div>
     </main>
 
-    <script>
-        const formAtleta = document.getElementById('formAtleta');
-        const metodoForm = document.getElementById('metodoForm');
-        const tituloModal = document.getElementById('tituloModal');
-        const btnSalvar = document.getElementById('btnSalvar');
-
-        // Abre modal limpo para Novo Cadastro
+<script>
         function abrirNovoCadastro() {
-            // 1. Limpa o form
+            const formAtleta = document.getElementById('formAtleta');
+            const metodoForm = document.getElementById('metodoForm');
+            const tituloModal = document.getElementById('tituloModal');
+            const btnSalvar = document.getElementById('btnSalvar');
+
             formAtleta.reset();
 
-            // 2. Configura para CREATE
             formAtleta.action = "{{ route('atletas.store') }}";
             metodoForm.value = "POST";
             tituloModal.innerText = "Novo Atleta";
             btnSalvar.innerText = "Salvar";
 
-            // 3. Dispara o evento para o Alpine.js abrir o modal
             window.dispatchEvent(new CustomEvent('open-modal'));
         }
 
-        // Busca dados e abre modal para Edição
         function abrirEdicao(id) {
-            // 1. Muda visualmente para carregar
+            const tituloModal = document.getElementById('tituloModal');
+
             tituloModal.innerText = "Carregando...";
             window.dispatchEvent(new CustomEvent('open-modal'));
 
-            // 2. Busca no back-end
             fetch(`/atletas/${id}/edit`)
                 .then(response => {
                     if (!response.ok) throw new Error('Erro na requisição');
                     return response.json();
                 })
                 .then(dados => {
-                    // 3. Preenche os campos com os dados do banco
+                    const formAtleta = document.getElementById('formAtleta');
+                    const metodoForm = document.getElementById('metodoForm');
+                    const btnSalvar = document.getElementById('btnSalvar');
+
                     document.getElementById('inputNome').value = dados.nome;
                     document.getElementById('inputCpf').value = dados.cpf_rg || '';
 
-                    // Ajuste caso a data venha do banco com hora (YYYY-MM-DD HH:MM:SS)
                     let dataNasc = dados.data_nascimento;
                     if (dataNasc && dataNasc.includes('T')) dataNasc = dataNasc.split('T')[0];
                     if (dataNasc && dataNasc.includes(' ')) dataNasc = dataNasc.split(' ')[0];
@@ -268,7 +265,6 @@
                     document.getElementById('inputCategoria').value = dados.categoria;
                     document.getElementById('inputContato').value = dados.contato || '';
 
-                    // 4. Configura para UPDATE (PUT)
                     formAtleta.action = `/atletas/${id}`;
                     metodoForm.value = "PUT";
                     tituloModal.innerText = "Editar Atleta";
