@@ -318,51 +318,72 @@
     </main>
 
     <script>
-        const formEquipe = document.getElementById('formEquipe');
-        const metodoFormEquipe = document.getElementById('metodoFormEquipe');
-        const tituloModalEquipe = document.getElementById('tituloModalEquipe');
-        const btnSalvarEquipe = document.getElementById('btnSalvarEquipe');
-        const formElenco = document.getElementById('formElenco');
+        // Removemos as variáveis globais para evitar o bug do Hotwire Turbo!
 
         // Abre modal limpo para Nova Equipe
         function abrirNovaEquipe() {
+            const formEquipe = document.getElementById('formEquipe');
+            const metodoFormEquipe = document.getElementById('metodoFormEquipe');
+            const tituloModalEquipe = document.getElementById('tituloModalEquipe');
+            const btnSalvarEquipe = document.getElementById('btnSalvarEquipe');
+
             formEquipe.reset();
             formEquipe.action = "{{ route('times.store') }}";
             metodoFormEquipe.value = "POST";
             tituloModalEquipe.innerText = "Nova Equipe";
             btnSalvarEquipe.innerText = "Salvar";
+            
             window.dispatchEvent(new CustomEvent('open-modal-equipe'));
         }
 
         // Abre modal para Editar Equipe
         function abrirEdicaoEquipe(id) {
+            document.getElementById('tituloModalEquipe').innerText = "Carregando...";
+            window.dispatchEvent(new CustomEvent('open-modal-equipe'));
+
             fetch(`/times/${id}/edit`)
                 .then(response => response.json())
                 .then(dados => {
+                    const formEquipe = document.getElementById('formEquipe');
+                    const metodoFormEquipe = document.getElementById('metodoFormEquipe');
+                    const tituloModalEquipe = document.getElementById('tituloModalEquipe');
+                    const btnSalvarEquipe = document.getElementById('btnSalvarEquipe');
+
                     document.getElementById('inputNome').value = dados.nome;
                     document.getElementById('inputModalidade').value = dados.modalidade_id;
                     document.getElementById('inputCategoria').value = dados.categoria;
 
+                    // Altera a rota no formulário fresco da tela
                     formEquipe.action = `/times/${id}`;
                     metodoFormEquipe.value = "PUT";
                     tituloModalEquipe.innerText = "Editar Equipe";
                     btnSalvarEquipe.innerText = "Atualizar";
-
-                    window.dispatchEvent(new CustomEvent('open-modal-equipe'));
-                });
+                })
+                .catch(err => console.error("Erro ao abrir edição:", err));
         }
 
         // Abre modal para Gerenciar Elenco
         function abrirElenco(id) {
+            // 1. Limpa os checkboxes e a busca
             document.querySelectorAll('.check-atleta').forEach(cb => cb.checked = false);
-            document.getElementById('buscaAtleta').value = '';
-            filtrarAtletas();
+            const inputBusca = document.getElementById('buscaAtleta');
+            if(inputBusca) {
+                inputBusca.value = '';
+                filtrarAtletas(); // Dispara o filtro para reexibir todos
+            }
 
+            // 2. Garante que o formulário atual receba o ID imediatamente!
+            const formElenco = document.getElementById('formElenco');
+            formElenco.action = `/times/${id}`;
+            
+            document.getElementById('tituloModalElenco').innerText = "Carregando elenco...";
+            window.dispatchEvent(new CustomEvent('open-modal-atletas'));
+
+            // 3. Busca no banco quais atletas já estão no time para marcar a caixinha
             fetch(`/times/${id}/edit`)
                 .then(response => response.json())
                 .then(dados => {
                     document.getElementById('tituloModalElenco').innerText = `Elenco: ${dados.nome}`;
-                    formElenco.action = `/times/${id}`;
 
                     if (dados.atletas && dados.atletas.length > 0) {
                         dados.atletas.forEach(atleta => {
@@ -370,23 +391,21 @@
                             if (checkbox) checkbox.checked = true;
                         });
                     }
-
-                    window.dispatchEvent(new CustomEvent('open-modal-atletas'));
-                });
+                })
+                .catch(err => console.error("Erro ao carregar elenco:", err));
         }
 
         // Função de Visualizar Elenco (Somente Leitura)
         function visualizarElenco(id) {
             const listaContainer = document.getElementById('listaAtletasTime');
-            listaContainer.innerHTML =
-                '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
+            listaContainer.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
+            window.dispatchEvent(new CustomEvent('open-modal-visualizar'));
 
             fetch(`/times/${id}/edit`)
                 .then(response => response.json())
                 .then(dados => {
                     document.getElementById('tituloVisualizarTime').innerText = dados.nome;
-                    document.getElementById('subtituloVisualizarTime').innerText =
-                        `${dados.modalidade?.nome ?? 'Sem modalidade'} • ${dados.categoria}`;
+                    document.getElementById('subtituloVisualizarTime').innerText = `${dados.modalidade?.nome ?? 'Sem modalidade'} • ${dados.categoria}`;
 
                     listaContainer.innerHTML = '';
 
@@ -406,16 +425,12 @@
                             `;
                         });
                     } else {
-                        listaContainer.innerHTML =
-                            '<div class="text-center py-4 text-secondary">Nenhum atleta vinculado a esta equipe.</div>';
+                        listaContainer.innerHTML = '<div class="text-center py-4 text-secondary">Nenhum atleta vinculado a esta equipe.</div>';
                     }
-
-                    window.dispatchEvent(new CustomEvent('open-modal-visualizar'));
                 })
                 .catch(error => {
                     console.error("Erro ao buscar elenco:", error);
-                    listaContainer.innerHTML =
-                        '<div class="text-center py-4 text-danger">Erro ao carregar os dados.</div>';
+                    listaContainer.innerHTML = '<div class="text-center py-4 text-danger">Erro ao carregar os dados.</div>';
                 });
         }
 
@@ -424,7 +439,14 @@
             const termo = document.getElementById('buscaAtleta').value.toLowerCase();
             document.querySelectorAll('.linha-atleta').forEach(linha => {
                 const nome = linha.getAttribute('data-nome');
-                linha.style.display = nome.includes(termo) ? 'flex' : 'none';
+                // Alterna entre as classes do Bootstrap
+                if (nome.includes(termo)) {
+                    linha.classList.remove('d-none');
+                    linha.classList.add('d-flex');
+                } else {
+                    linha.classList.remove('d-flex');
+                    linha.classList.add('d-none');
+                }
             });
         }
     </script>
