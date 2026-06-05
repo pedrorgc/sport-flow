@@ -12,7 +12,7 @@
                 alt="Logo SportFlow" class="img-fluid" style="max-height: 80px; transition: all 0.3s ease;">
         </div>
 
-        <div class="p-3 mt-2">
+        <div class="p-2 mt-0">
             <x-sidebar-item icon="bi bi-grid" label="Dashboard" href="/dashboard" :active="request()->is('dashboard')" />
             <x-sidebar-item icon="bi bi-person" label="Atletas" href="/atletas" :active="request()->is('atletas')" />
             <x-sidebar-item icon="bi bi-people" label="Times" href="/times" :active="request()->is('times')" />
@@ -23,7 +23,7 @@
             <x-sidebar-item icon="bi bi-calendar-check" label="Reservas" href="/reservas" :active="request()->is('reservas')" />
         </div>
 
-        <div class="p-3 mt-auto border-top">
+        <div class="p-2 mt-auto border-top">
             <button @click="theme = (theme === 'light' ? 'dark' : 'light')"
                 class="btn w-100 text-start d-flex align-items-center gap-3 px-3 py-2 rounded-3 mb-2 item-hover"
                 style="color: var(--cor-texto-corpo);">

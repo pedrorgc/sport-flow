@@ -11,7 +11,9 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=League+Spartan:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=League+Spartan:wght@700&display=swap"
+        rel="stylesheet">
 
     <script>
         if (localStorage.getItem('theme') === 'dark') {
@@ -23,7 +25,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #ffffff;
-            font-size: clamp(0.95rem, 1vw + 0.5rem, 1.05rem); 
+            font-size: clamp(0.95rem, 1vw + 0.5rem, 1.05rem);
         }
 
         .left-panel {
@@ -54,8 +56,15 @@
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-fade-in-up {
@@ -63,13 +72,34 @@
             opacity: 0;
         }
 
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.3s; }
-        .delay-3 { animation-delay: 0.4s; }
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.3s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.4s;
+        }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); max-height: 0; padding: 0; margin-bottom: 0; }
-            to { opacity: 1; transform: translateY(0); max-height: 100px; padding: 1rem; margin-bottom: 1rem; }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+                max-height: 0;
+                padding: 0;
+                margin-bottom: 0;
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 100px;
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
         }
 
         .form-group-custom {
@@ -81,8 +111,9 @@
             transform: scale(1.02);
         }
 
-        .input-custom, .btn-gradient {
-            height: clamp(50px, 7vh, 64px); 
+        .input-custom,
+        .btn-gradient {
+            height: clamp(50px, 7vh, 64px);
             border-radius: 0.85rem;
             transition: all 0.2s ease;
             width: 100%;
@@ -142,10 +173,21 @@
         }
 
         @media (max-height: 750px) {
-            .brand-description { display: none; } 
-            .mb-5 { margin-bottom: 1.5rem !important; }
-            .mb-4 { margin-bottom: 1rem !important; }
-            .mt-4 { margin-top: 1rem !important; }
+            .brand-description {
+                display: none;
+            }
+
+            .mb-5 {
+                margin-bottom: 1.5rem !important;
+            }
+
+            .mb-4 {
+                margin-bottom: 1rem !important;
+            }
+
+            .mt-4 {
+                margin-top: 1rem !important;
+            }
         }
 
         /* MODO ESCURO */
@@ -185,6 +227,21 @@
             border-color: rgba(220, 38, 38, 0.2);
             color: #ef4444;
         }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0px 1000px #f9fafb inset !important;
+            -webkit-text-fill-color: #0d1b2a !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        [data-theme="dark"] input:-webkit-autofill,
+        [data-theme="dark"] input:-webkit-autofill:hover,
+        [data-theme="dark"] input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
+            -webkit-text-fill-color: #f8fafc !important;
+        }
     </style>
 </head>
 
@@ -193,9 +250,11 @@
     <div class="container-fluid min-vh-100">
         <div class="row min-vh-100">
 
-            <div class="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center text-center left-panel p-4 p-lg-5">
+            <div
+                class="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center text-center left-panel p-4 p-lg-5">
                 <div class="mb-3 mb-xl-4">
-                    <img src="{{ asset('images/sportflow_3d.png') }}" alt="SportFlow Icon" class="img-fluid" style="max-height: 30vh; width: auto; object-fit: contain;">
+                    <img src="{{ asset('images/sportflow_3d.png') }}" alt="SportFlow Icon" class="img-fluid"
+                        style="max-height: 30vh; width: auto; object-fit: contain;">
                 </div>
 
                 <h1 class="brand-title">SportFlow</h1>
@@ -204,7 +263,8 @@
                 </div>
 
                 <p class="brand-description mt-2">
-                    Simplifique a gestão de atletas, eventos e espaços esportivos em uma plataforma completa e intuitiva.
+                    Simplifique a gestão de atletas, eventos e espaços esportivos em uma plataforma completa e
+                    intuitiva.
                     <br><br>
                     Controle inscrições, acompanhe resultados, gerencie reservas e visualize estatísticas em tempo real.
                 </p>
@@ -217,13 +277,15 @@
             <div class="col-md-6 d-flex justify-content-center align-items-center p-4 p-md-5">
                 <div class="w-100" style="max-width: 460px;">
                     <h2 class="fw-bold mb-2" style="color: #0d1b2a; font-size: clamp(2rem, 3vw, 2.5rem);">Bem-vindo</h2>
-                    <p class="text-muted mb-4 mb-xl-5" style="font-size: clamp(0.95rem, 1.5vw, 1.1rem);">Faça login para continuar no sistema</p>
+                    <p class="text-muted mb-4 mb-xl-5" style="font-size: clamp(0.95rem, 1.5vw, 1.1rem);">Faça login para
+                        continuar no sistema</p>
 
                     <form method="POST" action="/login-validar">
                         @csrf
 
                         <div class="mb-3 mb-xl-4 animate-fade-in-up delay-1">
-                            <label for="username" class="form-label text-dark fw-medium mb-2" style="font-size: clamp(0.85rem, 1vw, 0.95rem);">
+                            <label for="username" class="form-label text-dark fw-medium mb-2"
+                                style="font-size: clamp(0.85rem, 1vw, 0.95rem);">
                                 Usuário
                             </label>
                             <div class="form-group-custom">
@@ -234,7 +296,8 @@
                         </div>
 
                         <div class="mb-3 mb-xl-4 animate-fade-in-up delay-2">
-                            <label for="password" class="form-label text-dark fw-medium mb-2" style="font-size: clamp(0.85rem, 1vw, 0.95rem);">
+                            <label for="password" class="form-label text-dark fw-medium mb-2"
+                                style="font-size: clamp(0.85rem, 1vw, 0.95rem);">
                                 Senha
                             </label>
                             <div class="form-group-custom" style="position: relative;">
@@ -283,4 +346,5 @@
     </script>
 
 </body>
+
 </html>

@@ -252,6 +252,20 @@
     </div>
 
     <x-modal.confirm-delete />
+
+    <script>
+        // Aplica o tema imediatamente ao carregar (evita flash)
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+
+        // Reaplica ao navegar com Turbo Drive
+        document.addEventListener('turbo:load', function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        });
+    </script>
 </body>
 
 </html>
