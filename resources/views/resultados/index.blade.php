@@ -264,11 +264,9 @@
         document.getElementById('methodInput').value = 'POST';
         document.getElementById('formResultado').reset();
 
-        // Preenche o visual e o oculto
         document.getElementById('evento_nome_display').value = eventoNome;
         document.getElementById('evento_id_hidden').value = eventoId;
 
-        // Dispara a busca de atletas já sabendo o evento
         carregarInscricoes(eventoId);
 
         window.dispatchEvent(new CustomEvent('abrir-modal'));
@@ -282,14 +280,12 @@
         fetch(`/resultados/${resultadoId}/edit`)
             .then(response => response.json())
             .then(resultado => {
-                // Preenche o visual e o oculto
                 document.getElementById('evento_nome_display').value = eventoNome;
                 document.getElementById('evento_id_hidden').value = resultado.evento_id;
 
                 document.querySelector('[name="posicao"]').value = resultado.posicao;
                 document.querySelector('[name="marca_pontuacao"]').value = resultado.marca_pontuacao || '';
 
-                // Busca as inscrições e já marca o vencedor antigo
                 carregarInscricoes(resultado.evento_id, resultado.inscricao_id);
 
                 window.dispatchEvent(new CustomEvent('abrir-modal'));

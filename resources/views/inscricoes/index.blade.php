@@ -85,7 +85,7 @@
                                 </td>
                                 <td class="py-3 text-center">
                                     <span
-                                        class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill border border-primary border-opacity-25">
+                                        class="badge badge-soft-primary fw-medium px-2 py-1">
                                         {{ $evento->inscricoes_count }} registros
                                     </span>
                                 </td>
@@ -243,16 +243,13 @@
     </main>
 
     <script>
-        // Função 1: Prepara o Modal para Nova Inscrição
         function abrirNovaInscricao(eventoId, eventoNome) {
             document.getElementById('formInscricao').reset();
 
-            // Trava o evento no modal
             document.getElementById('inputEventoId').value = eventoId;
             document.getElementById('inputNomeEventoVisual').value = eventoNome;
             document.getElementById('inputStatusInscricao').value = "Confirmada";
 
-            // Reseta form para Criação (POST)
             document.getElementById('formInscricao').action = "{{ route('inscricoes.store') }}";
             document.getElementById('metodoFormInscricao').value = "POST";
             document.getElementById('tituloModalInscricao').innerText = "Nova Inscrição";
@@ -264,9 +261,7 @@
             window.dispatchEvent(new CustomEvent('open-modal-inscricao'));
         }
 
-        // Função 2: A Mágica da Edição (Busca os dados e preenche o form)
         function abrirEdicaoInscricao(id) {
-            // Fecha o modal de lista enviando o evento para o Alpine
             window.dispatchEvent(new CustomEvent('close-modal-lista'));
 
             document.getElementById('tituloModalInscricao').innerText = "Carregando...";
@@ -275,12 +270,10 @@
             fetch(`/inscricoes/${id}/edit`)
                 .then(response => response.json())
                 .then(dados => {
-                    // Preenche os dados visuais
                     document.getElementById('inputEventoId').value = dados.evento_id;
                     document.getElementById('inputNomeEventoVisual').value = dados.evento.nome;
                     document.getElementById('inputStatusInscricao').value = dados.status_inscricao;
 
-                    // Alterna o Toggle entre Atleta ou Time
                     if (dados.time_id) {
                         window.dispatchEvent(new CustomEvent('set-tipo', {
                             detail: 'time'
@@ -295,7 +288,6 @@
                         document.getElementById('inputTime').value = "";
                     }
 
-                    // Prepara o form para Atualização (PUT)
                     document.getElementById('formInscricao').action = `/inscricoes/${id}`;
                     document.getElementById('metodoFormInscricao').value = "PUT";
                     document.getElementById('tituloModalInscricao').innerText = "Editar Inscrição";
@@ -307,7 +299,6 @@
                 });
         }
 
-        // Função 3: Busca no Back-end a lista de inscritos e desenha os cards
         function verInscritos(eventoId, eventoNome) {
             const listaContainer = document.getElementById('listaInscritosEvento');
             document.getElementById('tituloVisualizarEvento').innerText = eventoNome;
@@ -331,7 +322,6 @@
                             let statusCor = inscricao.status_inscricao === 'Confirmada' ? 'success' : (inscricao
                                 .status_inscricao === 'Cancelada' ? 'danger' : 'warning');
 
-                            // Cardzinho de cada inscrito com botões de Editar e Excluir
                             listaContainer.innerHTML += `
                                 <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light border border-opacity-10 hover-shadow transition">
                                     <div class="d-flex align-items-center gap-3">

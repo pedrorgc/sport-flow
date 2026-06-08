@@ -53,11 +53,9 @@
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="card-premium h-100 p-4 d-flex flex-column">
 
-                        {{-- nome do evento --}}
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <h5 class="fw-bold text-dark mb-0">{{ $evento->nome }}</h5>
 
-                            {{-- status do evento --}}
                             @php
                                 $cor = match ($evento->status) {
                                     'Concluído' => 'success',
@@ -73,14 +71,12 @@
                             </span>
                         </div>
 
-                        {{-- modalidade do evento --}}
                         <div class="mb-4 mt-2">
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-trophy text-primary me-2 fs-5"></i>
                                 <span class="fw-medium">{{ $evento->modalidade->nome ?? 'Não informado' }}</span>
                             </div>
 
-                            {{-- data inicio e fim formatadas --}}
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
                                 <span>
@@ -90,7 +86,6 @@
                                 </span>
                             </div>
 
-                            {{-- periodo inscricoes --}}
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-clock text-primary me-2 fs-5"></i>
                                 @php
@@ -128,14 +123,12 @@
                                 @endif
                             </div>
 
-                            {{-- local do evento --}}
                             <div class="d-flex align-items-center text-secondary">
                                 <i class="bi bi-geo-alt text-primary me-2 fs-5"></i>
                                 <span>{{ $evento->espaco->nome ?? 'Espaço não definido' }}</span>
                             </div>
                         </div>
 
-                        {{-- descrição do evento --}}
                         <p class="text-secondary small mb-4 flex-grow-1" style="line-height: 1.6;">
                             {{ Str::limit($evento->descricao, 100, '...') }}
                         </p>
@@ -167,7 +160,6 @@
 
         </div>
 
-        <!-- MODAL (CRIAR E EDITAR) -->
         <div x-show="openModal" x-cloak class="position-fixed top-0 start-0 w-100 h-100"
             style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2000; overflow-y: auto;"
             x-transition.opacity @click.self="openModal = false">
@@ -192,7 +184,6 @@
                         @csrf
                         <input type="hidden" name="_method" id="metodoFormEvento" value="POST">
 
-                        {{-- nome --}}
                         <div class="mb-3">
                             <label class="form-label fw-semibold small text-secondary">Nome do Evento <span
                                     class="text-danger">*</span></label>
@@ -200,7 +191,6 @@
                                 required>
                         </div>
 
-                        {{-- modalidade --}}
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold small text-secondary">Modalidade <span
@@ -214,7 +204,6 @@
                                 </select>
                             </div>
 
-                            {{-- status --}}
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold small text-secondary">Status</label>
                                 <select name="status" id="inputStatus" class="form-select bg-light">
@@ -226,7 +215,6 @@
                             </div>
                         </div>
 
-                        {{-- espaço físico --}}
                         <div class="mb-3">
                             <label class="form-label fw-semibold small text-secondary">
                                 Espaço Físico <span class="text-danger">*</span>
@@ -240,10 +228,8 @@
                             </select>
                         </div>
 
-                        {{-- datas --}}
                         <div class="row">
 
-                            {{-- inicio inscricoes --}}
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold small text-secondary">
                                     Início das Inscrições
@@ -253,7 +239,6 @@
                                     class="form-control bg-light" required>
                             </div>
 
-                            {{-- fim inscricoes --}}
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold small text-secondary">
                                     Fim das Inscrições
@@ -263,7 +248,6 @@
                                     class="form-control bg-light" required>
                             </div>
 
-                            {{-- data inicio --}}
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold small text-secondary">
                                     Data Início <span class="text-danger">*</span>
@@ -273,7 +257,6 @@
                                     class="form-control bg-light" required>
                             </div>
 
-                            {{-- data fim --}}
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold small text-secondary">
                                     Data Fim <span class="text-danger">*</span>
@@ -341,7 +324,6 @@
                     document.getElementById('inputEspaco').value = dados.espaco_id;
                     document.getElementById('inputDescricao').value = dados.descricao || '';
 
-                    // Tratamento de Datas (Cortando qualquer HORA que venha do banco)
                     const tratarData = (dataHora) => {
                         if (!dataHora) return '';
 
@@ -353,8 +335,6 @@
                     document.getElementById('inputInscricaoInicio').value = tratarData(dados.inscricao_inicio);
                     document.getElementById('inputInscricaoFim').value = tratarData(dados.inscricao_fim);
 
-
-                    // Configura o formulário para Atualização (PUT)
                     formEvento.action = `/eventos/${id}`;
                     metodoFormEvento.value = "PUT";
                     tituloModalEvento.innerText = "Editar Evento";

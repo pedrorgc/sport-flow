@@ -24,7 +24,7 @@
                     
                     <div>
                         <h4 class="fw-bold text-dark mb-1">{{ auth()->user()->username }}</h4>
-                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-pill fw-medium">Administrador</span>
+                        <span class="badge badge-soft-primary fw-medium px-2 py-1">Administrador</span>
                     </div>
                 </div>
 

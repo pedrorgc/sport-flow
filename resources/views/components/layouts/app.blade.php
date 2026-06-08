@@ -144,41 +144,20 @@
 
         /* ==============================================
            HACK: ADAPTANDO O BOOTSTRAP PARA O MODO ESCURO
-           Isso evita que você precise mudar o HTML das outras telas!
            ============================================== */
-        [data-theme="dark"] .bg-white {
-            background-color: var(--bg-cards) !important;
-        }
-
-        [data-theme="dark"] .bg-light {
-            background-color: #0f172a !important;
-            color: var(--cor-texto-corpo);
-            border-color: var(--cor-borda) !important;
-        }
-
-        [data-theme="dark"] .text-dark {
-            color: var(--cor-texto-titulo) !important;
-        }
-
-        [data-theme="dark"] .text-secondary,
-        [data-theme="dark"] .text-muted {
-            color: var(--cor-texto-corpo) !important;
-        }
-
-        [data-theme="dark"] .border-bottom,
-        [data-theme="dark"] .border-top {
-            border-color: var(--cor-borda) !important;
-        }
-
-        [data-theme="dark"] .form-control,
-        [data-theme="dark"] .form-select {
+        [data-theme="dark"] .bg-white { background-color: var(--bg-cards) !important; }
+        [data-theme="dark"] .bg-light { background-color: #0f172a !important; color: var(--cor-texto-corpo); border-color: var(--cor-borda) !important; }
+        [data-theme="dark"] .text-dark { color: var(--cor-texto-titulo) !important; }
+        [data-theme="dark"] .text-secondary, [data-theme="dark"] .text-muted { color: var(--cor-texto-corpo) !important; }
+        [data-theme="dark"] .border-bottom, [data-theme="dark"] .border-top { border-color: var(--cor-borda) !important; }
+        
+        [data-theme="dark"] .form-control, [data-theme="dark"] .form-select {
             background-color: #0f172a;
             border-color: var(--cor-borda);
             color: var(--cor-texto-titulo);
         }
 
-        [data-theme="dark"] .form-control:focus,
-        [data-theme="dark"] .form-select:focus {
+        [data-theme="dark"] .form-control:focus, [data-theme="dark"] .form-select:focus {
             background-color: #0f172a;
             color: var(--cor-texto-titulo);
         }
@@ -189,11 +168,8 @@
             border-color: var(--cor-borda);
         }
 
-        /* Inverte a cor da Logo Preta para Branca no modo escuro */
-        [data-theme="dark"] .logo-img {
-            filter: brightness(0) invert(1);
-        }
-
+        [data-theme="dark"] .logo-img { filter: brightness(0) invert(1); }
+        
         [data-theme="dark"] .table {
             color: var(--cor-texto-corpo);
             --bs-table-bg: transparent;
@@ -201,38 +177,55 @@
             --bs-table-border-color: var(--cor-borda);
         }
 
-        [data-theme="dark"] th {
-            color: var(--cor-texto-titulo);
-        }
-
-        [x-cloak] {
-            display: none !important;
-        }
-
-        [data-theme="dark"] .form-control::placeholder,
-        [data-theme="dark"] .form-select::placeholder {
+        [data-theme="dark"] th { color: var(--cor-texto-titulo); }
+        [x-cloak] { display: none !important; }
+        
+        [data-theme="dark"] .form-control::placeholder, [data-theme="dark"] .form-select::placeholder {
             color: #94a3b8 !important;
             opacity: 1 !important;
         }
 
-        [data-theme="dark"] .form-label {
-            color: var(--cor-texto-titulo) !important;
+        [data-theme="dark"] .form-label { color: var(--cor-texto-titulo) !important; }
+        [data-theme="dark"] .form-text { color: #94a3b8 !important; }
+        [data-theme="dark"] .text-primary { color: #60a5fa !important; }
+        [data-theme="dark"] .bg-primary { background-color: #3b82f6 !important; }
+
+        /* ==============================================
+           BADGES SUAVES (SOFT BADGES) - MODO CLARO
+           ============================================== */
+        .badge-soft-primary { background-color: rgba(13, 110, 253, 0.1) !important; color: #0d6efd !important; }
+        .badge-soft-success { background-color: rgba(25, 135, 84, 0.1) !important; color: #198754 !important; }
+        .badge-soft-danger  { background-color: rgba(220, 53, 69, 0.1) !important; color: #dc3545 !important; }
+        .badge-soft-warning { background-color: rgba(255, 193, 7, 0.15) !important; color: #b38600 !important; }
+        .badge-soft-info    { background-color: rgba(13, 202, 240, 0.1) !important; color: #087990 !important; }
+
+        /* ==============================================
+           BADGES SUAVES (SOFT BADGES) - MODO ESCURO
+           Ajusta a opacidade do fundo e usa cores em tom pastel
+           ============================================== */
+        [data-theme="dark"] .badge-soft-primary {
+            background-color: rgba(13, 110, 253, 0.25) !important; 
+            color: #9ec5fe !important; 
         }
 
-        [data-theme="dark"] .form-text {
-            color: #94a3b8 !important;
+        [data-theme="dark"] .badge-soft-success {
+            background-color: rgba(25, 135, 84, 0.25) !important;
+            color: #a3cfbb !important; 
         }
 
-        [data-theme="dark"] .text-primary {
-            color: #60a5fa !important;
+        [data-theme="dark"] .badge-soft-danger {
+            background-color: rgba(220, 53, 69, 0.25) !important;
+            color: #f1aeb5 !important; 
         }
 
-        [data-theme="dark"] .bg-primary {
-            background-color: #3b82f6 !important;
+        [data-theme="dark"] .badge-soft-warning {
+            background-color: rgba(255, 193, 7, 0.2) !important;
+            color: #ffe69c !important; 
         }
 
-        [data-theme="dark"] .text-secondary {
-            color: #94a3b8 !important;
+        [data-theme="dark"] .badge-soft-info {
+            background-color: rgba(13, 202, 240, 0.2) !important;
+            color: #9eeaf9 !important; 
         }
 
         /* Estilizando a barra de progresso do Turbo Drive */

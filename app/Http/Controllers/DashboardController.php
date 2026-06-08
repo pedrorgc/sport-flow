@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Evento;
 use App\Models\Inscricoes;
 use App\Models\Time;
+use App\Models\Reserva;
+use App\Models\Espaco;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -14,7 +17,11 @@ class DashboardController extends Controller
         $eventosSemResultados = Evento::doesntHave('resultados')->count();
         $eventosProximos = Evento::whereBetween('data_inicio', [now()->addDays(7), now()->addDays(15)])->get();
 
-        $agendaHoje = collect([]);
+        $agendaHoje = Reserva::with('espaco')
+            ->whereDate('data_hora_inicio', now(config('app.timezone'))->toDateString())
+            ->where('status', 'Confirmada')
+            ->orderBy('data_hora_inicio')
+            ->get();
 
         $avisosInscricoes = Evento::where('status', '!=', 'Cancelado')
             ->whereBetween('inscricao_fim', [now()->startOfDay(), now()->addDays(3)->endOfDay()])

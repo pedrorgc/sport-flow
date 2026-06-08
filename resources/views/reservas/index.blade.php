@@ -86,31 +86,59 @@
                         </tr>
                     </thead>
                     <tbody class="border-top-0">
+                        @php 
+                            $gruposListados = []; 
+                        @endphp
+
                         @forelse($reservas as $reserva)
+                            @if($reserva->tipo === 'Fixa' && $reserva->grupo_reserva_id)
+                                @if(in_array($reserva->grupo_reserva_id, $gruposListados))
+                                    @continue
+                                @endif
+                                @php $gruposListados[] = $reserva->grupo_reserva_id; @endphp
+                            @endif
+
                             <tr>
                                 <td class="ps-4 py-3 fw-medium titulo-marca">
                                     <span class="text-dark d-block fw-bold">{{ $reserva->titulo }}</span>
                                     <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ $reserva->espaco->nome ?? '---' }}</small>
                                 </td>
+                                
                                 <td class="py-3">
+                                    @if($reserva->tipo === 'Fixa')
+                                        <div class="text-secondary" style="font-size: 0.70rem;">A partir de:</div>
+                                    @endif
+                                    
                                     <div class="titulo-marca fw-medium">{{ \Carbon\Carbon::parse($reserva->data_hora_inicio)->format('d/m/Y') }}</div>
                                     <div class="text-secondary small"><i class="bi bi-clock me-1"></i> {{ \Carbon\Carbon::parse($reserva->data_hora_inicio)->format('H:i') }} às {{ \Carbon\Carbon::parse($reserva->data_hora_fim)->format('H:i') }}</div>
+                                    
+                                    @if($reserva->tipo === 'Fixa')
+                                        <div class="mt-2">
+                                            <span class="badge badge-soft-primary" style="font-size: 0.65rem;"><i class="bi bi-arrow-repeat"></i> Rotina Semanal</span>
+                                        </div>
+                                    @endif
                                 </td>
+                                
                                 <td class="py-3"><div class="titulo-marca fw-bold">{{ $reserva->tipo }}</div></td>
+                                
                                 <td class="py-3">
                                     @php $corStatus = $reserva->status === 'Confirmada' ? 'success' : ($reserva->status === 'Cancelada' ? 'danger' : 'warning'); @endphp
                                     <span class="badge rounded-pill bg-{{ $corStatus }} bg-opacity-10 text-{{ $corStatus }} px-3 py-2 fw-medium border border-{{ $corStatus }} border-opacity-25">
                                         {{ $reserva->status }}
                                     </span>
                                 </td>
+                                
                                 <td class="text-end pe-4 py-3">
                                     <div class="d-flex justify-content-end gap-2">
                                         <button class="btn btn-sm btn-light text-primary hover-shadow" onclick="executarEdicaoReserva({{ $reserva->id }})" @click="openModal = true"><i class="bi bi-pencil-square"></i></button>
+                                        
+                                        @php
+                                            $rotaExclusao = route('reservas.destroy', $reserva->id) . ($reserva->tipo === 'Fixa' ? '?cancelar_grupo=1' : '');
+                                            $mensagemExclusao = $reserva->tipo === 'Fixa' ? 'Tem certeza que deseja cancelar TODA A ROTINA futura desta atividade?' : 'Tem certeza que deseja cancelar esta reserva?';
+                                        @endphp
+
                                         <button class="btn btn-sm btn-light text-danger hover-shadow" title="Cancelar Reserva"
-                                            @click="$dispatch('confirmar-exclusao', {
-                                                action: '{{ route('reservas.destroy', $reserva->id) }}',
-                                                mensagem: 'Tem certeza que deseja cancelar esta reserva?'
-                                            })">
+                                            @click="$dispatch('confirmar-exclusao', { action: '{{ $rotaExclusao }}', mensagem: '{{ $mensagemExclusao }}' })">
                                             <i class="bi bi-trash3"></i>
                                         </button>
                                     </div>
@@ -383,7 +411,6 @@
             document.getElementById('boxAlterarGrupo').style.display = "none";
             document.getElementById('boxDataLimite').style.display = "block";
             document.getElementById('boxDiasSemana').style.display = "block";
-            // Limpa as caixas de seleção de dias
             form.querySelectorAll('input[name="dias_semana[]"]').forEach(el => el.checked = false);
         }
 
@@ -480,7 +507,6 @@
                     const dataFim = colunas[colunas.length - 1].getAttribute('data-date');
                     const espacoId = document.getElementById('filtroEspaco').value;
 
-                    // Limpa instâncias antigas da tela para re-renderização
                     document.querySelectorAll('.event-block').forEach(el => el.remove());
 
                     const response = await fetch(`/api/reservas-mensais?start=${dataInicio}&end=${dataFim}&espaco_id=${espacoId}`);
@@ -502,7 +528,6 @@
 
                         const visualStartH = Math.max(startH, START_HOUR);
                         
-                        // CORREÇÃO MATEMÁTICA: Adicionado o buffer fixo de 57px correspondente ao header
                         const top = ((visualStartH - START_HOUR + startM / 60) * SLOT_HEIGHT) + 57;
                         const height = Math.max((endH - visualStartH + (endM - startM) / 60) * SLOT_HEIGHT, 24);
 
@@ -520,7 +545,6 @@
                         const horaInicioFormato = startH.toString().padStart(2,'0') + ':' + startM.toString().padStart(2,'0');
                         const horaFimFormato = endH.toString().padStart(2,'0') + ':' + endM.toString().padStart(2,'0');
 
-                        // EXIBIÇÃO: Agora com horário de início e término na visualização compacta
                         bloco.innerHTML = `
                             <div class="event-title fw-bold text-truncate" style="font-size: 0.75rem;">${reserva.title}</div>
                             <div class="event-time" style="font-size: 0.62rem; margin-top: 1px; opacity: 0.9;"><i class="bi bi-clock"></i> ${horaInicioFormato} – ${horaFimFormato}</div>
@@ -555,8 +579,7 @@
             window.recarregarCalendario();
         }
 
-        // SOLUÇÃO DO BUG DE REFRESH: Escuta o ciclo de vida tradicional E o do Hotwire Turbo!
-        document.addEventListener('DOMContentLoaded', i => { if(!window.turboAtivo) inicializerFisico(); });
+        document.addEventListener('DOMContentLoaded', i => { if(!window.turboAtivo) inicializarMotorCalendario(); });
         document.addEventListener('turbo:load', () => { window.turboAtivo = true; inicializarMotorCalendario(); });
     </script>
 </x-layouts.app>

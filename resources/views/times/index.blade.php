@@ -326,7 +326,6 @@
     </main>
 
     <script>
-        // Abre modal limpo para Nova Equipe
         function abrirNovaEquipe() {
             const formEquipe = document.getElementById('formEquipe');
             const metodoFormEquipe = document.getElementById('metodoFormEquipe');
@@ -342,7 +341,6 @@
             window.dispatchEvent(new CustomEvent('open-modal-equipe'));
         }
 
-        // Abre modal para Editar Equipe
         function abrirEdicaoEquipe(id) {
             document.getElementById('tituloModalEquipe').innerText = "Carregando...";
             window.dispatchEvent(new CustomEvent('open-modal-equipe'));
@@ -359,7 +357,6 @@
                     document.getElementById('inputModalidade').value = dados.modalidade_id;
                     document.getElementById('inputCategoria').value = dados.categoria;
 
-                    // Altera a rota no formulário fresco da tela
                     formEquipe.action = `/times/${id}`;
                     metodoFormEquipe.value = "PUT";
                     tituloModalEquipe.innerText = "Editar Equipe";
@@ -368,24 +365,20 @@
                 .catch(err => console.error("Erro ao abrir edição:", err));
         }
 
-        // Abre modal para Gerenciar Elenco
         function abrirElenco(id) {
-            // 1. Limpa os checkboxes e a busca
             document.querySelectorAll('.check-atleta').forEach(cb => cb.checked = false);
             const inputBusca = document.getElementById('buscaAtleta');
             if(inputBusca) {
                 inputBusca.value = '';
-                filtrarAtletas(); // Dispara o filtro para reexibir todos
+                filtrarAtletas();
             }
 
-            // 2. Garante que o formulário atual receba o ID imediatamente!
             const formElenco = document.getElementById('formElenco');
             formElenco.action = `/times/${id}`;
             
             document.getElementById('tituloModalElenco').innerText = "Carregando elenco...";
             window.dispatchEvent(new CustomEvent('open-modal-atletas'));
 
-            // 3. Busca no banco quais atletas já estão no time para marcar a caixinha
             fetch(`/times/${id}/edit`)
                 .then(response => response.json())
                 .then(dados => {
@@ -401,7 +394,6 @@
                 .catch(err => console.error("Erro ao carregar elenco:", err));
         }
 
-        // Função de Visualizar Elenco (Somente Leitura)
         function visualizarElenco(id) {
             const listaContainer = document.getElementById('listaAtletasTime');
             listaContainer.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';

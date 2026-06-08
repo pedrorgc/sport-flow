@@ -152,22 +152,22 @@
                         <div class="timeline-item">
                             <div class="timeline-marker bg-primary"></div>
 
-                            <div class="p-3 rounded-4 border border-primary border-opacity-25"
+                            <div class="p-3 rounded-4 border border-primary border-opacity-25 badge-soft-primary"
                                 style="background-color: var(--bg-sistema);">
 
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <div class="d-flex align-items-center gap-2">
                                         <span class="fw-bold text-primary fs-5">
-                                            {{ \Carbon\Carbon::parse($reserva->inicio)->format('H:i') }}
+                                            {{ \Carbon\Carbon::parse($reserva->data_hora_inicio)->format('H:i') }}
                                         </span>
 
                                         <span class="text-secondary small">
-                                            às {{ \Carbon\Carbon::parse($reserva->fim)->format('H:i') }}
+                                            às {{ \Carbon\Carbon::parse($reserva->data_hora_fim)->format('H:i') }}
                                         </span>
                                     </div>
 
                                     <span class="badge bg-primary rounded-pill px-3 shadow-sm">
-                                        Reserva
+                                        {{ $reserva->tipo }}
                                     </span>
                                 </div>
 
@@ -177,7 +177,7 @@
 
                                 <div class="text-secondary small">
                                     <i class="bi bi-geo-alt text-primary me-1"></i>
-                                    {{ $reserva->local ?? 'Local não informado' }}
+                                    {{ $reserva->espaco->nome ?? 'Espaço não definido' }}
                                 </div>
                             </div>
                         </div>
@@ -196,7 +196,6 @@
                             </div>
                         </div>
                     @endforelse
-
                 </div>
             </div>
         </div>
@@ -256,8 +255,7 @@
                                 @if (!$loop->first) border-top @endif"
                                 style="border-color: var(--cor-borda) !important;">
 
-                                <div 
-                                    class="bg-{{ $atividade->cor }} bg-opacity-10 text-{{ $atividade->cor }}
+                                <div class="bg-{{ $atividade->cor }} bg-opacity-10 text-{{ $atividade->cor }}
                                     rounded-circle d-flex align-items-center justify-content-center fw-bold"
                                     style="width: 40px; height: 40px; font-size: 0.85rem;">
 
