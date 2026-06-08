@@ -17,8 +17,6 @@
             @forelse($espacos as $espaco)
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="card-premium h-100 border-0 overflow-hidden shadow-sm">
-
-                        {{-- parte do banner ou foto --}}
                         <div class="w-100 overflow-hidden" style="height: 160px;">
                             @if ($espaco->foto)
                                 <img src="{{ asset('storage/' . $espaco->foto) }}" alt="Foto de {{ $espaco->nome }}"
@@ -37,7 +35,7 @@
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
                                     <h5 class="fw-bold text-dark mb-1">{{ $espaco->nome }}</h5>
-                                    <div class="badge bg-primary bg-opacity-10 text-primary fw-medium px-2 py-1">
+                                    <div class="badge badge-soft-primary fw-medium px-2 py-1">
                                         {{ $espaco->tipo }}</div>
                                 </div>
 
@@ -46,7 +44,8 @@
                                         title="Editar" @click="$dispatch('abrir-edicao', {{ $espaco }})">
                                         <i class="bi bi-pencil-square"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-light text-danger hover-shadow px-2 py-1" title="Excluir"
+                                    <button class="btn btn-sm btn-light text-danger hover-shadow px-2 py-1"
+                                        title="Excluir"
                                         @click="$dispatch('confirmar-exclusao', {
                                             action: '{{ route('espacos.destroy', $espaco->id) }}',
                                             mensagem: 'Tem certeza que deseja excluir o espaço {{ $espaco->nome }}?'
@@ -144,7 +143,6 @@
             </div>
         </div>
 
-        {{-- modal de edicao --}}
         <div x-data="{
             openEdit: false,
             espaco: {},
@@ -224,6 +222,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 </x-layouts.app>
