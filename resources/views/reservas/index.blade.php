@@ -436,7 +436,7 @@
                     if (reserva.tipo === 'Fixa') {
                         document.getElementById('boxAlterarGrupo').style.display = "block";
                         document.getElementById('boxDataLimite').style.display = "none";
-                        document.getElementById('boxDiasSemana').style.display = "none"; // Oculta a escolha de dias na edição simples
+                        document.getElementById('boxDiasSemana').style.display = "none";
                     } else {
                         document.getElementById('boxAlterarGrupo').style.display = "none";
                     }
@@ -507,10 +507,10 @@
                     const dataFim = colunas[colunas.length - 1].getAttribute('data-date');
                     const espacoId = document.getElementById('filtroEspaco').value;
 
-                    document.querySelectorAll('.event-block').forEach(el => el.remove());
-
                     const response = await fetch(`/api/reservas-mensais?start=${dataInicio}&end=${dataFim}&espaco_id=${espacoId}`);
                     const reservas = await response.json();
+
+                    document.querySelectorAll('.event-block').forEach(el => el.remove());
 
                     reservas.forEach(reserva => {
                         const inicio = new Date(reserva.start);
@@ -528,8 +528,8 @@
 
                         const visualStartH = Math.max(startH, START_HOUR);
                         
-                        const top = ((visualStartH - START_HOUR + startM / 60) * SLOT_HEIGHT) + 57;
-                        const height = Math.max((endH - visualStartH + (endM - startM) / 60) * SLOT_HEIGHT, 24);
+                        const topPx = ((visualStartH - START_HOUR + startM / 60) * SLOT_HEIGHT) + 57;
+                        const heightPx = Math.max((endH - visualStartH + (endM - startM) / 60) * SLOT_HEIGHT, 24);
 
                         const corClasse = {
                             'Oficial': 'event-oficial',
@@ -539,15 +539,45 @@
 
                         const bloco = document.createElement('div');
                         bloco.className = `event-block ${corClasse}`;
-                        bloco.style.top = top + 'px';
-                        bloco.style.height = height + 'px';
+                        bloco.style.top = topPx + 'px';
+                        bloco.style.height = heightPx + 'px';
+                        
+                        bloco.dataset.top = topPx;
+                        bloco.dataset.height = heightPx;
+
+                        const blocosSobrepostos = Array.from(coluna.querySelectorAll('.event-block')).filter(child => {
+                            const childTop = parseFloat(child.dataset.top);
+                            const childBottom = childTop + parseFloat(child.dataset.height);
+                            const meuBottom = topPx + heightPx;
+                            return (topPx < childBottom && meuBottom > childTop);
+                        });
+
+                        if (blocosSobrepostos.length > 0) {
+                            const totalBlocos = blocosSobrepostos.length + 1;
+                            const larguraPct = 100 / totalBlocos;
+                            
+                            blocosSobrepostos.forEach((b, index) => {
+                                b.style.width = `calc(${larguraPct}% - 4px)`;
+                                b.style.left = `calc(${larguraPct * index}% + 2px)`;
+                                b.style.right = 'auto';
+                            });
+                            
+                            bloco.style.width = `calc(${larguraPct}% - 4px)`;
+                            bloco.style.left = `calc(${larguraPct * blocosSobrepostos.length}% + 2px)`;
+                            bloco.style.right = 'auto';
+                        } else {
+                            bloco.style.left = '4px';
+                            bloco.style.right = '4px';
+                            bloco.style.width = 'auto';
+                        }
                         
                         const horaInicioFormato = startH.toString().padStart(2,'0') + ':' + startM.toString().padStart(2,'0');
                         const horaFimFormato = endH.toString().padStart(2,'0') + ':' + endM.toString().padStart(2,'0');
 
                         bloco.innerHTML = `
-                            <div class="event-title fw-bold text-truncate" style="font-size: 0.75rem;">${reserva.title}</div>
-                            <div class="event-time" style="font-size: 0.62rem; margin-top: 1px; opacity: 0.9;"><i class="bi bi-clock"></i> ${horaInicioFormato} – ${horaFimFormato}</div>
+                            <div class="event-title fw-bold text-truncate" style="font-size: 0.70rem;">${reserva.title}</div>
+                            <div class="event-time" style="font-size: 0.60rem; margin-top: 1px; opacity: 0.9;"><i class="bi bi-clock"></i> ${horaInicioFormato} – ${horaFimFormato}</div>
+                            <div class="event-space text-truncate" style="font-size: 0.60rem; margin-top: 1px; opacity: 0.85;"><i class="bi bi-geo-alt-fill"></i> ${reserva.extendedProps.espaco_nome}</div>
                         `;
 
                         bloco.onclick = () => {
