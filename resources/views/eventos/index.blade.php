@@ -89,8 +89,8 @@
                             <div class="d-flex align-items-center mb-2 text-secondary">
                                 <i class="bi bi-clock text-primary me-2 fs-5"></i>
                                 @php
-                                    $agora = \Carbon\Carbon::now();
-                                    
+                                    $agora = now(config('app.timezone', 'America/Sao_Paulo'));
+
                                     $inicioInscricao = $evento->inscricao_inicio
                                         ? \Carbon\Carbon::parse($evento->inscricao_inicio)->startOfDay()
                                         : null;
@@ -98,7 +98,7 @@
                                     $fimInscricao = $evento->inscricao_fim
                                         ? \Carbon\Carbon::parse($evento->inscricao_fim)->endOfDay()
                                         : null;
-                                        
+
                                     $abertas =
                                         $inicioInscricao &&
                                         $fimInscricao &&
@@ -297,12 +297,12 @@
 
     <!-- SCRIPT DE GERENCIAMENTO (CREATE E EDIT) -->
     <script>
-        const formEvento = document.getElementById('formEvento');
-        const metodoFormEvento = document.getElementById('metodoFormEvento');
-        const tituloModalEvento = document.getElementById('tituloModalEvento');
-        const btnSalvarEvento = document.getElementById('btnSalvarEvento');
-
         function abrirNovoEvento() {
+            const formEvento = document.getElementById('formEvento');
+            const metodoFormEvento = document.getElementById('metodoFormEvento');
+            const tituloModalEvento = document.getElementById('tituloModalEvento');
+            const btnSalvarEvento = document.getElementById('btnSalvarEvento');
+
             formEvento.reset();
             formEvento.action = "{{ route('eventos.store') }}";
             metodoFormEvento.value = "POST";
@@ -312,28 +312,37 @@
         }
 
         function abrirEdicaoEvento(id) {
-            tituloModalEvento.innerText = "Carregando...";
+            document.getElementById('tituloModalEvento').innerText = "Carregando...";
             window.dispatchEvent(new CustomEvent('open-modal-evento'));
 
             fetch(`/eventos/${id}/edit`)
                 .then(response => response.json())
                 .then(dados => {
+                    const formEvento = document.getElementById('formEvento');
+                    const metodoFormEvento = document.getElementById('metodoFormEvento');
+                    const tituloModalEvento = document.getElementById('tituloModalEvento');
+                    const btnSalvarEvento = document.getElementById('btnSalvarEvento');
+
                     document.getElementById('inputNomeEvento').value = dados.nome;
                     document.getElementById('inputModalidade').value = dados.modalidade_id;
                     document.getElementById('inputStatus').value = dados.status || 'Agendado';
                     document.getElementById('inputEspaco').value = dados.espaco_id;
-                    document.getElementById('inputDescricao').value = dados.descricao || '';
 
-                    const tratarData = (dataHora) => {
+                    const tratarDataHora = (dataHora) => {
                         if (!dataHora) return '';
-
                         return dataHora.replace(' ', 'T').slice(0, 16);
                     };
 
-                    document.getElementById('inputDataInicio').value = tratarData(dados.data_inicio);
-                    document.getElementById('inputDataFim').value = tratarData(dados.data_fim);
-                    document.getElementById('inputInscricaoInicio').value = tratarData(dados.inscricao_inicio);
-                    document.getElementById('inputInscricaoFim').value = tratarData(dados.inscricao_fim);
+                    document.getElementById('inputDataInicio').value = tratarDataHora(dados.data_inicio);
+                    document.getElementById('inputDataFim').value = tratarDataHora(dados.data_fim);
+
+                    const tratarDataSimples = (data) => {
+                        if (!data) return '';
+                        return data.split(' ')[0].split('T')[0];
+                    };
+
+                    document.getElementById('inputInscricaoInicio').value = tratarDataSimples(dados.inscricao_inicio);
+                    document.getElementById('inputInscricaoFim').value = tratarDataSimples(dados.inscricao_fim);
 
                     formEvento.action = `/eventos/${id}`;
                     metodoFormEvento.value = "PUT";
