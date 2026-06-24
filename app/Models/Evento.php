@@ -21,6 +21,7 @@ class Evento extends Model
         'espaco_id',
         'status',
         'descricao',
+        'regulamento_path',
     ];
 
     public function inscricoes()

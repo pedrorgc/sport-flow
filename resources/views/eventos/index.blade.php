@@ -113,13 +113,9 @@
                                 </span>
 
                                 @if ($abertas)
-                                    <span class="badge bg-success ms-2">
-                                        Abertas
-                                    </span>
+                                    <span class="badge bg-success ms-2">Abertas</span>
                                 @else
-                                    <span class="badge bg-danger ms-2">
-                                        Encerradas
-                                    </span>
+                                    <span class="badge bg-danger ms-2">Encerradas</span>
                                 @endif
                             </div>
 
@@ -128,6 +124,17 @@
                                 <span>{{ $evento->espaco->nome ?? 'Espaço não definido' }}</span>
                             </div>
                         </div>
+
+                        @if ($evento->regulamento_path)
+                            <div class="mb-3">
+                                <a href="{{ asset('storage/' . $evento->regulamento_path) }}" target="_blank"
+                                    class="btn btn-sm btn-light border fw-medium d-inline-flex align-items-center gap-2 shadow-sm"
+                                    style="color: #475569; border-color: var(--cor-borda) !important;">
+                                    <i class="bi bi-file-earmark-pdf-fill text-danger fs-6"></i>
+                                    Ver Regulamento
+                                </a>
+                            </div>
+                        @endif
 
                         <p class="text-secondary small mb-4 flex-grow-1" style="line-height: 1.6;">
                             {{ Str::limit($evento->descricao, 100, '...') }}
@@ -141,16 +148,15 @@
 
                             <button class="btn btn-sm btn-light text-danger hover-shadow fw-medium px-3"
                                 @click="$dispatch('confirmar-exclusao', {
-                                    action: '/eventos/{{ $evento->id }}',
-                                    mensagem: 'Tem certeza que deseja cancelar/excluir o evento {{ $evento->nome }}?'
-                                })">
+                                        action: '/eventos/{{ $evento->id }}',
+                                        mensagem: 'Tem certeza que deseja cancelar/excluir o evento {{ $evento->nome }}?'
+                                    })">
                                 <i class="bi bi-trash3 me-1"></i> Excluir
                             </button>
                         </div>
 
                     </div>
                 </div>
-
             @empty
                 <div class="col-12">
                     <p class="text-center text-secondary py-5">Nenhum evento cadastrado no momento. Clique em "Novo
