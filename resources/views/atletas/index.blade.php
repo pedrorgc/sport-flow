@@ -18,6 +18,63 @@
             </div>
         </div>
 
+        @if (session('success'))
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+
+                <div id="toastSuccess" class="toast align-items-center text-bg-success border-0 show" role="alert"
+                    style="min-width: 420px; font-size: 16px; border-radius: 12px;">
+
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ session('success') }}
+                        </div>
+
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toastSuccess');
+
+                    if (toast) {
+                        toast.classList.remove('show');
+                    }
+                }, 5000);
+            </script>
+        @endif
+
+        @if ($errors->any())
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+
+                <div id="toastErro" class="toast align-items-center text-bg-danger border-0 show" role="alert"
+                    style="min-width: 420px; font-size: 16px; border-radius: 12px;">
+
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @foreach ($errors->all() as $erro)
+                                {{ $erro }}
+                            @endforeach
+                        </div>
+
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toastErro');
+                    if (toast) {
+                        toast.classList.remove('show');
+                    }
+                }, 5000);
+            </script>
+        @endif
+
         <div class="card-premium mb-4 py-3 px-4">
             <form method="GET" action="{{ route('atletas.index') }}"
                 class="d-flex flex-wrap gap-3 align-items-center">
@@ -162,19 +219,25 @@
                             <label class="form-label fw-semibold small text-secondary">Nome Completo <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="nome" id="inputNome" class="form-control bg-light"
-                                required>
+                                placeholder="Digite seu nome completo" required>
+
+                            <div id="erroNome" class="text-danger small mt-1"></div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold small text-secondary">Documento (CPF/RG)</label>
-                                <input type="text" name="cpf_rg" id="inputCpf" class="form-control bg-light">
+                                <input type="text" name="cpf_rg" id="inputCpf" class="form-control bg-light"
+                                    placeholder="Digite CPF ou RG">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold small text-secondary">Data de Nascimento <span
                                         class="text-danger">*</span></label>
                                 <input type="date" name="data_nascimento" id="inputDataNasc"
-                                    class="form-control bg-light" required>
+                                    class="form-control bg-light" max="{{ now()->subYears(10)->format('Y-m-d') }}"
+                                    required>
+
+                                <div id="erroData" class="text-danger small mt-1"></div>
                             </div>
                         </div>
 
@@ -206,7 +269,8 @@
                         <div class="mb-4">
                             <label class="form-label fw-semibold small text-secondary">Contato
                                 (Telefone/E-mail)</label>
-                            <input type="text" name="contato" id="inputContato" class="form-control bg-light">
+                            <input type="text" name="contato" id="inputContato" class="form-control bg-light"
+                                placeholder="(33) 99999-9999 ou email@exemplo.com">
                         </div>
 
                         <div class="d-flex justify-content-end gap-3 pt-3 border-top">
@@ -220,7 +284,7 @@
         </div>
     </main>
 
-<script>
+    <script>
         function abrirNovoCadastro() {
             const formAtleta = document.getElementById('formAtleta');
             const metodoForm = document.getElementById('metodoForm');
@@ -275,5 +339,68 @@
                     alert("Erro ao carregar os dados do atleta.");
                 });
         }
+
+        // parte do cpf
+        const inputCpf = document.getElementById('inputCpf');
+
+        if (inputCpf) {
+            inputCpf.addEventListener('input', function() {
+
+                if (/[a-zA-Z]/.test(this.value)) {
+                    return;
+                }
+
+                let valor = this.value.replace(/\D/g, '');
+
+                valor = valor.replace(/^(\d{3})(\d)/, '$1.$2');
+                valor = valor.replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+                valor = valor.replace(/\.(\d{3})(\d)/, '.$1-$2');
+
+                this.value = valor.substring(0, 14);
+            });
+        }
+
+        // parte do contato 
+        const inputContato = document.getElementById('inputContato');
+
+        if (inputContato) {
+            inputContato.addEventListener('input', function() {
+
+                // Se houver letras ou @, deixa digitar normalmente
+                if (/[a-zA-Z@]/.test(this.value)) {
+                    return;
+                }
+
+                let valor = this.value.replace(/\D/g, '');
+
+                if (valor.length <= 10) {
+                    valor = valor.replace(/^(\d{2})(\d)/, '($1) $2');
+                    valor = valor.replace(/(\d{4})(\d)/, '$1-$2');
+                } else {
+                    valor = valor.replace(/^(\d{2})(\d)/, '($1) $2');
+                    valor = valor.replace(/(\d{5})(\d)/, '$1-$2');
+                }
+
+                this.value = valor.substring(0, 15);
+            });
+        }
+
+        const inputNome = document.getElementById('inputNome');
+
+        inputNome.addEventListener('blur', function() {
+
+            const erro = document.getElementById('erroNome');
+
+            if (this.value.trim() === '') {
+
+                erro.textContent = 'O nome é obrigatório.';
+                this.classList.add('is-invalid');
+
+            } else {
+
+                erro.textContent = '';
+                this.classList.remove('is-invalid');
+            }
+        });
     </script>
 </x-layouts.app>
