@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Override;
 
 class TimeRequest extends FormRequest
 {
@@ -27,7 +28,20 @@ class TimeRequest extends FormRequest
             'nome' => 'required|string|max:255',
             'categoria' => 'required|string',
             'modalidade_id' => 'required|exists:modalidades,id',
-            'brasao' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
+            'brasao' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'nome.required' => 'Informe o nome do time.',
+            'categoria.required' => 'Selecione uma categoria.',
+            'modalidade_id.required' => 'Selecione uma modalidade.',
+            'modalidade_id.exists' => 'Modalidade inválida.',
+            'brasao.image' => 'O arquivo deve ser uma imagem.',
+            'brasao.mimes' => 'O brasão deve ser JPG, JPEG ou PNG.',
+            'brasao.max' => 'O brasão pode ter no máximo 2MB.',
         ];
     }
 }

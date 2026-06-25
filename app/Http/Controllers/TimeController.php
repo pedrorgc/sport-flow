@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 class TimeController extends Controller
 {
 
-    public function index(Request $request) 
+    public function index(Request $request)
     {
         $query = Time::with('modalidade')->withCount('atletas');
 
@@ -40,17 +40,17 @@ class TimeController extends Controller
         //
     }
 
-    public function store(TimeRequest $request) 
+    public function store(TimeRequest $request)
     {
-        $validate = $request->validated(); 
+        $validate = $request->validated();
 
-        if ($request->hasFile('brasao')){
+        if ($request->hasFile('brasao')) {
             $caminho = Storage::disk('public')->put('brasoes', $request->file('brasao'));
             $validate['brasao'] = $caminho;
         }
-        
+
         Time::create($validate);
-        
+
         return redirect()->route('times.index')->with('success', 'Equipe criada com sucesso!');
     }
 
@@ -70,37 +70,46 @@ class TimeController extends Controller
         $time = Time::findOrFail($id);
 
         if ($request->has('sync_atletas')) {
-            $time->atletas()->sync($request->input('atletas', []));
+            $atletasIds = $request->input('atletas', []);
+
+            $atletasInvalidos = Atleta::whereIn('id', $atletasIds)
+                ->where('modalidade_id', '!=', $time->modalidade_id)
+                ->pluck('nome');
+
+            if ($atletasInvalidos->isNotEmpty()) {
+                return redirect()->route('times.index')->with(
+                    'error',
+                    'Não é possível vincular atleta(s) de outra modalidade: ' . $atletasInvalidos->implode(', ') . '.'
+                );
+            }
+
+            $time->atletas()->sync($atletasIds);
             return redirect()->route('times.index')->with('success', 'Elenco atualizado com sucesso!');
         }
 
         $validate = $request->validated();
-
         if ($request->hasFile("brasao")) {
-            if($time->brasao && Storage::disk('public')->exists($time->brasao)){
+            if ($time->brasao && Storage::disk('public')->exists($time->brasao)) {
                 Storage::disk('public')->delete($time->brasao);
             }
-
             $caminho = Storage::disk('public')->put('brasoes', $request->file('brasao'));
             $validate['brasao'] = $caminho;
         }
-
         $time->update($validate);
-        
         return redirect()->route('times.index')->with('success', 'Equipe atualizada com sucesso!');
     }
 
     public function destroy(string $id)
     {
         $time = Time::findOrFail($id);
-        
-        if($time->brasao && Storage::disk('public')->exists($time->brasao)){
+
+        if ($time->brasao && Storage::disk('public')->exists($time->brasao)) {
             Storage::disk('public')->delete($time->brasao);
         }
-        
+
         $time->atletas()->detach();
         $time->delete();
-        
+
         return redirect()->route('times.index')->with('success', 'Equipe deletada com sucesso!');
     }
 }
