@@ -7,7 +7,7 @@
             <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm"
                 onclick="abrirNovaEquipe()">
                 <i class="bi bi-plus-lg"></i>
-                <span class="d-none d-md-inline">Nova equipe</span>
+                <span class="d-none d-md-inline">Novo Time</span>
             </button>
         </div>
 
@@ -17,6 +17,85 @@
                     color="primary" />
             </div>
         </div>
+
+        @if (session('success'))
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+
+                <div id="toastSuccess" class="toast align-items-center text-bg-success border-0 show" role="alert"
+                    style="min-width: 420px; font-size: 16px; border-radius: 12px;">
+
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ session('success') }}
+                        </div>
+
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toastSuccess');
+
+                    if (toast) {
+                        toast.classList.remove('show');
+                    }
+                }, 5000);
+            </script>
+        @endif
+
+        @if ($errors->any())
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+
+                <div id="toastErro" class="toast align-items-center text-bg-danger border-0 show" role="alert"
+                    style="min-width: 420px; font-size: 16px; border-radius: 12px;">
+
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @foreach ($errors->all() as $erro)
+                                {{ $erro }}
+                            @endforeach
+                        </div>
+
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toastErro');
+                    if (toast) {
+                        toast.classList.remove('show');
+                    }
+                }, 5000);
+            </script>
+        @endif
+
+        @if (session('error'))
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+                <div id="toastErroCustom" class="toast align-items-center text-bg-danger border-0 show" role="alert"
+                    style="min-width: 420px; font-size: 16px; border-radius: 12px;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ session('error') }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toastErroCustom');
+                    if (toast) toast.classList.remove('show');
+                }, 5000);
+            </script>
+        @endif
 
         <div class="card-premium mb-4 py-3 px-4">
             <form method="GET" action="{{ route('times.index') }}" class="d-flex flex-wrap gap-3 align-items-center">
@@ -107,8 +186,10 @@
                                 </td>
                                 <td class="text-end pe-4 py-3">
                                     <div class="d-flex gap-2 justify-content-end">
-                                        <button type="button" class="btn btn-sm btn-light text-secondary hover-shadow"
-                                            title="Visualizar Elenco" onclick="visualizarElenco({{ $time->id }})">
+                                        <button type="button"
+                                            class="btn btn-sm btn-light text-secondary hover-shadow"
+                                            title="Visualizar Elenco"
+                                            onclick="visualizarElenco({{ $time->id }})">
                                             <i class="bi bi-eye"></i>
                                         </button>
 
@@ -171,7 +252,9 @@
                             <label class="form-label fw-semibold small text-secondary">Nome da equipe <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="nome" id="inputNome" class="form-control bg-light"
-                                required>
+                                required placeholder="Digite o nome do time">
+
+                            <div id="erroNome" class="text-danger small mt-1"></div>
                         </div>
 
                         <div class="row">
@@ -269,6 +352,7 @@
                                     </div>
 
                                     <input type="checkbox" name="atletas[]" value="{{ $atleta->id }}"
+                                        data-modalidade="{{ $atleta->modalidade_id }}"
                                         id="check_atleta_{{ $atleta->id }}"
                                         class="check-atleta form-check-input border-secondary"
                                         style="width: 22px; height: 22px; cursor:pointer;">
@@ -337,7 +421,7 @@
             metodoFormEquipe.value = "POST";
             tituloModalEquipe.innerText = "Nova Equipe";
             btnSalvarEquipe.innerText = "Salvar";
-            
+
             window.dispatchEvent(new CustomEvent('open-modal-equipe'));
         }
 
@@ -368,14 +452,13 @@
         function abrirElenco(id) {
             document.querySelectorAll('.check-atleta').forEach(cb => cb.checked = false);
             const inputBusca = document.getElementById('buscaAtleta');
-            if(inputBusca) {
+            if (inputBusca) {
                 inputBusca.value = '';
-                filtrarAtletas();
             }
 
             const formElenco = document.getElementById('formElenco');
             formElenco.action = `/times/${id}`;
-            
+
             document.getElementById('tituloModalElenco').innerText = "Carregando elenco...";
             window.dispatchEvent(new CustomEvent('open-modal-atletas'));
 
@@ -383,6 +466,9 @@
                 .then(response => response.json())
                 .then(dados => {
                     document.getElementById('tituloModalElenco').innerText = `Elenco: ${dados.nome}`;
+                    formElenco.dataset.modalidade = dados.modalidade_id;
+
+                    filtrarAtletas();
 
                     if (dados.atletas && dados.atletas.length > 0) {
                         dados.atletas.forEach(atleta => {
@@ -396,14 +482,16 @@
 
         function visualizarElenco(id) {
             const listaContainer = document.getElementById('listaAtletasTime');
-            listaContainer.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
+            listaContainer.innerHTML =
+                '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
             window.dispatchEvent(new CustomEvent('open-modal-visualizar'));
 
             fetch(`/times/${id}/edit`)
                 .then(response => response.json())
                 .then(dados => {
                     document.getElementById('tituloVisualizarTime').innerText = dados.nome;
-                    document.getElementById('subtituloVisualizarTime').innerText = `${dados.modalidade?.nome ?? 'Sem modalidade'} • ${dados.categoria}`;
+                    document.getElementById('subtituloVisualizarTime').innerText =
+                        `${dados.modalidade?.nome ?? 'Sem modalidade'} • ${dados.categoria}`;
 
                     listaContainer.innerHTML = '';
 
@@ -423,12 +511,14 @@
                             `;
                         });
                     } else {
-                        listaContainer.innerHTML = '<div class="text-center py-4 text-secondary">Nenhum atleta vinculado a esta equipe.</div>';
+                        listaContainer.innerHTML =
+                            '<div class="text-center py-4 text-secondary">Nenhum atleta vinculado a esta equipe.</div>';
                     }
                 })
                 .catch(error => {
                     console.error("Erro ao buscar elenco:", error);
-                    listaContainer.innerHTML = '<div class="text-center py-4 text-danger">Erro ao carregar os dados.</div>';
+                    listaContainer.innerHTML =
+                        '<div class="text-center py-4 text-danger">Erro ao carregar os dados.</div>';
                 });
         }
 
@@ -437,7 +527,14 @@
 
             document.querySelectorAll('.linha-atleta').forEach(linha => {
                 const nome = linha.getAttribute('data-nome');
-                if (nome.includes(termo)) {
+                const checkbox = linha.querySelector('.check-atleta');
+                const modalidadeAtleta = checkbox.dataset.modalidade;
+                const modalidadeTime = formElenco.dataset.modalidade;
+
+                const bateNome = nome.includes(termo);
+                const bateModalidade = modalidadeAtleta == modalidadeTime;
+
+                if (bateNome && bateModalidade) {
                     linha.classList.remove('d-none');
                     linha.classList.add('d-flex');
                 } else {
@@ -446,5 +543,24 @@
                 }
             });
         }
+
+        function configurarValidacaoNome() {
+            const inputNome = document.getElementById('inputNome');
+            const erroNome = document.getElementById('erroNome');
+
+            if (inputNome && erroNome) {
+                inputNome.addEventListener('blur', function() {
+                    if (this.value.trim() === '') {
+                        erroNome.textContent = 'Informe o nome do time.';
+                        this.classList.add('is-invalid');
+                    } else {
+                        erroNome.textContent = '';
+                        this.classList.remove('is-invalid');
+                    }
+                });
+            }
+        }
+
+        document.addEventListener('turbo:load', configurarValidacaoNome);
     </script>
 </x-layouts.app>

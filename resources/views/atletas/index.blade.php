@@ -340,18 +340,14 @@
                 });
         }
 
-        // parte do cpf
-        const inputCpf = document.getElementById('inputCpf');
+        function configurarMascaraCpf() {
+            const inputCpf = document.getElementById('inputCpf');
+            if (!inputCpf) return;
 
-        if (inputCpf) {
             inputCpf.addEventListener('input', function() {
-
-                if (/[a-zA-Z]/.test(this.value)) {
-                    return;
-                }
+                if (/[a-zA-Z]/.test(this.value)) return;
 
                 let valor = this.value.replace(/\D/g, '');
-
                 valor = valor.replace(/^(\d{3})(\d)/, '$1.$2');
                 valor = valor.replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
                 valor = valor.replace(/\.(\d{3})(\d)/, '.$1-$2');
@@ -360,16 +356,12 @@
             });
         }
 
-        // parte do contato 
-        const inputContato = document.getElementById('inputContato');
+        function configurarMascaraContato() {
+            const inputContato = document.getElementById('inputContato');
+            if (!inputContato) return;
 
-        if (inputContato) {
             inputContato.addEventListener('input', function() {
-
-                // Se houver letras ou @, deixa digitar normalmente
-                if (/[a-zA-Z@]/.test(this.value)) {
-                    return;
-                }
+                if (/[a-zA-Z@]/.test(this.value)) return;
 
                 let valor = this.value.replace(/\D/g, '');
 
@@ -385,22 +377,25 @@
             });
         }
 
-        const inputNome = document.getElementById('inputNome');
+        function configurarValidacaoNomeAtleta() {
+            const inputNome = document.getElementById('inputNome');
+            if (!inputNome) return;
 
-        inputNome.addEventListener('blur', function() {
+            inputNome.addEventListener('blur', function() {
+                const erro = document.getElementById('erroNome');
 
-            const erro = document.getElementById('erroNome');
+                if (this.value.trim() === '') {
+                    erro.textContent = 'O nome é obrigatório.';
+                    this.classList.add('is-invalid');
+                } else {
+                    erro.textContent = '';
+                    this.classList.remove('is-invalid');
+                }
+            });
+        }
 
-            if (this.value.trim() === '') {
-
-                erro.textContent = 'O nome é obrigatório.';
-                this.classList.add('is-invalid');
-
-            } else {
-
-                erro.textContent = '';
-                this.classList.remove('is-invalid');
-            }
-        });
+        document.addEventListener('turbo:load', configurarMascaraCpf);
+        document.addEventListener('turbo:load', configurarMascaraContato);
+        document.addEventListener('turbo:load', configurarValidacaoNomeAtleta);
     </script>
 </x-layouts.app>
