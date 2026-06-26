@@ -17,7 +17,7 @@ class ReservaRequest extends FormRequest
             'titulo'         => 'required|string|max:150',
             'espaco_id'      => 'required|exists:espacos,id',
             'responsavel_id' => 'required|exists:users,id',
-            'tipo'           => 'required|in:Avulsa,Fixa,Oficial',
+            'tipo'           => 'required|in:Única,Fixa,Oficial',
             
             'data_reserva'   => 'required|date',
             'hora_inicio'    => 'required|date_format:H:i',
