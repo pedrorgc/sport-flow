@@ -84,8 +84,7 @@
                                     {{ \Carbon\Carbon::parse($evento->inscricao_fim)->format('d/m/Y') }}
                                 </td>
                                 <td class="py-3 text-center">
-                                    <span
-                                        class="badge badge-soft-primary fw-medium px-2 py-1">
+                                    <span class="badge badge-soft-primary fw-medium px-2 py-1">
                                         {{ $evento->inscricoes_count }} registros
                                     </span>
                                 </td>
@@ -168,7 +167,10 @@
                             <select name="atleta_id" id="inputAtleta" class="form-select bg-light">
                                 <option value="">Escolha o atleta...</option>
                                 @foreach ($atletas as $atleta)
-                                    <option value="{{ $atleta->id }}">{{ $atleta->nome }}</option>
+                                    <option value="{{ $atleta->id }}">
+                                        {{ $atleta->nome }} &nbsp;&nbsp;—&nbsp;&nbsp;
+                                        ({{ $atleta->modalidade->nome ?? 'Sem Modalidade' }})
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -179,7 +181,10 @@
                             <select name="time_id" id="inputTime" class="form-select bg-light">
                                 <option value="">Escolha a equipe...</option>
                                 @foreach ($times as $time)
-                                    <option value="{{ $time->id }}">{{ $time->nome }}</option>
+                                    <option value="{{ $time->id }}">
+                                        {{ $time->nome }} &nbsp;&nbsp;—&nbsp;&nbsp;
+                                        ({{ $time->modalidade->nome ?? 'Sem Modalidade' }})
+                                    </option>
                                 @endforeach
                             </select>
                         </div>

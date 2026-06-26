@@ -64,7 +64,7 @@ class ReservaController extends Controller
             $cor = match ($reserva->tipo) {
                 'Oficial' => '#dc3545', 
                 'Fixa'    => '#0d6efd', 
-                'Avulsa'  => '#198754', 
+                'Única'  => '#198754', 
                 default   => '#6c757d'
             };
 
@@ -125,7 +125,6 @@ class ReservaController extends Controller
                     // Varre a folha do calendário dia por dia do início ao limite final
                     while ($atual->startOfDay()->lte($limite)) {
                         
-                        // Carbon dayOfWeekIso devolve 1 para Segunda e 7 para Domingo
                         if (in_array($atual->dayOfWeekIso, $diasSelecionados)) {
                             
                             $atualInicio = Carbon::parse($atual->format('Y-m-d') . ' ' . $request->input('hora_inicio'));
@@ -142,7 +141,7 @@ class ReservaController extends Controller
                             Reserva::create($dadosRepeticao);
                         }
                         
-                        $atual->addDay(); // Avança 1 dia por iteração
+                        $atual->addDay();
                     }
                 } 
                 else {

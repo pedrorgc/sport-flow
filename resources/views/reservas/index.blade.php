@@ -19,8 +19,8 @@
         .event-fixed { background: repeating-linear-gradient(45deg, #dde3ef, #dde3ef 8px, #eef1f7 8px, #eef1f7 16px); border: 1.5px solid #8fa3c8; color: #1e3a5f; }
         .event-fixed .event-title { font-weight: 700; font-size: 0.7rem; }
         
-        .event-avulsa { background-color: var(--cor-primaria); color: #ffffff; border: 1px solid rgba(0, 0, 0, .1); }
-        .event-avulsa .event-title { font-weight: 700; font-size: 0.7rem; }
+        .event-unica { background-color: var(--cor-primaria); color: #ffffff; border: 1px solid rgba(0, 0, 0, .1); }
+        .event-unica .event-title { font-weight: 700; font-size: 0.7rem; }
         
         .event-oficial { background-color: #dc3545; color: #ffffff; border: 1px solid rgba(0, 0, 0, .1); }
         .event-oficial .event-title { font-weight: 700; font-size: 0.7rem; }
@@ -30,7 +30,7 @@
             openModal: false, 
             modalVisualizar: false, 
             view: 'grid', 
-            tipoReserva: 'Avulsa',
+            tipoReserva: 'Única',
             reservaSelecionada: {} 
         }" 
         @abrir-modal-detalhes.window="reservaSelecionada = $event.detail; modalVisualizar = true"
@@ -196,7 +196,7 @@
                     
                     <div class="p-4 border-bottom d-flex justify-content-between align-items-start">
                         <div>
-                            <span class="badge mb-2" :class="{'bg-primary': reservaSelecionada.tipo === 'Fixa', 'bg-success': reservaSelecionada.tipo === 'Avulsa', 'bg-danger': reservaSelecionada.tipo === 'Oficial'}" x-text="reservaSelecionada.tipo"></span>
+                            <span class="badge mb-2" :class="{'bg-primary': reservaSelecionada.tipo === 'Fixa', 'bg-success': reservaSelecionada.tipo === 'Única', 'bg-danger': reservaSelecionada.tipo === 'Oficial'}" x-text="reservaSelecionada.tipo"></span>
                             <h4 class="titulo-marca mb-0 fw-bold" x-text="reservaSelecionada.title"></h4>
                         </div>
                         <button class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center" style="width:35px;height:35px;" @click="modalVisualizar = false"><i class="bi bi-x-lg"></i></button>
@@ -297,7 +297,7 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold small text-secondary">Tipo de Reserva <span class="text-danger">*</span></label>
                                 <select name="tipo" id="inputTipo" class="form-select bg-light" x-model="tipoReserva" required>
-                                    <option value="Avulsa">Avulsa (Único dia)</option>
+                                    <option value="Única">Única (Único dia)</option>
                                     <option value="Fixa">Fixa (Rotina contínua)</option>
                                     <option value="Oficial">Evento Oficial (Prioridade)</option>
                                 </select>
@@ -534,8 +534,8 @@
                         const corClasse = {
                             'Oficial': 'event-oficial',
                             'Fixa':    'event-fixed',
-                            'Avulsa':  'event-avulsa'
-                        }[reserva.extendedProps.tipo] || 'event-avulsa';
+                            'Única':  'event-unica'
+                        }[reserva.extendedProps.tipo] || 'event-unica';
 
                         const bloco = document.createElement('div');
                         bloco.className = `event-block ${corClasse}`;
