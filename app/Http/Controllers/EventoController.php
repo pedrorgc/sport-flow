@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Evento;
 use App\Models\Modalidade;
-use App\Models\Espaco; // <-- Importação do novo Model
+use App\Models\Espaco;
 use App\Http\Requests\EventoRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class EventoController extends Controller
@@ -16,7 +15,6 @@ class EventoController extends Controller
         $eventos = Evento::with(['modalidade', 'espaco'])->orderBy('data_inicio', 'asc')->get();
         $modalidades = Modalidade::pluck('nome', 'id');
         $espacos = Espaco::orderBy('nome')->pluck('nome', 'id');
-        
         return view('eventos.index', compact('eventos', 'modalidades', 'espacos'));
     }
 
@@ -67,11 +65,9 @@ class EventoController extends Controller
     public function destroy(string $id)
     {
         $evento = Evento::findOrFail($id);
-        
         if ($evento->regulamento_path) {
             Storage::disk('public')->delete($evento->regulamento_path);
         }
-        
         $evento->delete();
         return redirect()->route('eventos.index')->with('success', 'Evento excluído com sucesso!');
     }
