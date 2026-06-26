@@ -18,6 +18,34 @@
             </div>
         </div>
 
+        @if (session('success'))
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+
+                <div id="toastSuccess" class="toast align-items-center text-bg-success border-0 show" role="alert"
+                    style="min-width: 420px; font-size: 16px; border-radius: 12px;">
+
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ session('success') }}
+                        </div>
+
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toastSuccess');
+
+                    if (toast) {
+                        toast.classList.remove('show');
+                    }
+                }, 5000);
+            </script>
+        @endif
+
         @if ($errors->any())
             <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
 
@@ -194,7 +222,10 @@
                             <label class="form-label fw-semibold small text-secondary">Nome do Evento <span
                                     class="text-danger">*</span></label>
                             <input type="text" name="nome" id="inputNomeEvento" class="form-control bg-light"
-                                required>
+                                placeholder="Digite o nome do evento" required>
+
+                            <div id="erroNomeEvento" class="text-danger small mt-1" style="display:none;">
+                            </div>
                         </div>
 
                         <div class="row">
@@ -243,6 +274,8 @@
 
                                 <input type="date" name="inscricao_inicio" id="inputInscricaoInicio"
                                     class="form-control bg-light" required>
+                                <div id="erroInscricaoInicio" class="text-danger small mt-1" style="display:none;">
+                                </div>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -252,6 +285,8 @@
 
                                 <input type="date" name="inscricao_fim" id="inputInscricaoFim"
                                     class="form-control bg-light" required>
+                                <div id="erroInscricaoFim" class="text-danger small mt-1" style="display:none;">
+                                </div>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -261,6 +296,7 @@
 
                                 <input type="datetime-local" name="data_inicio" id="inputDataInicio"
                                     class="form-control bg-light" required>
+                                <div id="erroDataInicio" class="text-danger small mt-1" style="display:none;"></div>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -270,6 +306,7 @@
 
                                 <input type="datetime-local" name="data_fim" id="inputDataFim"
                                     class="form-control bg-light" required>
+                                <div id="erroDataFim" class="text-danger small mt-1" style="display:none;"></div>
                             </div>
                         </div>
 
@@ -301,7 +338,6 @@
 
     </main>
 
-    <!-- SCRIPT DE GERENCIAMENTO (CREATE E EDIT) -->
     <script>
         function abrirNovoEvento() {
             const formEvento = document.getElementById('formEvento');
@@ -310,6 +346,7 @@
             const btnSalvarEvento = document.getElementById('btnSalvarEvento');
 
             formEvento.reset();
+            limparErrosVisuaisEvento();
             formEvento.action = "{{ route('eventos.store') }}";
             metodoFormEvento.value = "POST";
             tituloModalEvento.innerText = "Novo Evento";
@@ -318,6 +355,7 @@
         }
 
         function abrirEdicaoEvento(id) {
+            limparErrosVisuaisEvento();
             document.getElementById('tituloModalEvento').innerText = "Carregando...";
             window.dispatchEvent(new CustomEvent('open-modal-evento'));
 
@@ -350,6 +388,9 @@
                     document.getElementById('inputInscricaoInicio').value = tratarDataSimples(dados.inscricao_inicio);
                     document.getElementById('inputInscricaoFim').value = tratarDataSimples(dados.inscricao_fim);
 
+                    document.getElementById('inputDataInicio').dispatchEvent(new Event('change'));
+                    document.getElementById('inputInscricaoInicio').dispatchEvent(new Event('change'));
+
                     formEvento.action = `/eventos/${id}`;
                     metodoFormEvento.value = "PUT";
                     tituloModalEvento.innerText = "Editar Evento";
@@ -357,5 +398,157 @@
                 })
                 .catch(erro => console.error("Erro ao buscar dados do evento:", erro));
         }
+
+        function mostrarErroCampo(input, erroEl, mensagem) {
+            input.classList.add('is-invalid');
+            erroEl.innerText = mensagem;
+            erroEl.style.display = 'block';
+        }
+
+        function limparErroCampo(input, erroEl) {
+            input.classList.remove('is-invalid');
+            erroEl.style.display = 'none';
+        }
+
+        function validarDatasEvento() {
+            const inscricaoInicio = document.getElementById('inputInscricaoInicio');
+            const inscricaoFim = document.getElementById('inputInscricaoFim');
+            const dataInicio = document.getElementById('inputDataInicio');
+            const dataFim = document.getElementById('inputDataFim');
+
+            const erroInscricaoInicio = document.getElementById('erroInscricaoInicio');
+            const erroInscricaoFim = document.getElementById('erroInscricaoFim');
+            const erroDataInicio = document.getElementById('erroDataInicio');
+            const erroDataFim = document.getElementById('erroDataFim');
+
+            let valido = true;
+
+            [
+                [dataInicio, erroDataInicio],
+                [dataFim, erroDataFim],
+                [inscricaoInicio, erroInscricaoInicio],
+                [inscricaoFim, erroInscricaoFim],
+            ].forEach(([input, erroEl]) => limparErroCampo(input, erroEl));
+
+            if (dataInicio.value && dataFim.value && dataFim.value <= dataInicio.value) {
+                mostrarErroCampo(dataFim, erroDataFim, 'A data final do evento deve ser posterior à data inicial.');
+                valido = false;
+            }
+
+            if (inscricaoInicio.value && inscricaoFim.value && inscricaoFim.value < inscricaoInicio.value) {
+                mostrarErroCampo(inscricaoFim, erroInscricaoFim,
+                    'A data final das inscrições deve ser posterior ao início das inscrições.');
+                valido = false;
+            }
+
+            if (dataInicio.value && inscricaoInicio.value) {
+                const inicioEvento = dataInicio.value.split('T')[0];
+                if (inscricaoInicio.value > inicioEvento) {
+                    mostrarErroCampo(inscricaoInicio, erroInscricaoInicio,
+                        'O período de inscrições deve terminar antes do início do evento.');
+                    valido = false;
+                }
+            }
+
+            if (dataInicio.value && inscricaoFim.value) {
+                const inicioEvento = dataInicio.value.split('T')[0];
+                if (inscricaoFim.value > inicioEvento) {
+                    mostrarErroCampo(inscricaoFim, erroInscricaoFim,
+                        'O período de inscrições deve terminar antes do início do evento.');
+                    valido = false;
+                }
+            }
+
+            return valido;
+        }
+
+        function validarNomeEvento() {
+            const inputNomeEvento = document.getElementById('inputNomeEvento');
+            const erroNomeEvento = document.getElementById('erroNomeEvento');
+
+            if (inputNomeEvento.value.trim() === '') {
+                inputNomeEvento.classList.add('is-invalid');
+                erroNomeEvento.style.display = 'block';
+                erroNomeEvento.innerText = 'Informe o nome do evento.';
+                return false;
+            } else {
+                inputNomeEvento.classList.remove('is-invalid');
+                erroNomeEvento.style.display = 'none';
+                return true;
+            }
+        }
+
+        function limparErrosVisuaisEvento() {
+            const campos = [
+                ['inputNomeEvento', 'erroNomeEvento'],
+                ['inputDataInicio', 'erroDataInicio'],
+                ['inputDataFim', 'erroDataFim'],
+                ['inputInscricaoInicio', 'erroInscricaoInicio'],
+                ['inputInscricaoFim', 'erroInscricaoFim'],
+            ];
+
+            campos.forEach(([inputId, erroId]) => {
+                const input = document.getElementById(inputId);
+                const erroEl = document.getElementById(erroId);
+                if (input && erroEl) {
+                    input.classList.remove('is-invalid');
+                    erroEl.style.display = 'none';
+                }
+            });
+        }
+
+        function configurarEventosFormEvento() {
+            const inscricaoInicio = document.getElementById('inputInscricaoInicio');
+            const inscricaoFim = document.getElementById('inputInscricaoFim');
+            const dataInicio = document.getElementById('inputDataInicio');
+            const dataFim = document.getElementById('inputDataFim');
+            const inputNomeEvento = document.getElementById('inputNomeEvento');
+            const formEvento = document.getElementById('formEvento');
+
+            if (!formEvento) return;
+
+            if (inscricaoInicio && inscricaoFim) {
+                inscricaoInicio.addEventListener('change', function() {
+                    inscricaoFim.min = this.value;
+                    validarDatasEvento();
+                });
+                inscricaoFim.addEventListener('change', validarDatasEvento);
+            }
+
+            if (dataInicio && dataFim) {
+                dataInicio.addEventListener('change', function() {
+                    dataFim.min = this.value;
+
+                    if (dataFim.value && dataFim.value < this.value) {
+                        dataFim.value = '';
+                    }
+
+                    inscricaoInicio.max = this.value.split('T')[0];
+                    inscricaoFim.max = this.value.split('T')[0];
+
+                    validarDatasEvento();
+                });
+                dataFim.addEventListener('change', validarDatasEvento);
+            }
+
+            if (inputNomeEvento) {
+                inputNomeEvento.addEventListener('input', validarNomeEvento);
+                inputNomeEvento.addEventListener('blur', validarNomeEvento);
+            }
+
+            formEvento.addEventListener('submit', function(e) {
+                const nomeOk = validarNomeEvento();
+                const datasOk = validarDatasEvento();
+
+                if (!nomeOk || !datasOk) {
+                    e.preventDefault();
+                    if (!nomeOk) {
+                        inputNomeEvento.focus();
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('turbo:load', configurarEventosFormEvento);
     </script>
 </x-layouts.app>
