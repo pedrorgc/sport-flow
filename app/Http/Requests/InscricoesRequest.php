@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Evento;
 use App\Models\Time;
 use App\Models\Atleta;
-use Illuminate\Validation\Validator;
+use App\Models\Inscricoes;
 
 class InscricoesRequest extends FormRequest
 {
@@ -64,6 +64,33 @@ class InscricoesRequest extends FormRequest
                 $time = Time::with('modalidade')->find($this->input('time_id'));
                 if ($time && $time->modalidade_id !== $evento->modalidade_id) {
                     $validator->errors()->add('time_id', "Incompatibilidade: A equipe '{$time->nome}' pratica {$time->modalidade->nome}, mas o evento exige {$evento->modalidade->nome}.");
+                }
+            }
+
+            // 4. Duplicidade de inscrição (mesmo atleta/time já com inscrição ativa neste evento)
+            $inscricaoId = $this->route('inscrico');
+
+            if ($tipo === 'time' && $this->filled('time_id')) {
+                $jaInscrito = Inscricoes::where('evento_id', $eventoId)
+                    ->where('time_id', $this->input('time_id'))
+                    ->where('status_inscricao', '!=', 'Cancelada')
+                    ->when($inscricaoId, fn($q) => $q->where('id', '!=', $inscricaoId))
+                    ->exists();
+
+                if ($jaInscrito) {
+                    $validator->errors()->add('time_id', 'Esta equipe já está inscrita neste evento.');
+                }
+            }
+
+            if ($tipo === 'atleta' && $this->filled('atleta_id')) {
+                $jaInscrito = Inscricoes::where('evento_id', $eventoId)
+                    ->where('atleta_id', $this->input('atleta_id'))
+                    ->where('status_inscricao', '!=', 'Cancelada')
+                    ->when($inscricaoId, fn($q) => $q->where('id', '!=', $inscricaoId))
+                    ->exists();
+
+                if ($jaInscrito) {
+                    $validator->errors()->add('atleta_id', 'Este atleta já está inscrito neste evento.');
                 }
             }
 
