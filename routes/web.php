@@ -19,13 +19,6 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login-validar', [AuthController::class, 'authenticate'])->name('login.validar');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/api/eventos/{id}/inscricoes', function ($id) {
-    return Inscricoes::with('atleta', 'time')
-        ->where('evento_id', $id)
-        ->where('status_inscricao', '!=', 'Cancelada')
-        ->get();
-});
-
 Route::middleware('auth')->group(function () {
 
     Route::get('/perfil', [ProfileController::class, 'index'])->name('perfil.index');
@@ -37,10 +30,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('inscricoes', InscricoesController::class);
     Route::resource('eventos', EventoController::class);
     Route::resource('resultados', ResultadoController::class);
-
     Route::get('/api/eventos/{id}/inscricoes', function ($id) {
-        return Inscricoes::with(['atleta', 'time'])
+        return Inscricoes::with(['atleta.modalidade', 'time.modalidade'])
             ->where('evento_id', $id)
+            ->where('status_inscricao', '!=', 'Cancelada')
             ->get();
     });
 
@@ -48,5 +41,4 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('reservas', ReservaController::class);
     Route::get('/api/reservas-mensais', [App\Http\Controllers\ReservaController::class, 'getReservasMensais'])->name('reservas.api');
-
 });
