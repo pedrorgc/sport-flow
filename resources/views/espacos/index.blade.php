@@ -1,19 +1,20 @@
 <x-layouts.app>
     <div x-data='{ 
-            openModal: {{ $errors->any() && old("_method") !== "PUT" ? "true" : "false" }},
-            openEdit: {{ $errors->any() && old("_method") === "PUT" ? "true" : "false" }},
+            openModal: {{ $errors->any() && old('_method') !== 'PUT' ? 'true' : 'false' }},
+            openEdit: {{ $errors->any() && old('_method') === 'PUT' ? 'true' : 'false' }},
             espacoEdit: {
-                id: @json(old("espaco_id")),
-                nome: @json(old("nome")),
-                tipo: @json(old("tipo")),
-                capacidade: @json(old("capacidade")),
-                endereco: @json(old("endereco"))
+                id: @json(old('espaco_id')),
+                nome: @json(old('nome')),
+                tipo: @json(old('tipo')),
+                capacidade: @json(old('capacidade')),
+                endereco: @json(old('endereco'))
             },
             abrirEdicao(dados) {
                 this.espacoEdit = { ...dados };
                 this.openEdit = true;
             }
-        }' class="w-100">
+        }'
+        class="w-100">
 
         <div class="d-flex align-items-center justify-content-between mb-5 ps-5 ps-md-0 pt-2 pt-md-0">
             <div>
@@ -26,6 +27,27 @@
                 <span class="d-none d-md-inline">Novo Espaço</span>
             </button>
         </div>
+
+        @if (session('success'))
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+                <div id="toastSuccessEspaco" class="toast align-items-center text-bg-success border-0 show shadow-lg"
+                    role="alert" style="min-width: 420px; font-size: 16px; border-radius: 12px;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ session('success') }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            </div>
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toastSuccessEspaco');
+                    if (toast) toast.classList.remove('show');
+                }, 5000);
+            </script>
+        @endif
 
         @if ($errors->any())
             <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
@@ -79,7 +101,7 @@
                                         title="Editar" @click='abrirEdicao(@json($espaco))'>
                                         <i class="bi bi-pencil-square"></i>
                                     </button>
-                                    
+
                                     <button class="btn btn-sm btn-light text-danger hover-shadow px-2 py-1"
                                         title="Excluir"
                                         @click="$dispatch('confirmar-exclusao', {
@@ -93,7 +115,8 @@
 
                             <div class="text-secondary small d-flex flex-column gap-2 mt-3">
                                 <div><i class="bi bi-map me-2 text-muted"></i> {{ $espaco->endereco }}</div>
-                                <div><i class="bi bi-people me-2 text-muted"></i> Capacidade: {{ $espaco->capacidade }} pessoas</div>
+                                <div><i class="bi bi-people me-2 text-muted"></i> Capacidade: {{ $espaco->capacidade }}
+                                    pessoas</div>
                             </div>
                         </div>
                     </div>
@@ -127,28 +150,42 @@
                         </button>
                     </div>
 
-                    <form class="p-4" action="{{ route('espacos.store') }}" method="POST" enctype="multipart/form-data" data-turbo="false">
+                    <form class="p-4" action="{{ route('espacos.store') }}" method="POST"
+                        enctype="multipart/form-data" data-turbo="false">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label fw-semibold small text-secondary">Nome <span class="text-danger">*</span></label>
-                            <input type="text" name="nome" class="form-control bg-light @error('nome') is-invalid @enderror" value="{{ old('nome') }}" required>
+                            <label class="form-label fw-semibold small text-secondary">Nome <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="nome" id="inputNomeEspaco"
+                                class="form-control bg-light @error('nome') is-invalid @enderror"
+                                value="{{ old('nome') }}" placeholder="Digite aqui o nome do espaço" required>
+                            <div id="erroNomeEspaco" class="text-danger small mt-1" style="display:none;"></div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Tipo <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold small text-secondary">Tipo <span
+                                        class="text-danger">*</span></label>
                                 <select name="tipo" class="form-select bg-light" required>
                                     <option value="">Selecione o tipo</option>
-                                    <option value="Poliesportivo/Clube" {{ old('tipo') == 'Poliesportivo/Clube' ? 'selected' : '' }}>Poliesportivo/Clube</option>
-                                    <option value="Poliesportivo" {{ old('tipo') == 'Poliesportivo' ? 'selected' : '' }}>Poliesportivo</option>
-                                    <option value="Quadra Coberta" {{ old('tipo') == 'Quadra Coberta' ? 'selected' : '' }}>Quadra Coberta</option>
-                                    <option value="Campo Aberto" {{ old('tipo') == 'Campo Aberto' ? 'selected' : '' }}>Campo Aberto</option>
+                                    <option value="Poliesportivo/Clube"
+                                        {{ old('tipo') == 'Poliesportivo/Clube' ? 'selected' : '' }}>
+                                        Poliesportivo/Clube</option>
+                                    <option value="Poliesportivo"
+                                        {{ old('tipo') == 'Poliesportivo' ? 'selected' : '' }}>Poliesportivo</option>
+                                    <option value="Quadra Coberta"
+                                        {{ old('tipo') == 'Quadra Coberta' ? 'selected' : '' }}>Quadra Coberta</option>
+                                    <option value="Campo Aberto"
+                                        {{ old('tipo') == 'Campo Aberto' ? 'selected' : '' }}>Campo Aberto</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Capacidade <span class="text-danger">*</span></label>
-                                <input type="number" name="capacidade" class="form-control bg-light @error('capacidade') is-invalid @enderror" min="1" value="{{ old('capacidade') }}" required>
+                                <label class="form-label fw-semibold small text-secondary">Capacidade <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" name="capacidade"
+                                    class="form-control bg-light @error('capacidade') is-invalid @enderror"
+                                    min="1" value="{{ old('capacidade') }}" required>
                                 @error('capacidade')
                                     <div class="invalid-feedback fw-medium">{{ $message }}</div>
                                 @enderror
@@ -156,8 +193,11 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label fw-semibold small text-secondary">Endereço / Localização <span class="text-danger">*</span></label>
-                            <input type="text" name="endereco" class="form-control bg-light @error('endereco') is-invalid @enderror" value="{{ old('endereco') }}" required>
+                            <label class="form-label fw-semibold small text-secondary">Endereço / Localização <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="endereco"
+                                class="form-control bg-light @error('endereco') is-invalid @enderror"
+                                value="{{ old('endereco') }}" placeholder="Digite aqui o endereço" required>
                             @error('endereco')
                                 <div class="invalid-feedback fw-medium">{{ $message }}</div>
                             @enderror
@@ -170,7 +210,8 @@
                         </div>
 
                         <div class="d-flex justify-content-end gap-3 pt-3 border-top">
-                            <button type="button" class="btn btn-light fw-medium" @click="openModal = false">Cancelar</button>
+                            <button type="button" class="btn btn-light fw-medium"
+                                @click="openModal = false">Cancelar</button>
                             <button type="submit" class="btn btn-premium px-4">Salvar Espaço</button>
                         </div>
                     </form>
@@ -183,8 +224,7 @@
             @click.self="openEdit = false">
 
             <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
-                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 600px;"
-                    x-show="openEdit"
+                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 600px;" x-show="openEdit"
                     x-transition:enter="transition ease-out duration-300"
                     x-transition:enter-start="opacity-0 translate-y-4"
                     x-transition:enter-end="opacity-100 translate-y-0">
@@ -198,21 +238,28 @@
                         </button>
                     </div>
 
-                    <form :action="'{{ url('espacos') }}/' + (espacoEdit.id || '')" method="POST" enctype="multipart/form-data" class="p-4" data-turbo="false">
+                    <form :action="'{{ url('espacos') }}/' + (espacoEdit.id || '')" method="POST"
+                        enctype="multipart/form-data" class="p-4" data-turbo="false">
                         @csrf
                         @method('PUT')
 
                         <input type="hidden" name="espaco_id" x-model="espacoEdit.id">
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold small text-secondary">Nome <span class="text-danger">*</span></label>
-                            <input type="text" name="nome" class="form-control bg-light @error('nome') is-invalid @enderror" x-model="espacoEdit.nome" required>
+                            <label class="form-label fw-semibold small text-secondary">Nome <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="nome" id="inputNomeEspacoEdit"
+                                class="form-control bg-light @error('nome') is-invalid @enderror"
+                                x-model="espacoEdit.nome" placeholder="Digite aqui o nome do espaço" required>
+                            <div id="erroNomeEspacoEdit" class="text-danger small mt-1" style="display:none;"></div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Tipo <span class="text-danger">*</span></label>
-                                <select name="tipo" class="form-select bg-light" x-model="espacoEdit.tipo" required>
+                                <label class="form-label fw-semibold small text-secondary">Tipo <span
+                                        class="text-danger">*</span></label>
+                                <select name="tipo" class="form-select bg-light" x-model="espacoEdit.tipo"
+                                    required>
                                     <option>Poliesportivo/Clube</option>
                                     <option>Poliesportivo</option>
                                     <option>Quadra Aberta</option>
@@ -222,8 +269,11 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold small text-secondary">Capacidade <span class="text-danger">*</span></label>
-                                <input type="number" name="capacidade" class="form-control bg-light @error('capacidade') is-invalid @enderror" x-model="espacoEdit.capacidade" min="1" required>
+                                <label class="form-label fw-semibold small text-secondary">Capacidade <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" name="capacidade"
+                                    class="form-control bg-light @error('capacidade') is-invalid @enderror"
+                                    x-model="espacoEdit.capacidade" min="1" required>
                                 @error('capacidade')
                                     <div class="invalid-feedback fw-medium">{{ $message }}</div>
                                 @enderror
@@ -231,8 +281,11 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label fw-semibold small text-secondary">Endereço / Localização <span class="text-danger">*</span></label>
-                            <input type="text" name="endereco" class="form-control bg-light @error('endereco') is-invalid @enderror" x-model="espacoEdit.endereco" required>
+                            <label class="form-label fw-semibold small text-secondary">Endereço / Localização <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" name="endereco"
+                                class="form-control bg-light @error('endereco') is-invalid @enderror"
+                                x-model="espacoEdit.endereco" placeholder="Digite aqui o endereço" required>
                             @error('endereco')
                                 <div class="invalid-feedback fw-medium">{{ $message }}</div>
                             @enderror
@@ -245,7 +298,8 @@
                         </div>
 
                         <div class="d-flex justify-content-end gap-3 pt-3 border-top">
-                            <button type="button" class="btn btn-light fw-medium" @click="openEdit = false">Cancelar</button>
+                            <button type="button" class="btn btn-light fw-medium"
+                                @click="openEdit = false">Cancelar</button>
                             <button type="submit" class="btn btn-premium px-4">Salvar Alterações</button>
                         </div>
                     </form>
@@ -253,4 +307,34 @@
             </div>
         </div>
     </div>
+    <script>
+        function configurarValidacaoNomeEspaco() {
+            const pares = [
+                ['inputNomeEspaco', 'erroNomeEspaco'],
+                ['inputNomeEspacoEdit', 'erroNomeEspacoEdit'],
+            ];
+
+            pares.forEach(([inputId, erroId]) => {
+                const input = document.getElementById(inputId);
+                const erro = document.getElementById(erroId);
+                if (!input || !erro) return;
+
+                function validar() {
+                    if (input.value.trim() === '') {
+                        input.classList.add('is-invalid');
+                        erro.style.display = 'block';
+                        erro.innerText = 'O nome do espaço é obrigatório.';
+                    } else {
+                        input.classList.remove('is-invalid');
+                        erro.style.display = 'none';
+                    }
+                }
+
+                input.addEventListener('blur', validar);
+                input.addEventListener('input', validar);
+            });
+        }
+
+        document.addEventListener('turbo:load', configurarValidacaoNomeEspaco);
+    </script>
 </x-layouts.app>
