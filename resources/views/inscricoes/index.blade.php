@@ -1,7 +1,8 @@
 <x-layouts.app>
-    <main class="flex-grow-1" style="min-width: 0;" x-data="{ openModalInscricao: false, openModalLista: false, tipoInscricao: 'atleta' }"
+    <main class="flex-grow-1" style="min-width: 0;" x-data="{ openModalInscricao: false, openModalLista: false, openModalElencoTime: false, tipoInscricao: 'atleta' }"
         @open-modal-inscricao.window="openModalInscricao = true" @open-modal-lista.window="openModalLista = true"
-        @close-modal-lista.window="openModalLista = false" @set-tipo.window="tipoInscricao = $event.detail">
+        @close-modal-lista.window="openModalLista = false" @set-tipo.window="tipoInscricao = $event.detail"
+        @open-modal-elenco-time.window="openModalElencoTime = true">
 
         <div class="d-flex align-items-center justify-content-between mb-4 ps-5 ps-md-0 pt-2 pt-md-0">
             <h2 class="titulo-marca mb-0" style="font-size: 2.2rem;">Gestão de Inscrições</h2>
@@ -187,7 +188,7 @@
                         <div class="mb-4" x-show="tipoInscricao === 'atleta'">
                             <label class="form-label fw-semibold small text-secondary">Selecionar Atleta <span
                                     class="text-danger">*</span></label>
-                            <select name="atleta_id" id="inputAtleta" class="form-select bg-light" required>
+                            <select name="atleta_id" id="inputAtleta" class="form-select bg-light">
                                 <option value="">Escolha o atleta...</option>
                                 @foreach ($atletas as $atleta)
                                     <option value="{{ $atleta->id }}"
@@ -269,6 +270,36 @@
                     <div class="d-flex justify-content-end p-4 border-top">
                         <button type="button" class="btn btn-light px-4"
                             @click="openModalLista = false">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div x-show="openModalElencoTime" x-cloak class="position-fixed top-0 start-0 w-100 h-100"
+            style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 2100;"
+            @click.self="openModalElencoTime = false" x-transition.opacity>
+            <div class="d-flex align-items-center justify-content-center w-100 h-100 p-3">
+                <div class="bg-white rounded-4 shadow-lg w-100" style="max-width: 500px;"
+                    x-show="openModalElencoTime" x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-4"
+                    x-transition:enter-end="opacity-100 translate-y-0">
+
+                    <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+                        <h4 class="titulo-marca mb-0" id="tituloElencoTime">Elenco da Equipe</h4>
+                        <button
+                            class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center"
+                            style="width: 35px; height: 35px;" @click="openModalElencoTime = false">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-4" style="max-height: 400px; overflow-y: auto;">
+                        <div id="listaAtletasElencoTime" class="d-flex flex-column gap-2"></div>
+                    </div>
+
+                    <div class="d-flex justify-content-end p-4 border-top">
+                        <button type="button" class="btn btn-premium px-4"
+                            @click="openModalElencoTime = false">Fechar</button>
                     </div>
                 </div>
             </div>
@@ -401,32 +432,43 @@
                             let statusCor = inscricao.status_inscricao === 'Confirmada' ? 'success' : (inscricao
                                 .status_inscricao === 'Cancelada' ? 'danger' : 'warning');
 
+                            let botaoElenco = '';
+                            if (!inscricao.atleta) {
+                                const nomeTimeEscapado = inscricao.time.nome.replace(/'/g, "\\'");
+                                botaoElenco = `
+                            <button type="button" class="btn btn-sm btn-light text-secondary hover-shadow" title="Ver Elenco do Time" onclick="visualizarElencoTime(${inscricao.time.id}, '${nomeTimeEscapado}')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        `;
+                            }
+
                             listaContainer.innerHTML += `
-                        <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light border border-opacity-10 hover-shadow transition">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="bg-${cor} bg-opacity-10 text-${cor} rounded-circle d-flex align-items-center justify-content-center fs-5 shadow-sm" style="width: 45px; height: 45px;">
-                                    <i class="bi ${icone}"></i>
-                                </div>
-                                <div>
-                                    <div class="fw-bold text-dark">${nomeParticipante}</div>
-                                    <div class="text-secondary" style="font-size: 0.8rem;">
-                                        ${tipoParticipante} • <span class="badge bg-${statusCor} bg-opacity-10 text-${statusCor} border border-${statusCor} border-opacity-25 ms-1">${inscricao.status_inscricao}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-sm btn-light text-primary hover-shadow" title="Editar Status" onclick="abrirEdicaoInscricao(${inscricao.id})">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-
-                                <button type="button" class="btn btn-sm btn-light text-danger hover-shadow" title="Cancelar Inscrição"
-                                    onclick="window.dispatchEvent(new CustomEvent('confirmar-exclusao', { detail: { action: '/inscricoes/${inscricao.id}', mensagem: 'Cancelar a inscrição de ${nomeParticipante}?' } }))">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
+                <div class="d-flex align-items-center justify-content-between p-3 rounded-3 bg-light border border-opacity-10 hover-shadow transition">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-${cor} bg-opacity-10 text-${cor} rounded-circle d-flex align-items-center justify-content-center fs-5 shadow-sm" style="width: 45px; height: 45px;">
+                            <i class="bi ${icone}"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark">${nomeParticipante}</div>
+                            <div class="text-secondary" style="font-size: 0.8rem;">
+                                ${tipoParticipante} • <span class="badge bg-${statusCor} bg-opacity-10 text-${statusCor} border border-${statusCor} border-opacity-25 ms-1">${inscricao.status_inscricao}</span>
                             </div>
                         </div>
-                    `;
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        ${botaoElenco}
+                        <button type="button" class="btn btn-sm btn-light text-primary hover-shadow" title="Editar Status" onclick="abrirEdicaoInscricao(${inscricao.id})">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-light text-danger hover-shadow" title="Cancelar Inscrição"
+                            onclick="window.dispatchEvent(new CustomEvent('confirmar-exclusao', { detail: { action: '/inscricoes/${inscricao.id}', mensagem: 'Cancelar a inscrição de ${nomeParticipante}?' } }))">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
                         });
                     } else {
                         listaContainer.innerHTML =
@@ -679,6 +721,45 @@
             const statusOk = validarStatus();
 
             return prazoOk && tipoOk && atletaOk && timeOk && statusOk;
+        }
+
+        function visualizarElencoTime(timeId, timeNome) {
+            const container = document.getElementById('listaAtletasElencoTime');
+            document.getElementById('tituloElencoTime').innerText = `Elenco: ${timeNome}`;
+            container.innerHTML =
+                '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
+
+            window.dispatchEvent(new CustomEvent('open-modal-elenco-time'));
+
+            fetch(`/times/${timeId}/edit`)
+                .then(response => response.json())
+                .then(dados => {
+                    container.innerHTML = '';
+
+                    if (dados.atletas && dados.atletas.length > 0) {
+                        dados.atletas.forEach(atleta => {
+                            const iniciais = atleta.nome.substring(0, 2).toUpperCase();
+                            container.innerHTML += `
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-light border">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 38px; height: 38px; font-size: 0.8rem;">
+                                ${iniciais}
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-dark">${atleta.nome}</div>
+                                <div class="text-secondary" style="font-size: 0.75rem;">Doc: ${atleta.cpf_rg || '---'}</div>
+                            </div>
+                        </div>
+                    `;
+                        });
+                    } else {
+                        container.innerHTML =
+                            '<div class="text-center py-4 text-secondary">Nenhum atleta vinculado a esta equipe.</div>';
+                    }
+                })
+                .catch(erro => {
+                    console.error("Erro ao buscar elenco do time:", erro);
+                    container.innerHTML = '<div class="text-center py-4 text-danger">Erro ao carregar o elenco.</div>';
+                });
         }
 
         document.addEventListener('turbo:load', configurarEventosFormInscricao);

@@ -5,11 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Resultado;
 use App\Models\Evento;
-use App\Models\Inscricoes;
-use App\Models\Modalidade;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Http\Requests\ResultadoRequest;
 
 class ResultadoController extends Controller

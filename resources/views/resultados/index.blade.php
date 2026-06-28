@@ -9,6 +9,50 @@
             </div>
         </div>
 
+        @if (session('success'))
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+                <div id="toastSuccess" class="toast align-items-center text-bg-success border-0 show" role="alert"
+                    style="min-width: 420px; font-size: 16px; border-radius: 12px;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ session('success') }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            </div>
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toastSuccess');
+                    if (toast) toast.classList.remove('show');
+                }, 5000);
+            </script>
+        @endif
+
+        @if ($errors->any())
+            <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+                <div id="toastErro" class="toast align-items-center text-bg-danger border-0 show" role="alert"
+                    style="min-width: 420px; font-size: 16px; border-radius: 12px;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @foreach ($errors->all() as $erro)
+                                {{ $erro }}<br>
+                            @endforeach
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            </div>
+            <script>
+                setTimeout(() => {
+                    const toast = document.getElementById('toastErro');
+                    if (toast) toast.classList.remove('show');
+                }, 5000);
+            </script>
+        @endif
+
         <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <x-stat-card title="Resultados" value="{{ $eventos->sum(fn($e) => $e->resultados->count()) }}"
@@ -134,13 +178,13 @@
                                                     onclick="abrirModalEdicao({{ $resultado->id }}, '{{ $evento->nome }}')">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
-                                                <form action="{{ route('resultados.destroy', $resultado->id) }}"
-                                                    method="POST" class="d-inline"
-                                                    onsubmit="return confirm('Excluir este resultado?');">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-light text-danger"><i
-                                                            class="bi bi-trash3"></i></button>
-                                                </form>
+                                                <button type="button" class="btn btn-sm btn-light text-danger"
+                                                    @click="$dispatch('confirmar-exclusao', {
+                                                        action: '{{ route('resultados.destroy', $resultado->id) }}',
+                                                        mensagem: 'Excluir o resultado de {{ $nomeVencedor }} ({{ $resultado->posicao }}º lugar)?'
+                                                    })">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -245,11 +289,26 @@
                 }
 
                 dados.forEach(inscricao => {
-                    let nome = inscricao.atleta ? inscricao.atleta.nome : (inscricao.time ? inscricao.time
-                        .nome : 'Desconhecido');
+                    let tipo, nome, modalidade;
+
+                    if (inscricao.atleta) {
+                        tipo = 'Atleta';
+                        nome = inscricao.atleta.nome;
+                        modalidade = inscricao.atleta.modalidade?.nome ?? 'Sem Modalidade';
+                    } else if (inscricao.time) {
+                        tipo = 'Time';
+                        nome = inscricao.time.nome;
+                        modalidade = inscricao.time.modalidade?.nome ?? 'Sem Modalidade';
+                    } else {
+                        tipo = 'Desconhecido';
+                        nome = 'Desconhecido';
+                        modalidade = '';
+                    }
+
+                    let texto = `[${tipo}] ${nome} — ${modalidade}`;
                     let isSelected = (inscricao.id == inscricaoSelecionada) ? 'selected' : '';
                     selectInscricao.innerHTML +=
-                        `<option value="${inscricao.id}" ${isSelected}>${nome}</option>`;
+                        `<option value="${inscricao.id}" ${isSelected}>${texto}</option>`;
                 });
             })
             .catch(error => {
