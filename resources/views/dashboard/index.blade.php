@@ -87,7 +87,7 @@
             <a href="/reservas" class="text-decoration-none">
                 <div
                     class="card-premium h-100 p-4 text-center hover-scale-up border-0 shadow-sm rounded-4 d-flex flex-column align-items-center justify-content-center">
-                    <div class="bg-primary bg-opacity-10 text-primary rounded-4 d-flex align-items-center justify-content-center mb-3"
+                    <div class="icon-card icon-primary mb-3"
                         style="width: 55px; height: 55px;">
                         <i class="bi bi-calendar-plus fs-3"></i>
                     </div>
@@ -100,7 +100,7 @@
             <a href="/atletas" class="text-decoration-none">
                 <div
                     class="card-premium h-100 p-4 text-center hover-scale-up border-0 shadow-sm rounded-4 d-flex flex-column align-items-center justify-content-center">
-                    <div class="bg-success bg-opacity-10 text-success rounded-4 d-flex align-items-center justify-content-center mb-3"
+                    <div class="icon-card icon-success mb-3"
                         style="width: 55px; height: 55px;">
                         <i class="bi bi-person-plus fs-3"></i>
                     </div>
@@ -113,7 +113,7 @@
             <a href="/times" class="text-decoration-none">
                 <div
                     class="card-premium h-100 p-4 text-center hover-scale-up border-0 shadow-sm rounded-4 d-flex flex-column align-items-center justify-content-center">
-                    <div class="bg-warning bg-opacity-10 text-warning rounded-4 d-flex align-items-center justify-content-center mb-3"
+                    <div class="icon-card icon-warning mb-3"
                         style="width: 55px; height: 55px;">
                         <i class="bi bi-shield-plus fs-3"></i>
                     </div>
@@ -126,7 +126,7 @@
             <a href="/inscricoes" class="text-decoration-none">
                 <div
                     class="card-premium h-100 p-4 text-center hover-scale-up border-0 shadow-sm rounded-4 d-flex flex-column align-items-center justify-content-center">
-                    <div class="bg-info bg-opacity-10 text-info rounded-4 d-flex align-items-center justify-content-center mb-3"
+                    <div class="icon-card icon-info mb-3"
                         style="width: 55px; height: 55px;">
                         <i class="bi bi-award fs-3"></i>
                     </div>

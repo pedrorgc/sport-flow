@@ -194,7 +194,15 @@
     <nav class="glass-nav border-bottom py-3" style="border-color: var(--cor-borda) !important;">
         <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" href="/">
-                <span class="titulo-marca fs-4 mb-0 fw-bold">SportFlow</span>
+                <img :src="theme === 'dark'
+                    ?
+                    '{{ asset('images/SportFlow_Logo_Branca.png') }}' :
+                    '{{ asset('images/SportFlow_Logo_Preta.png') }}'"
+                    alt="Logo SportFlow" style="height: 42px; width: auto; transition: all .3s ease;">
+
+                <span class="titulo-marca fs-4 mb-0 fw-bold">
+                    SportFlow
+                </span>
             </a>
 
             <div class="d-flex align-items-center gap-3">
