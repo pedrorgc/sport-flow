@@ -164,7 +164,7 @@
                                                 height="40" class="rounded-circle object-fit-cover border"
                                                 alt="Brasão do time">
                                         @else
-                                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase"
+                                            <div class="alert alert-primary border-0 m-0 rounded-circle d-flex align-items-center justify-content-center fw-bold text-uppercase"
                                                 style="width: 40px; height: 40px;">
                                                 {{ substr($time->nome, 0, 2) }}
                                             </div>
