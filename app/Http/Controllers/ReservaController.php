@@ -112,8 +112,7 @@ class ReservaController extends Controller
                 unset($dados['data_reserva'], $dados['hora_inicio'], $dados['hora_fim'], $dados['data_limite_repeticao'], $dados['dias_semana']);
 
                 if ($tipo === 'Oficial') {
-                    $motivo = 'Cancelado por sobreposição de Evento Oficial: ' . $dados['titulo'];
-                    $this->derrubarConflitos($dados['espaco_id'], $inicio, $fim, $motivo);
+                    $this->aplicarPrioridadeOficial($dados['espaco_id'], $inicio, $fim, $dados['titulo']);
 
                     Reserva::create($dados);
                 } 
@@ -121,6 +120,7 @@ class ReservaController extends Controller
                 elseif ($tipo === 'Fixa') {
                     $limite = Carbon::parse($request->input('data_limite_repeticao'))->endOfDay();
                     $atual = Carbon::parse($request->input('data_reserva'));
+                    $criadas = 0;
 
                     // Varre a folha do calendário dia por dia do início ao limite final
                     while ($atual->startOfDay()->lte($limite)) {
@@ -139,9 +139,14 @@ class ReservaController extends Controller
                             $dadosRepeticao['data_hora_fim']    = $atualFim->format('Y-m-d H:i:s');
 
                             Reserva::create($dadosRepeticao);
+                            $criadas++;
                         }
-                        
+
                         $atual->addDay();
+                    }
+
+                    if ($criadas === 0) {
+                        throw new \Exception('Nenhuma data no intervalo escolhido corresponde aos dias da semana selecionados.');
                     }
                 } 
                 else {
@@ -199,11 +204,18 @@ class ReservaController extends Controller
 
                 unset($dados['data_reserva'], $dados['hora_inicio'], $dados['hora_fim'], $dados['data_limite_repeticao'], $dados['dias_semana']);
 
-                if ($request->input('alterar_grupo') == '1' && $reserva->grupo_reserva_id) {
-                    
-                    if ($this->existeConflitoEdicao($dados['espaco_id'], $inicio, $fim, $reserva->id)) {
-                        throw new \Exception('O horário escolhido gera conflito para este dia inicial.');
+                // Mesma regra do store(): Evento Oficial derruba reservas comuns; os demais tipos exigem horário livre.
+                $validarHorario = function ($inicio, $fim, $ignoreId, $mensagemConflito) use ($dados) {
+                    if ($dados['tipo'] === 'Oficial') {
+                        $this->aplicarPrioridadeOficial($dados['espaco_id'], $inicio, $fim, $dados['titulo'], $ignoreId);
+                    } elseif ($this->existeConflito($dados['espaco_id'], $inicio, $fim, $ignoreId)) {
+                        throw new \Exception($mensagemConflito);
                     }
+                };
+
+                if ($request->input('alterar_grupo') == '1' && $reserva->grupo_reserva_id) {
+
+                    $validarHorario($inicio, $fim, $reserva->id, 'O horário escolhido gera conflito para este dia inicial.');
 
                     $reserva->update($dados);
 
@@ -217,9 +229,7 @@ class ReservaController extends Controller
                         $novaInstanciaInicio = Carbon::parse($dataInstancia . ' ' . $request->hora_inicio);
                         $novaInstanciaFim    = Carbon::parse($dataInstancia . ' ' . $request->hora_fim);
 
-                        if ($this->existeConflitoEdicao($dados['espaco_id'], $novaInstanciaInicio, $novaInstanciaFim, $instancia->id)) {
-                            throw new \Exception('A alteração em lote falhou devido a um conflito na semana do dia ' . $novaInstanciaInicio->format('d/m/Y'));
-                        }
+                        $validarHorario($novaInstanciaInicio, $novaInstanciaFim, $instancia->id, 'A alteração em lote falhou devido a um conflito na semana do dia ' . $novaInstanciaInicio->format('d/m/Y'));
 
                         $instancia->update([
                             'titulo'           => $dados['titulo'],
@@ -231,10 +241,8 @@ class ReservaController extends Controller
                         ]);
                     }
                 } else {
-                    if ($this->existeConflitoEdicao($dados['espaco_id'], $inicio, $fim, $reserva->id)) {
-                        throw new \Exception('O horário selecionado já está ocupado por outra atividade.');
-                    }
-                    
+                    $validarHorario($inicio, $fim, $reserva->id, 'O horário selecionado já está ocupado por outra atividade.');
+
                     if ($reserva->tipo === 'Fixa' && $dados['tipo'] !== 'Fixa') {
                         $dados['grupo_reserva_id'] = null;
                     }
@@ -271,35 +279,28 @@ class ReservaController extends Controller
         return redirect()->route('reservas.index')->with('success', 'Reserva cancelada.');
     }
 
-    private function existeConflito($espacoId, $inicio, $fim)
+    private function existeConflito($espacoId, $inicio, $fim, $ignoreId = null)
     {
-        return Reserva::where('espaco_id', $espacoId)
-            ->where('status', 'Confirmada')
-            ->where(function ($query) use ($inicio, $fim) {
-                $query->where('data_hora_inicio', '<', $fim)->where('data_hora_fim', '>', $inicio);
-            })->exists();
+        return Reserva::sobrepostas($espacoId, $inicio, $fim, $ignoreId)->exists();
     }
 
-    private function existeConflitoEdicao($espacoId, $inicio, $fim, $ignoreId)
+    /**
+     * Evento Oficial tem prioridade sobre reservas Única/Fixa (que são canceladas),
+     * mas nunca derruba outro Evento Oficial.
+     */
+    private function aplicarPrioridadeOficial($espacoId, $inicio, $fim, $titulo, $ignoreId = null)
     {
-        return Reserva::where('espaco_id', $espacoId)
-            ->where('id', '!=', $ignoreId)
-            ->where('status', 'Confirmada')
-            ->where(function ($query) use ($inicio, $fim) {
-                $query->where('data_hora_inicio', '<', $fim)->where('data_hora_fim', '>', $inicio);
-            })->exists();
-    }
+        $conflitoOficial = Reserva::sobrepostas($espacoId, $inicio, $fim, $ignoreId)
+            ->where('tipo', 'Oficial')
+            ->exists();
 
-    private function derrubarConflitos($espacoId, $inicio, $fim, $motivo)
-    {
-        Reserva::where('espaco_id', $espacoId)
-            ->where('status', 'Confirmada')
-            ->where(function ($query) use ($inicio, $fim) {
-                $query->where('data_hora_inicio', '<', $fim)->where('data_hora_fim', '>', $inicio);
-            })
-            ->update([
-                'status' => 'Cancelada',
-                'justificativa_cancelamento' => $motivo,
-            ]);
+        if ($conflitoOficial) {
+            throw new \Exception('Já existe outro Evento Oficial neste espaço no dia ' . $inicio->format('d/m/Y') . ' e horário selecionado.');
+        }
+
+        Reserva::sobrepostas($espacoId, $inicio, $fim, $ignoreId)->update([
+            'status' => 'Cancelada',
+            'justificativa_cancelamento' => 'Cancelado por sobreposição de Evento Oficial: ' . $titulo,
+        ]);
     }
 }
