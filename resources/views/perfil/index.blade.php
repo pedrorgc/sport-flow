@@ -8,6 +8,13 @@
                 <div class="text-secondary small">Gerencie suas informações pessoais e configurações de segurança</div>
             </div>
 
+            @if (session('aviso') || auth()->user()->must_change_password)
+                <div class="alert alert-warning border-0 shadow-sm rounded-3 mb-4" role="alert">
+                    <i class="bi bi-shield-lock-fill me-2"></i>
+                    {{ session('aviso', 'Você está usando uma senha temporária. Defina uma nova senha para continuar.') }}
+                </div>
+            @endif
+
             @if (session('success'))
                 <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 4000)" x-show="show" x-transition.opacity.duration.300ms
                     class="alert alert-success alert-dismissible border-0 shadow-sm rounded-3 mb-4" role="alert">
@@ -25,7 +32,7 @@
 
                     <div>
                         <h4 class="fw-bold text-dark mb-1">{{ auth()->user()->username }}</h4>
-                        <span class="badge badge-soft-primary fw-medium px-2 py-1">Administrador</span>
+                        <span class="badge badge-soft-primary fw-medium px-2 py-1">{{ auth()->user()->role?->rotulo() }}</span>
                     </div>
                 </div>
 

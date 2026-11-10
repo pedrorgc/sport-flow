@@ -47,6 +47,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => Papel::class,
             'ativo' => 'boolean',
+            'must_change_password' => 'boolean',
         ];
     }
 

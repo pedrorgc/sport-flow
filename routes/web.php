@@ -10,6 +10,7 @@ use App\Http\Controllers\PortalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResultadoController;
 use App\Http\Controllers\TimeController;
+use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ReservaController;
 use App\Models\Inscricoes;
 use Illuminate\Support\Facades\Route;
@@ -19,12 +20,21 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login-validar', [AuthController::class, 'authenticate'])->name('login.validar');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth', 'ativo'])->group(function () {
+Route::middleware(['auth', 'ativo', 'senha.trocada'])->group(function () {
 
     Route::get('/perfil', [ProfileController::class, 'index'])->name('perfil.index');
     Route::put('/perfil/username', [ProfileController::class, 'updateUsername'])->name('perfil.username');
     Route::put('/perfil/password', [ProfileController::class, 'updatePassword'])->name('perfil.password');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Gestão de usuários: somente administrador.
+    Route::middleware('papel:admin')->prefix('usuarios')->name('usuarios.')->group(function () {
+        Route::get('/', [UsuarioController::class, 'index'])->name('index');
+        Route::post('/', [UsuarioController::class, 'store'])->name('store');
+        Route::put('/{usuario}', [UsuarioController::class, 'update'])->name('update');
+        Route::patch('/{usuario}/acesso', [UsuarioController::class, 'alternarAcesso'])->name('acesso');
+        Route::patch('/{usuario}/senha', [UsuarioController::class, 'redefinirSenha'])->name('senha');
+    });
 
     // Escrita: administrador e gestor. Registradas antes das rotas de leitura
     // para que "/x/create" não seja capturado por "/x/{id}".

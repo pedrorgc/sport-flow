@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'papel' => \App\Http\Middleware\EnsureUserHasRole::class,
             'ativo' => \App\Http\Middleware\EnsureUserIsActive::class,
+            'senha.trocada' => \App\Http\Middleware\EnsurePasswordChanged::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
