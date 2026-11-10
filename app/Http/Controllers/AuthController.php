@@ -24,7 +24,8 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        // Usuário bloqueado não autentica, mesmo com a senha correta.
+        if (Auth::attempt($credentials + ['ativo' => true])) {
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }

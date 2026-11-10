@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Papel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -29,6 +30,28 @@ class UserFactory extends Factory
             'username' => fake()->unique()->userName(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'role' => Papel::Monitor,
+            'ativo' => true,
         ];
+    }
+
+    public function admin(): static
+    {
+        return $this->state(['role' => Papel::Admin]);
+    }
+
+    public function gestor(): static
+    {
+        return $this->state(['role' => Papel::Gestor]);
+    }
+
+    public function monitor(): static
+    {
+        return $this->state(['role' => Papel::Monitor]);
+    }
+
+    public function bloqueado(): static
+    {
+        return $this->state(['ativo' => false]);
     }
 }
