@@ -19,7 +19,7 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login-validar', [AuthController::class, 'authenticate'])->name('login.validar');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'ativo'])->group(function () {
 
     Route::get('/perfil', [ProfileController::class, 'index'])->name('perfil.index');
     Route::put('/perfil/username', [ProfileController::class, 'updateUsername'])->name('perfil.username');
