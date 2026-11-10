@@ -113,10 +113,12 @@
                             <span x-text="openPodio ? 'Ocultar Pódio' : 'Ver Pódio'"></span>
                         </button>
 
+                        @can('gerenciar')
                         <button class="btn btn-premium d-flex align-items-center gap-2 shadow-sm"
                             onclick="abrirModalCadastro({{ $evento->id }}, '{{ $evento->nome }}')">
                             <i class="bi bi-plus-lg"></i> Lançar
                         </button>
+                        @endcan
                     </div>
                 </div>
 
@@ -174,6 +176,7 @@
                                             </td>
                                             <td class="py-3 fw-medium">{{ $resultado->marca_pontuacao ?? '-' }}</td>
                                             <td class="text-end pe-4 py-3">
+                                                @can('gerenciar')
                                                 <button type="button" class="btn btn-sm btn-light text-primary me-1"
                                                     onclick="abrirModalEdicao({{ $resultado->id }}, '{{ $evento->nome }}')">
                                                     <i class="bi bi-pencil-square"></i>
@@ -185,6 +188,7 @@
                                                     })">
                                                     <i class="bi bi-trash3"></i>
                                                 </button>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach

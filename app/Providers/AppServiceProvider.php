@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
@@ -31,5 +33,8 @@ class AppServiceProvider extends ServiceProvider
         // 3. Trava de Segurança: Proíbe "Lazy Loading" (N+1) apenas no seu PC local. 
         // Se esquecer o with() no Controller, ele avisa! 
         Model::preventLazyLoading(!app()->isProduction());
+
+        // 4. Permissão de alterar dados do sistema (administrador e gestor). Usada com @can('gerenciar') nas telas.
+        Gate::define('gerenciar', fn (User $user) => $user->podeGerenciar());
     }
 }

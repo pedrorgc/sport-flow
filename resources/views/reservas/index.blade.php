@@ -165,11 +165,13 @@
                 <h2 class="titulo-marca mb-0" style="font-size: 2.2rem;">Agenda de Reservas</h2>
                 <div class="text-secondary small mt-1">Gerencie os horários agendados nos espaços</div>
             </div>
+            @can('gerenciar')
             <button class="btn btn-premium d-flex align-items-center gap-2 shadow-sm" onclick="prepararNovaReserva()"
                 @click="openModal = true">
                 <i class="bi bi-plus-lg"></i>
                 <span class="d-none d-md-inline">Nova Reserva</span>
             </button>
+            @endcan
         </div>
 
         @if (session('success'))
@@ -311,6 +313,7 @@
 
                                 <td class="text-end pe-4 py-3">
                                     <div class="d-flex justify-content-end gap-2">
+                                        @can('gerenciar')
                                         <button class="btn btn-sm btn-light text-primary hover-shadow"
                                             onclick="executarEdicaoReserva({{ $reserva->id }})"
                                             @click="openModal = true"><i class="bi bi-pencil-square"></i></button>
@@ -330,6 +333,7 @@
                                             @click="$dispatch('confirmar-exclusao', { action: '{{ $rotaExclusao }}', mensagem: '{{ $mensagemExclusao }}' })">
                                             <i class="bi bi-trash3"></i>
                                         </button>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>
@@ -441,6 +445,7 @@
                             </div>
                         </div>
 
+                        @can('gerenciar')
                         <div class="d-flex justify-content-end gap-2 pt-3 border-top mt-4">
                             <button class="btn btn-light text-primary border fw-medium"
                                 @click="modalVisualizar = false; executarEdicaoReserva(reservaSelecionada.id); openModal = true">
@@ -465,6 +470,7 @@
                                 </button>
                             </template>
                         </div>
+                        @endcan
                     </div>
                 </div>
             </div>

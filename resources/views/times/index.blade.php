@@ -4,11 +4,13 @@
 
         <div class="d-flex align-items-center justify-content-between mb-4 ps-5 ps-md-0 pt-2 pt-md-0">
             <h2 class="titulo-marca mb-0" style="font-size: 2.2rem;">Times</h2>
+            @can('gerenciar')
             <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm"
                 onclick="abrirNovaEquipe()">
                 <i class="bi bi-plus-lg"></i>
                 <span class="d-none d-md-inline">Novo Time</span>
             </button>
+            @endcan
         </div>
 
         <div class="row g-3 mb-4">
@@ -193,6 +195,7 @@
                                             <i class="bi bi-eye"></i>
                                         </button>
 
+                                        @can('gerenciar')
                                         <button type="button" class="btn btn-sm btn-light text-primary hover-shadow"
                                             title="Gerenciar Elenco" onclick="abrirElenco({{ $time->id }})">
                                             <i class="bi bi-person-plus"></i>
@@ -210,6 +213,7 @@
                                             })">
                                             <i class="bi bi-trash3"></i>
                                         </button>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>
@@ -486,7 +490,7 @@
                 '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>';
             window.dispatchEvent(new CustomEvent('open-modal-visualizar'));
 
-            fetch(`/times/${id}/edit`)
+            fetch(`/times/${id}`)
                 .then(response => response.json())
                 .then(dados => {
                     document.getElementById('tituloVisualizarTime').innerText = dados.nome;

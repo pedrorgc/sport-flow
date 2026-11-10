@@ -4,11 +4,13 @@
         <div class="d-flex align-items-center justify-content-between mb-4 ps-5 ps-md-0 pt-2 pt-md-0">
             <h2 class="titulo-marca mb-0" style="font-size: 2.2rem;">Atletas</h2>
 
+            @can('gerenciar')
             <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm"
                 onclick="abrirNovoCadastro()">
                 <i class="bi bi-plus-lg"></i>
                 <span class="d-none d-md-inline">Novo Atleta</span>
             </button>
+            @endcan
         </div>
 
         <div class="row g-3 mb-4">
@@ -165,6 +167,7 @@
                                 <td class="text-end pe-4 py-3">
                                     <div class="d-flex gap-2 justify-content-end">
 
+                                        @can('gerenciar')
                                         <button type="button" class="btn btn-sm btn-light text-primary hover-shadow"
                                             title="Editar" onclick="abrirEdicao({{ $atleta->id }})">
                                             <i class="bi bi-pencil-square"></i>
@@ -177,6 +180,7 @@
                                             })">
                                             <i class="bi bi-trash3"></i>
                                         </button>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

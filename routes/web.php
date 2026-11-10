@@ -25,20 +25,34 @@ Route::middleware(['auth', 'ativo'])->group(function () {
     Route::put('/perfil/username', [ProfileController::class, 'updateUsername'])->name('perfil.username');
     Route::put('/perfil/password', [ProfileController::class, 'updatePassword'])->name('perfil.password');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('atletas', AtletaController::class);
-    Route::resource('times', TimeController::class);
-    Route::resource('inscricoes', InscricoesController::class);
-    Route::resource('eventos', EventoController::class);
-    Route::resource('resultados', ResultadoController::class);
-    Route::get('/api/eventos/{id}/inscricoes', function ($id) {
-        return Inscricoes::with(['atleta.modalidade', 'time.modalidade'])
-            ->where('evento_id', $id)
-            ->where('status_inscricao', '!=', 'Cancelada')
-            ->get();
+
+    // Escrita: administrador e gestor. Registradas antes das rotas de leitura
+    // para que "/x/create" não seja capturado por "/x/{id}".
+    Route::middleware('papel:gestor')->group(function () {
+        Route::resource('atletas', AtletaController::class)->except(['index', 'show']);
+        Route::resource('times', TimeController::class)->except(['index', 'show']);
+        Route::resource('inscricoes', InscricoesController::class)->except(['index', 'show']);
+        Route::resource('eventos', EventoController::class)->except(['index', 'show']);
+        Route::resource('resultados', ResultadoController::class)->except(['index', 'show']);
+        Route::resource('espacos', EspacoController::class)->except(['index', 'show']);
+        Route::resource('reservas', ReservaController::class)->except(['index', 'show']);
+
+        // Usada só pelo cadastro de resultados.
+        Route::get('/api/eventos/{id}/inscricoes', function ($id) {
+            return Inscricoes::with(['atleta.modalidade', 'time.modalidade'])
+                ->where('evento_id', $id)
+                ->where('status_inscricao', '!=', 'Cancelada')
+                ->get();
+        });
     });
 
-    Route::resource('espacos', EspacoController::class);
-
-    Route::resource('reservas', ReservaController::class);
-    Route::get('/api/reservas-mensais', [App\Http\Controllers\ReservaController::class, 'getReservasMensais'])->name('reservas.api');
+    // Leitura: todos os papéis (monitor só consulta).
+    Route::resource('atletas', AtletaController::class)->only(['index']);
+    Route::resource('times', TimeController::class)->only(['index', 'show']);
+    Route::resource('inscricoes', InscricoesController::class)->only(['index', 'show']);
+    Route::resource('eventos', EventoController::class)->only(['index']);
+    Route::resource('resultados', ResultadoController::class)->only(['index']);
+    Route::resource('espacos', EspacoController::class)->only(['index']);
+    Route::resource('reservas', ReservaController::class)->only(['index']);
+    Route::get('/api/reservas-mensais', [ReservaController::class, 'getReservasMensais'])->name('reservas.api');
 });
