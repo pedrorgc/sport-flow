@@ -22,6 +22,18 @@ class Reserva extends Model
         'grupo_reserva_id',
     ];
 
+    /**
+     * Reservas confirmadas no mesmo espaço cujo horário se sobrepõe ao intervalo [$inicio, $fim).
+     */
+    public function scopeSobrepostas($query, $espacoId, $inicio, $fim, $ignoreId = null)
+    {
+        return $query->where('espaco_id', $espacoId)
+            ->where('status', 'Confirmada')
+            ->where('data_hora_inicio', '<', $fim)
+            ->where('data_hora_fim', '>', $inicio)
+            ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId));
+    }
+
     public function espaco()
     {
         return $this->belongsTo(Espaco::class);
