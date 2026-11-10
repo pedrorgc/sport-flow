@@ -4,18 +4,10 @@ use App\Models\Espaco;
 use App\Models\Reserva;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
-uses(RefreshDatabase::class);
-
 beforeEach(function () {
-    // UserFactory ainda usa 'email', que não existe mais na tabela users.
-    $this->user = User::forceCreate([
-        'name' => 'Gestor',
-        'username' => 'gestor',
-        'password' => bcrypt('password'),
-    ]);
+    $this->user = User::factory()->create();
     $this->actingAs($this->user);
 
     $this->espaco = Espaco::create([
