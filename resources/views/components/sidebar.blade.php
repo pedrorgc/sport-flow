@@ -21,6 +21,9 @@
             <x-sidebar-item icon="bi bi-award" label="Resultados" href="/resultados" :active="request()->is('resultados')" />
             <x-sidebar-item icon="bi bi-geo-alt" label="Espaços" href="/espacos" :active="request()->is('espacos')" />
             <x-sidebar-item icon="bi bi-calendar-check" label="Reservas" href="/reservas" :active="request()->is('reservas')" />
+            @can('administrar')
+                <x-sidebar-item icon="bi bi-person-gear" label="Usuários" href="/usuarios" :active="request()->is('usuarios')" />
+            @endcan
         </div>
 
         <div class="p-2 mt-auto border-top">
@@ -76,6 +79,9 @@
             <x-sidebar-item icon="bi bi-award" label="Resultados" href="/resultados" :active="request()->is('resultados')" />
             <x-sidebar-item icon="bi bi-geo-alt" label="Espaços" href="/espacos" :active="request()->is('espacos')" />
             <x-sidebar-item icon="bi bi-calendar-check" label="Reservas" href="/reservas" :active="request()->is('reservas')" />
+            @can('administrar')
+                <x-sidebar-item icon="bi bi-person-gear" label="Usuários" href="/usuarios" :active="request()->is('usuarios')" />
+            @endcan
         </div>
 
         <div class="p-3 mt-auto border-top">

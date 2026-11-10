@@ -36,5 +36,8 @@ class AppServiceProvider extends ServiceProvider
 
         // 4. Permissão de alterar dados do sistema (administrador e gestor). Usada com @can('gerenciar') nas telas.
         Gate::define('gerenciar', fn (User $user) => $user->podeGerenciar());
+
+        // 5. Gestão de usuários (somente administrador).
+        Gate::define('administrar', fn (User $user) => $user->isAdmin());
     }
 }

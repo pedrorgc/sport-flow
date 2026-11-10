@@ -41,17 +41,19 @@ class ProfileController extends Controller
 
         $request->validate([
             'current_password' => 'required|current_password', 
-            'password'         => 'required|min:6|confirmed',  
+            'password'         => 'required|min:6|confirmed|different:current_password',
         ], [
+            'password.different'                => 'A nova senha precisa ser diferente da senha atual.',
             'current_password.current_password' => 'Sua senha atual está incorreta.',
             'password.min'                      => 'A nova senha deve ter pelo menos 6 caracteres.',
             'password.confirmed'                => 'A confirmação da nova senha não confere.',
             'required'                          => 'Este campo é obrigatório.'
         ]);
 
-        $user->update([
-            'password' => Hash::make($request->password)
-        ]);
+        $user->forceFill([
+            'password' => Hash::make($request->password),
+            'must_change_password' => false,
+        ])->save();
 
         return back()->with('success', 'Sua senha foi alterada com segurança!');
     }
