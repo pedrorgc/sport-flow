@@ -22,10 +22,12 @@
                 <div class="text-secondary small mt-1">Gerencie os locais físicos disponíveis</div>
             </div>
 
+            @can('gerenciar')
             <button class="btn btn-premium d-flex align-items-center gap-2 shadow-sm" @click="openModal = true">
                 <i class="bi bi-plus-lg"></i>
                 <span class="d-none d-md-inline">Novo Espaço</span>
             </button>
+            @endcan
         </div>
 
         @if (session('success'))
@@ -96,6 +98,7 @@
                                         {{ $espaco->tipo }}</div>
                                 </div>
 
+                                @can('gerenciar')
                                 <div class="d-flex gap-2">
                                     <button class="btn btn-sm btn-light text-primary hover-shadow px-2 py-1"
                                         title="Editar" @click='abrirEdicao(@json($espaco))'>
@@ -111,6 +114,7 @@
                                         <i class="bi bi-trash3"></i>
                                     </button>
                                 </div>
+                                @endcan
                             </div>
 
                             <div class="text-secondary small d-flex flex-column gap-2 mt-3">

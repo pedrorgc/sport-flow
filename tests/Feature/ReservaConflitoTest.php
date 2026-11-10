@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 beforeEach(function () {
-    $this->user = User::factory()->create();
+    $this->user = User::factory()->gestor()->create();
     $this->actingAs($this->user);
 
     $this->espaco = Espaco::create([

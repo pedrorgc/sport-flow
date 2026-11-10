@@ -119,12 +119,14 @@
                                             <i class="bi bi-eye me-1"></i> Lista
                                         </button>
 
+                                        @can('gerenciar')
                                         <button type="button"
                                             class="btn btn-sm btn-premium hover-shadow fw-medium px-3"
                                             title="Inscrever Participante"
                                             onclick="abrirNovaInscricao({{ $evento->id }}, '{{ addslashes($evento->nome) }}', '{{ $evento->modalidade_id }}', '{{ $evento->modalidade->tipo }}', '{{ \Carbon\Carbon::parse($evento->inscricao_inicio)->format('Y-m-d') }}', '{{ \Carbon\Carbon::parse($evento->inscricao_fim)->format('Y-m-d') }}')">
                                             <i class="bi bi-plus-lg me-1"></i> Inscrever
                                         </button>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>
@@ -308,6 +310,9 @@
     </main>
 
     <script>
+        const PODE_GERENCIAR = @json(auth()->user()->can('gerenciar'));
+    </script>
+    <script>
         function abrirNovaInscricao(eventoId, eventoNome, modalidadeId, modalidadeTipo, inscricaoInicio, inscricaoFim) {
             limparErrosVisuaisInscricao();
 
@@ -458,6 +463,7 @@
 
                     <div class="d-flex gap-2">
                         ${botaoElenco}
+                        ${PODE_GERENCIAR ? `
                         <button type="button" class="btn btn-sm btn-light text-primary hover-shadow" title="Editar Status" onclick="abrirEdicaoInscricao(${inscricao.id})">
                             <i class="bi bi-pencil-square"></i>
                         </button>
@@ -466,6 +472,7 @@
                             onclick="window.dispatchEvent(new CustomEvent('confirmar-exclusao', { detail: { action: '/inscricoes/${inscricao.id}', mensagem: 'Cancelar a inscrição de ${nomeParticipante}?' } }))">
                             <i class="bi bi-trash3"></i>
                         </button>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -731,7 +738,7 @@
 
             window.dispatchEvent(new CustomEvent('open-modal-elenco-time'));
 
-            fetch(`/times/${timeId}/edit`)
+            fetch(`/times/${timeId}`)
                 .then(response => response.json())
                 .then(dados => {
                     container.innerHTML = '';

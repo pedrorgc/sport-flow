@@ -56,7 +56,9 @@ class TimeController extends Controller
 
     public function show(string $id)
     {
-        //
+        // Consulta do elenco (usada também por quem só visualiza).
+        $time = Time::with('atletas', 'modalidade')->findOrFail($id);
+        return response()->json($time);
     }
 
     public function edit(string $id)

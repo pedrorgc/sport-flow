@@ -4,11 +4,13 @@
         <div class="d-flex align-items-center justify-content-between mb-4 ps-5 ps-md-0 pt-2 pt-md-0">
             <h2 class="titulo-marca mb-0" style="font-size: 2.2rem;">Eventos</h2>
 
+            @can('gerenciar')
             <button type="button" class="btn btn-premium d-flex align-items-center gap-2 shadow-sm"
                 onclick="abrirNovoEvento()">
                 <i class="bi bi-plus-lg"></i>
                 <span class="d-none d-md-inline">Novo Evento</span>
             </button>
+            @endcan
         </div>
 
         <div class="row g-3 mb-4">
@@ -168,6 +170,7 @@
                             {{ Str::limit($evento->descricao, 100, '...') }}
                         </p>
 
+                        @can('gerenciar')
                         <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                             <button type="button" class="btn btn-sm btn-light text-primary hover-shadow fw-medium px-3"
                                 onclick="abrirEdicaoEvento({{ $evento->id }})">
@@ -182,6 +185,7 @@
                                 <i class="bi bi-trash3 me-1"></i> Excluir
                             </button>
                         </div>
+                        @endcan
 
                     </div>
                 </div>
